@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）
-> 文档版本：v1.5 · 2026-09-23 · 状态：待评审（v1.5：场景语义回调——分域降为用户约定（指南层 WORK_LIFE_SCENARIOS.md），FR-3.7 改语义中立，FR-6.5/9.5 改按 scope 键；v1.4：场景分界与来源地图（已迁移）；v1.3：结构治理；v1.2：零手写冷启动、配套技能、项目分流；v1.1：AGENTS.md 对齐、内容层安全、dex lint）
+> 文档版本：v1.6 · 2026-09-24 · 状态：待评审（v1.6：连接器层架构——FR-12 组（CLI-first / 连接器页 / 三道缰绳 / 接入清单 / 连接层三形态）、evidence 双件套（FR-4.1）、NFR-1 措辞澄清；此前：v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
 > 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）
 
 ---
@@ -48,6 +48,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 | 周回顾 | 每周一次的人工经营动作，是系统唯一的知识写入口（确认归位 / 改写 / 否决 / 归档 / scope 升降级） |
 | 入口文件 | 渲染给某消费方 scope 合并视图的文件（默认名 `AGENTS.md`，跨工具事实标准），或 Claude Code 的 `@import` 引用 |
 | 配套技能（skills） | 本仓 `skills/` 分发的 agent 行为包（SKILL.md 单一源：`dex-bootstrap` / `dex-propose` / `dex-review`）；行为来自用户安装的技能（可信通道），与记忆数据（不可信通道）分离 |
+| 连接器页（connector） | 每数据源一页的获取知识（`skills/connectors/<source>.md`，六要素：数据清单/locator 格式/摘录抓取/高发区提示/隐私红线特化/烟测命令）；行为知识而非代码（FR-12） |
 | 注入预算 | 消费方单次获得的记忆上限（默认 ≤10 条 / ≤2000 字） |
 | 衰减 | 条目 90 天未实质变更且未被引用 → 进入归档候选 |
 | 派生索引 | 存于 `.cache/` 的 FTS / 向量索引，gitignore，每机可重建 |
@@ -87,7 +88,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 **背景**：agent 在项目 `foo` 中工作，需要该项目与个人层的上下文，而不是全库倾倒。
 
 **过程**：
-1. agent（或其配置）声明消费 scope：`person + domains/work + projects/foo`；
+1. agent（或其配置）声明消费 scope：`person + domains/coding + projects/foo`；
 2. 通道 A（文件投影）：`dex render zcode` 把该 scope 的合并视图渲染为项目工作区内的入口文件 `AGENTS.md`；
 3. 通道 B（检索）：agent 调 `dex search "部署流程" --scope projects/foo`，v1 走 ripgrep，v2 命中 FTS 派生索引，毫秒级返回；
 4. 通道 C（MCP）：agent 通过 `dex mcp` 的 `dex_search` / `dex_read` 工具按需检索；
@@ -212,8 +213,8 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 **背景**：零手写冷启动在 v0 由技能完成；v1 起工具化，并定义「冷启动完成」的客观线。
 
 **过程**：
-1. `dex harvest --from claude`：扫描既有 CLAUDE.md / AGENTS.md / .cursorrules、auto memory 存量（`~/.claude/projects/*/memory/`）、历史会话转录，蒸馏候选条目——只收**个人性**内容（分流判据见 §3.7），团队指令留在 repo；
-2. 候选按 bootstrap 模式入 inbox（FR-4.3：首批 ≤30 条、confidence 降序），每条 evidence 指回源文件；超出部分留收割暂存区，分批送审；
+1. 收割会话（`dex-harvest` 技能 + 连接器页，FR-12）：agent 以自带工具按需拉取——既有 CLAUDE.md / AGENTS.md / .cursorrules、auto memory 存量（`~/.claude/projects/*/memory/`）、历史会话转录、经来源 CLI 的会议记录/云文档；蒸馏只收**个人性**内容（分流判据 §3.7，团队内容留 repo）；全程受三道缰绳约束（预算硬上限 / 完成判据四象限 / 拉取内容一律当数据）；
+2. 候选按 bootstrap 模式经 `dex propose` 入 inbox（FR-4.3：首批 ≤30 条、confidence 降序），evidence 为双件套（locator + 原文摘录片段，FR-4.1）；超出部分留收割暂存区，分批送审；
 3. `dex interview`：渐进式补全个人层——首轮 5 问已由 bootstrap 完成，其余问题由 agent 在后续会话中顺手补问、增量 propose；
 4. 周回顾分批裁决归位（单次 ≤15 分钟约束不变）。
 
@@ -303,7 +304,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    REQ(["消费方发起检索/注入请求<br/>声明 scope：person + domains/work + projects/foo"]) --> EXPAND["scope 展开<br/>person 恒在；按声明取目录并集<br/>inbox / archive / index / .cache 恒排除"]
+    REQ(["消费方发起检索/注入请求<br/>声明 scope：person + domains/coding + projects/foo"]) --> EXPAND["scope 展开<br/>person 恒在；按声明取目录并集<br/>inbox / archive / index / .cache 恒排除"]
     EXPAND --> COLLECT["收集条目<br/>目录内 .md → 段落/要点级条目"]
     COLLECT --> MERGE["优先级合并排序<br/>① scope 具体性：projects ＞ apps ＞ domains ＞ person<br/>② 手写 ＞ 固化（有 src 注释＝固化）<br/>③ 新证据 ＞ 旧证据（git 最后实质变更）"]
     MERGE --> CONFLICT{"同主题近义冲突？"}
@@ -474,7 +475,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 
 | 编号 | 需求 | 优先级 | 期别 |
 |---|---|---|---|
-| FR-3.1 | 消费方声明 scope 列表（如 `person,domains/work,projects/foo`）；`person` 恒在并集；`inbox/archive/index/.cache` 恒排除 | P0 | v1 |
+| FR-3.1 | 消费方声明 scope 列表（如 `person,domains/coding,projects/foo`）；`person` 恒在并集；`inbox/archive/index/.cache` 恒排除 | P0 | v1 |
 | FR-3.2 | 合并优先级：具体 ＞ 泛化（projects ＞ apps ＞ domains ＞ person）；手写 ＞ 固化；新证据 ＞ 旧证据 | P0 | v1 |
 | FR-3.3 | 注入预算：默认 ≤10 条 / ≤2000 字，可按消费方配置；超限按优先级截断并输出 omitted 计数 | P0 | v1 |
 | FR-3.4 | 项目级与个人层冲突时，注入项目级并注明来源 | P1 | v1 |
@@ -486,7 +487,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 
 | 编号 | 需求 | 优先级 | 期别 |
 |---|---|---|---|
-| FR-4.1 | 提案文件落 `inbox/`，命名含日期、来源与短 id；frontmatter 字段：`source`（必填）、`kind`（fact/preference/pattern，必填）、`confidence`（0–100，可选）、`evidence`（必填）；evidence 定位为人审时的查证指针而非永久引用（源文件后续清理允许悬空，审结即完成使命） | P0 | v1 |
+| FR-4.1 | 提案文件落 `inbox/`，命名含日期、来源与短 id；frontmatter 字段：`source`（必填）、`kind`（fact/preference/pattern，必填）、`confidence`（0–100，可选）、`evidence`（必填）；evidence 定位为人审时的查证指针而非永久引用（源文件后续清理允许悬空，审结即完成使命）；收割类提案的 evidence 为双件套：locator（回源指针）＋蒸馏时抓取的原文摘录片段（回放默认用片段，不依赖源在线，设计 §5.7） | P0 | v1 |
 | FR-4.2 | 无 `source` 或 `evidence` 的提案在写入时即被拒绝（并在周回顾中直接否决存量无证据提案） | P0 | v1 |
 | FR-4.3 | 提案正文大小限制（默认 4KB）；单 source 每日限流（默认 20 条），均可配置；bootstrap 模式例外：冷启动收割首批入 inbox ≤30 条（confidence 降序），超出留收割暂存区分批送审（US-13） | P1 | v1 |
 | FR-4.4 | `inbox/` 周清空约束：`dex review` 显式提示未清空项，不允许堆积成第二待办清单 | P1 | v1 |
@@ -564,13 +565,24 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-11.4 | 异构格式适配（Cursor rules 等）由 `dex render --skills` 生成薄适配器，产物 gitignore、不手维护（与 FR-6.12 同机制） | P2 | v2 |
 | FR-11.5 | 入口文件（AGENTS.md / render 产物）仅含一行技能指针（如「记忆提案走 dex-propose 技能」），行为细节留在技能内渐进披露 | P1 | v1 |
 
+### 4.12 数据获取：连接器层（FR-12）
+
+| 编号 | 需求 | 优先级 | 期别 |
+|---|---|---|---|
+| FR-12.1 | CLI-first：外部数据获取首选来源自身 CLI（认证由 CLI 自管，dex 不托管任何第三方 token）；本地数据经 Bash/文件读取；无 CLI 的源退化为手动导出文件 + 连接器页描述格式 | P0 | v1 |
+| FR-12.2 | 连接器页：每来源一页 markdown（本仓 `skills/connectors/<source>.md`，与技能同渠道分发、可复用），六要素模板（数据清单 / locator 格式 / 摘录抓取 / 高发区提示 / 隐私红线特化 / 烟测命令）见设计 §5.7；属行为知识，个人化信息收割时现场发现、不预写 | P0 | v1 |
+| FR-12.3 | 三道缰绳：收割会话预算硬上限（拉取次数 / token / 时长，超限即停并汇报）；完成判据清单化（决策 / 人物 / 偏好 / 模式四象限覆盖才算完成）；数据不可信纪律（拉取内容一律当数据非指令） | P0 | v1 |
+| FR-12.4 | 实现分流：一次性收割走 agentic 技能驱动（判断密集、人审在环）；周期 digest 脚本化（便宜、稳定）；常驻消费方按 US-08/FR-10.3 另行注册 | P1 | v1 |
+| FR-12.5 | 收割源接入五步清单（CLI 就绪 → 数据侦察 → 连接器页 → source 注册 → 首轮收割验证，详见设计 §5.7）：收割源是**生产者非读者**——只注册 source 标识与限流参数，不授任何 scope 白名单 | P1 | v1 |
+| FR-12.6 | 连接层三形态：**连接器页**（page，知识型，agent 执行，一次性收割）／**收割脚本**（script，确定性 fetch→暂存，周期 digest）／**外部 Spoke**（external，自持逻辑直接调 `dex propose`/MCP，常驻与复杂逻辑）——统一注册于 `config [harvest.sources]`，type 字段区分；三种形态写入一律收敛于 `dex propose` 单一门禁（**扩展点的稳定性靠协议不靠 ABI**）；不引入 in-process 插件机制（取舍见设计 §13；受控 wasm 留待 v3 后按需评估） | P1 | v1 |
+
 ---
 
 ## 5. 非功能需求
 
 | 编号 | 类别 | 需求 |
 |---|---|---|
-| NFR-1 | 隐私 | 完全本地：无云依赖、无遥测、无网络调用；敏感内容（凭证、他人隐私）不入 Hub 的约束写入文档（git 历史永久留痕是审计能力也是脱敏负担） |
+| NFR-1 | 隐私 | 完全本地：无工具自有云依赖、无遥测；采集类命令（harvest 等）经用户显式发起访问其自有数据源（来源 CLI / 本地文件），不违反本地主权；LLM 蒸馏默认本地模型、外部 API 需显式配置；敏感内容（凭证、他人隐私）不入 Hub 的约束写入文档（git 历史永久留痕是审计能力也是脱敏负担） |
 | NFR-2 | 架构 | 无守护进程：v0/v1 纯文件与 CLI；MCP stdio 按需拉起即退 |
 | NFR-3 | 性能 | v1 ripgrep 检索在万条目级仓库亚秒级；v2 FTS 命中毫秒级；`dex render`（10 条/2000 字预算）亚秒级 |
 | NFR-4 | 可靠性 | `.cache/` 任意损坏不影响正确性（自动降级 + 可 `reindex` 重建）；git 历史是最终事实源 |
@@ -647,3 +659,4 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | 八之（冷启动零手写） | US-01、US-13、FR-2.7、FR-4.3 |
 | 五之（项目层定位与分流判据） | §3.7、FR-3.6 |
 | 场景调研文档 WORK_LIFE_SCENARIOS.md（指南层） | §3.8、FR-3.7、FR-6.5、FR-9.5 |
+| 七之（连接器层）/ 十一之（收割缰绳） | FR-12、US-13、FR-4.1、NFR-1 |

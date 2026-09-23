@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）· [REQUIREMENTS.md](./REQUIREMENTS.md)（需求文档）
-> 文档版本：v1.5 · 2026-09-23 · 状态：待评审（v1.5：场景语义回调——注释去语义化、分档/示例改指 WORK_LIFE_SCENARIOS.md；v1.4：场景化示例；v1.3：结构治理（§5.6）；v1.2：harvest/interview、skills；v1.1：AGENTS.md、密钥守卫、superseded-by、dex lint）
+> 文档版本：v1.6 · 2026-09-24 · 状态：待评审（v1.6：连接器层——§5.7 收割会话（三道缰绳/连接器页六要素模板/接入五步清单）、[harvest] 配置、evidence 双件套；此前：v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
 
 ---
 
@@ -137,7 +137,7 @@ flowchart LR
 │   ├── profile.md
 │   └── preferences.md
 ├── domains/                          # [scope:domains/*] 领域层
-│   ├── work/…                        #   scope:domains/work（递归）
+│   ├── coding/…                      #   scope:domains/coding（递归）
 │   └── people/李四.md                #   scope:domains/people
 ├── apps/<app>/…                      # [scope:apps/*] 应用层
 ├── projects/<proj>/…                 # [scope:projects/*] 项目层
@@ -186,6 +186,7 @@ evidence: chat_feedback #1234 #1301 #1355   # 必填：非空，指向 Spoke 侧
 ```
 
 - 文件名：`inbox/YYYY-MM-DD-<source>-<shortid>.md`，`shortid` 为内容 hash 前 4–6 位，防重放。
+- 收割类提案 evidence 为双件套（FR-4.1/§5.7）：locator（回源指针，如 `im-x:<chat_id>#<msg_id>`）＋原文摘录片段——回放默认用片段，不依赖源在线。
 - 写入即 `git commit -m "inbox: propose from <source>"`（可配置关闭自动提交）。
 
 ### 2.4 journal 每日页格式
@@ -237,6 +238,15 @@ propose = false
 [stale]
 days = 90                            # 缺省；可按 scope/层分档覆盖（FR-6.5；示例值见 WORK_LIFE_SCENARIOS.md）
 
+[harvest]                            # 收割会话（FR-12，§5.7）
+model = "local"                      # 蒸馏模型：local 默认；外部 API 需显式配置（NFR-1）
+budget = { pulls = 50, tokens = 500000 }   # 三道缰绳之一：会话预算硬上限，超限即停并汇报
+
+[harvest.sources."im-x"]             # 收割源注册（FR-12.5）：生产者非读者，不授任何 scope
+type = "page"                        # 连接层三形态（FR-12.6）：page 连接器页 / script 收割脚本 / external 外部 Spoke
+first_batch = 30                     # bootstrap 首批上限（FR-4.3）
+proposals_per_day = 20
+
 [index]
 fts = true                           # v2
 vectors = false                      # 默认关闭（NFR-1）
@@ -275,7 +285,7 @@ erDiagram
     REVIEW_ACTION }o--|| PROPOSAL : "作用于（确认/否决）"
 
     SCOPE {
-        string scope_id PK "person|domains/work|apps/todo|projects/foo"
+        string scope_id PK "person|domains/coding|apps/todo|projects/foo"
         string kind "person|domain|app|project|journal|inbox|archive|index"
         string path "目录相对路径"
         string parent_id FK "可空，自引用"
@@ -437,7 +447,7 @@ flowchart TD
 ### 5.1 scope 解析（纯函数）
 
 ```
-输入：声明 scope 列表 D（如 ["domains/work", "projects/foo"]）＋ 仓库根
+输入：声明 scope 列表 D（如 ["domains/coding", "projects/foo"]）＋ 仓库根
 输出：可见目录集合 V
 
 V = { person/ }                                # 恒在
@@ -527,6 +537,54 @@ scope 改名协议：git mv + 同步 config/render/MCP 白名单/@import 引用�
 ```
 
 - 检查结果并入 `dex review` 第七段「结构整理」；违反硬规则（顶层白名单、路径语法）退出码 1，软预算/提示类仅输出建议。
+
+### 5.7 收割会话与连接器层（agent 驱动，FR-12）
+
+数据获取不内建 fetcher 适配器——获取动作由 agent 工具（Bash/Read）完成，获取知识以**连接器页**承载，dex 职责收缩为：propose 校验、预算与暂存、evidence 回放、review 呈现（P2 的彻底化：**采集也是适配器**）。
+
+**收割循环**：计划（按连接器页圈定范围）→ 按需拉取（来源 CLI / 本地文件）→ 蒸馏（三判据 + 隐私红线 + 分流树内置在技能）→ 合并（去重 / 证据叠加）→ `dex propose`（bootstrap ≤30，§5.5）→ review 人审（evidence 回放）。
+
+**三道缰绳**（agentic 收割的失控模式与对位，FR-12.3）：
+
+| 缰绳 | 失控模式 | 机制 |
+|---|---|---|
+| 预算硬上限 | 拉取螺旋（成本失控） | 每会话拉取次数 / token / 时长上限，超限即停并汇报（config `[harvest].budget`） |
+| 完成判据清单化 | 过早收工（覆盖不全） | 每来源须覆盖「决策 / 人物 / 偏好 / 模式」四象限才算完成 |
+| 数据不可信纪律 | 拉取内容携带注入指令 | 一切拉取内容当数据不当指令（与「数据非指令」同教义）；技能属可信通道（用户安装、git 版本化） |
+
+**实现分流与连接层三形态**（FR-12.4/12.6）：
+
+| 形态 | type | 机制 | 适用 |
+|---|---|---|---|
+| 连接器页（知识型） | `page` | markdown 六要素 + agent 执行 CLI/Bash | 一次性收割（判断密集、异构、人审在环） |
+| 收割脚本（脚本型） | `script` | 确定性脚本：fetch → NDJSON → `.cache/harvest/` 暂存（或管道给 `dex propose`） | 周期 digest（便宜、稳定、可 cron） |
+| 外部 Spoke（应用型） | `external` | 外部程序自持逻辑与状态，直接调 `dex propose` / MCP | 常驻与复杂逻辑（choose-you、IM bot；US-08/FR-10.3 另行注册） |
+
+统一注册于 `[harvest.sources.<id>]`；三种形态写入一律收敛于 `dex propose` 单一门禁——**扩展点的稳定性靠协议不靠 ABI**（进程边界即插件边界）。
+
+**连接器页模板（六要素，`skills/connectors/<source>.md`）**：
+
+```markdown
+# connector: <source>
+1. 数据清单      资源类型 × CLI 命令模板 × 输出字段说明（含分页/速率注意）
+2. locator 格式  如 im-x:<chat_id>#<msg_id> / notion:<page_id>#<block_id>
+3. 摘录抓取      evidence 双件套的原文片段怎么截
+4. 高发区提示    该源里「关于我的结论」长在哪（IM 私聊→人物页；云文档→决策/偏好）
+5. 隐私红线特化  IM：他人原话不收；云文档：团队内容分流去 repo（§3.7 判据）
+6. 烟测命令      验证 CLI 活着的最小命令
+```
+
+**新源接入五步清单**（有 CLI 的源约 30–60 分钟；收割源是生产者非读者，无需 scope 白名单，FR-12.5）：
+
+1. **CLI 就绪**：安装登录（认证由 CLI 自管）→ 烟测 → 确认 JSON 输出与分页方式；
+2. **数据侦察**：枚举可拉类型 → 试拉记录命令/输出/量级 → **确认 locator 可定位性**（无稳定 ID 用「对话名＋时间戳」替代并写明）→ 圈定冷启动范围（不拉全量）；
+3. **写连接器页**（六要素模板；个人化信息收割时现场发现、不预写）；
+4. **注册 source**：config `[harvest.sources.<id>]` 标识 + 限流（bootstrap 首批 30 / 常规 20/日）；
+5. **首轮收割 + 人审反向验证**：review 的 evidence 回放是否点得开、locator 是否指对位置（最常暴露 locator 设计缺陷，改连接器页即闭环）；收尾在 WORK_LIFE_SCENARIOS 来源地图加一行。
+
+无 CLI 的源退化路径：第 1–2 步换成「手动导出文件 + 连接器页描述文件格式与存放路径」，其余不变——获取动作从「agent 跑命令」变为「人定期导出」。
+
+**evidence 双件套**（FR-4.1）：locator（回源指针）＋ 蒸馏时抓取的原文摘录片段——回放默认用片段（快、不依赖源在线、源清理后不悬空），需要深查时按 locator 调 CLI 再拉。
 
 ---
 
@@ -770,7 +828,7 @@ flowchart TD
 | `dex review` | `dex review [--week N] [--format json]` | 七段回顾清单（含 lint 结果）+ 建议命令 + inbox 清空警告 | 0 |
 | `dex lint` | `dex lint [--scope …] [--format text\|json]` | 结构体检问题清单（frontmatter 残留/inbox 命名与字段/archive 镜像路径/注释格式/可疑密钥） | 0 无问题/1 发现问题/2 参数错 |
 | `dex reindex` | `dex reindex [--force]` | 重建统计 | 0/7 缓存写失败 |
-| `dex harvest` | `dex harvest --from claude\|cursor\|files <paths> [--limit 30]` | 扫描既有 CLAUDE.md / auto memory / 会话转录 → 蒸馏候选 → bootstrap 模式提案入 inbox（US-13） | 0/2 参数错/5 超出首批上限 |
+| `dex harvest` | `dex harvest --from <connector> [--limit 30] [--dry-run]` | 收割会话便利封装：加载 `skills/connectors/<source>` 连接器页、执行三道缰绳预算、蒸馏候选走 bootstrap 模式提案（获取动作由 agent 工具完成，FR-12/US-13） | 0/2 参数错/5 超出首批上限/9 密钥命中 |
 | `dex interview` | `dex interview [--round core\|follow-up]` | 渐进式面试 → person/ 草稿提案（首轮 5 核心问） | 0 |
 | `dex init` | `dex init [--path ~/dex]` | 目录骨架 + .gitignore | 0/8 已存在 |
 | `dex mcp` | `dex mcp` | stdio JSON-RPC 循环 | — |
@@ -862,6 +920,7 @@ dex/
 │   └── dex-mcp/             # MCP stdio 前端（rust-sdk）：§8.2 三工具
 ├── dex.toml.example         # §2.5 示例配置
 ├── skills/                  # 配套技能单一源（FR-11.1）：dex-bootstrap/propose/review，非二进制组件
+├── skills/connectors/       # 连接器页（FR-12.2）：每来源一页获取知识（六要素），随技能同渠道分发
 └── Cargo.toml               # workspace
 ```
 
@@ -919,7 +978,7 @@ gantt
 | 层 | 内容 |
 |---|---|
 | 单元（dex-core） | scope 解析边界（未知/穿越/递归）；合并比较器全序性质；预算截断含 omitted 计数；提案校验 1–7 每条失败路径；frontmatter 生成/剥离往返 |
-| 集成（临时 git 仓库 fixture） | propose→review→git mv 归位全链路；stale 对「纯 rename 提交不计实质变更」的判定；render 产物金样本（快照测试）；harvest 首批 30 截断与暂存区分批；interview/harvest 草稿逐条带 src 溯源；lint 结构不变量（顶层白名单、目录软预算、inbox 滞留 >7 天、悬空 scope 引用） |
+| 集成（临时 git 仓库 fixture） | propose→review→git mv 归位全链路；stale 对「纯 rename 提交不计实质变更」的判定；render 产物金样本（快照测试）；harvest 首批 30 截断与暂存区分批；interview/harvest 草稿逐条带 src 溯源；lint 结构不变量（顶层白名单、目录软预算、inbox 滞留 >7 天、悬空 scope 引用）；连接器页烟测命令抽检与预算超限即停 |
 | 通道一致性 | 同一操作经 CLI 与 MCP 断言等价输出（换通道不换语义） |
 | 安全用例 | 越权 scope、`..` 路径、symlink 逃逸、无证据提案、限流触发、幂等重放、密钥守卫命中拒绝与 advisory 模式、superseded-by 条目不注入、render 产物含「数据非指令」声明 |
 | 混沌 | 删除/截断 `.cache/index.sqlite3` → search 降级成功且自动重建；git shallow 环境走全量索引路径 |
@@ -939,3 +998,5 @@ gantt
 | 单人单仓库 | 不支持家庭/团队共享 | 明确非目标（需求 §1.3）；如未来需要，scope 模型可扩展 `domains/shared-x`，不动核心 |
 | 编码 agent 自带记忆（Claude Code auto memory 等）视为 Spoke 过程数据 | 不自动入 Hub，需人工收割（US-12） | 消费方接入文档写明「禁用或并存」二选一；收割走 propose 标准协议，证据指针即其 memory 文件 |
 | 冷启动零手写（agent 起草、人裁决） | 草稿有幻觉风险，人审成本前移 | 逐条标源纪律（FR-2.7）+ 首批 ≤30 分批（FR-4.3）；手写路径保留为可选最高主权 |
+| 数据获取走连接器页 + agent 工具（CLI-first），不内建 fetcher | 质量与成本控制依赖技能纪律而非代码；CLI 缺失源退化为手动导出 | 三道缰绳兜底（§5.7）；连接器页是 markdown，维护成本一行级；认证由 CLI 自管，dex 零 token 托管 |
+| 连接层三形态（page/script/external），不引入 in-process 插件机制 | 无进程内插件的性能与深度集成；无插件市场类分发 | `dex propose`/MCP 即插件接口（协议即扩展点，进程边界即插件边界）；一切写入收敛单一门禁；受控 wasm 留待 v3 后出现明确需求再评估 |
