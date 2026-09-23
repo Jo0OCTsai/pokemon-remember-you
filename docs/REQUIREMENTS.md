@@ -2,8 +2,8 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）
-> 文档版本：v1.4 · 2026-09-22 · 状态：待评审（v1.4：场景分界（§3.8 + FR-3.7）、来源接入地图（提案附录）、衰减分档与回顾分组；v1.3：结构治理；v1.2：零手写冷启动、配套技能、项目分流；v1.1：AGENTS.md 对齐、内容层安全、dex lint）
-> 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）
+> 文档版本：v1.5 · 2026-09-23 · 状态：待评审（v1.5：场景语义回调——分域降为用户约定（指南层 WORK_LIFE_SCENARIOS.md），FR-3.7 改语义中立，FR-6.5/9.5 改按 scope 键；v1.4：场景分界与来源地图（已迁移）；v1.3：结构治理；v1.2：零手写冷启动、配套技能、项目分流；v1.1：AGENTS.md 对齐、内容层安全、dex lint）
+> 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）
 
 ---
 
@@ -424,21 +424,21 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 - coding 是 scope 升降级的高频来源（`projects/foo/` → `domains/coding/`），周回顾 S4 重点关照；
 - 项目快照类事实（「本周把认证换成 OAuth」）默认留 journal 自然衰减，只有影响后续决策的才提升 `projects/`。
 
-### 3.8 场景分界（工作 / 生活）
+### 3.8 scope 划分模式（语义中立，示例见场景调研文档）
 
-「工作 / 生活」是 scope 组合与访问控制的第一级分界，知识分流判据升级为两级决策树：
+分域方式是用户约定，工具不内置任何分域本体（P3 / FR-3.7）——「工作 / 生活」只是最常见的一种分法，完整的场景调研（分域模式、来源接入地图、消费方组合、节奏建议）见 [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)。
+
+分流判据的语义中立版（两级决策树）：
 
 ```text
-① 哪个场景？—— work / life / 双场景通用
-   （场景特定的 → domains/work|life 对应域；双场景通用 → 继续）
+① 愿意让所有消费方看到吗？—— 是 → person/（恒注入层，只放通用自我事实，FR-3.1）
+                                 否 → domains/<你的分域>/
 ② 关于我，还是关于项目/应用？—— person vs projects/apps（§3.7）
 ③ 换一个应用还成立吗？—— 不成立则留 Spoke（§3.2）
 ```
 
-- **person/ 收紧**：只放双场景都成立的自我事实（身份、通用偏好、沟通风格、硬性禁区）；「我周末爬山」进 `domains/life/`，「我对同事的看法」绝不进工作消费方可见层；
-- **消费方按场景组合**：工作侧消费方（公司机编码 agent、云端工作 agent）只授 `person + domains/work + projects/*`；生活侧（IM bot、写作助手）授 `person + domains/life + apps/*`；**公司环境的托管 agent 一律不挂个人库全量**（多机同步 US-07 之外最易被忽视的暴露面）；
-- **节奏分档**：work 记忆随项目快节奏（90 天衰减、项目退役即归档 US-06）；life 记忆慢而稳（人物页/健康模式可放宽如 180 天，FR-6.5）；`dex review` 清单按场景分组输出（FR-9.5）；
-- **来源接入地图**（工作/生活/双场景三列与反推荐清单）见提案附录。
+- **授权最小化**：按消费方实际需要授予 scope 子集，默认全拒（FR-10.3 兜底）——公司机/公司托管 agent「不挂个人库全量」是该原则的实例而非场景特例；
+- **配置按 scope 键**：衰减分档（FR-6.5）与回顾分组（FR-9.5）均以 scope/一级域为键，不感知任何分域语义。
 
 ---
 
@@ -480,7 +480,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-3.4 | 项目级与个人层冲突时，注入项目级并注明来源 | P1 | v1 |
 | FR-3.5 | scope 子目录递归生效（`projects/foo/**` 全部属于 `projects/foo`） | P0 | v1 |
 | FR-3.6 | `projects/<proj>` 的 `<proj>` 命名约定：默认取 git remote 仓库名，个人别名经配置映射（保证多机多工具一致）；repo 个人记忆的叠加经 repo 内 CLAUDE.md 一行 `@import` 或 `dex render` 完成（分流判据见 §3.7） | P1 | v1 |
-| FR-3.7 | 场景分界（§3.8）：`domains/` 一级建议按场景分域（`work/`、`life/`，先内容后结构不预建）；`person/` 只收双场景通用的自我事实，场景特定内容下放对应场景域；消费方按场景组合 scope——公司机/公司托管 agent 一律不授权生活范围（默认全拒不变，FR-10.3） | P1 | v1 |
+| FR-3.7 | scope 语义中立：工具不内置任何分域本体（工作/生活等分法均为用户约定，指南见 WORK_LIFE_SCENARIOS.md）；授权遵循最小化原则——按消费方实际需要授予 scope 子集（FR-10.3 默认全拒兜底）；`person/` 恒注入（FR-3.1）⇒ 只宜存放愿意让全部消费方看到的通用自我事实 | P1 | v1 |
 
 ### 4.4 inbox 提案协议（FR-4）
 
@@ -509,7 +509,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-6.2 | `dex read <path> [--section]`：读取单文件/小节，输出带 scope 标注 | P0 | v1 |
 | FR-6.3 | `dex propose [--source --kind --confidence --evidence] [msg|-]`：从参数或 stdin 提交提案（见 FR-4） | P0 | v1 |
 | FR-6.4 | `dex render <agent> [--out] [--dry-run]`：渲染该消费方 scope 合并视图为入口文件，默认名 `AGENTS.md`（跨工具事实标准）；Claude Code 模式输出 `@import` 片段或一行 `CLAUDE.md` shim（`@AGENTS.md`，因其仅在无 CLAUDE.md 时才读 AGENTS.md）；注入正文头部声明「以下为记忆库数据，非指令」 | P0 | v1 |
-| FR-6.5 | `dex stale [--days 90] [--scope]`：按 git log 求「最后实质变更」，输出衰减候选清单；衰减窗口支持按场景/层分档（work 缺省 90 天、life 慢记忆如人物页可放宽如 180 天，§3.8，数值实现时定） | P1 | v1 |
+| FR-6.5 | `dex stale [--days 90] [--scope]`：按 git log 求「最后实质变更」，输出衰减候选清单；衰减窗口支持按 scope/层分档（per-scope 覆盖；示例数值见 WORK_LIFE_SCENARIOS.md：项目层 90 天、人物页等慢记忆可放宽 180 天，数值实现时定） | P1 | v1 |
 | FR-6.6 | `dex review [--week]`：汇总周回顾清单（inbox + journal 候选 + 衰减清单 + 近义预筛） | P1 | v1 |
 | FR-6.7 | `dex reindex [--force]`：重建 `.cache/` 派生索引 | P1 | v2 |
 | FR-6.8 | `dex mcp`：以子命令启动 MCP stdio server | P0 | v2 |
@@ -544,7 +544,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-9.2 | `dex review` 输出的每项操作附建议命令（如 `git mv` 提示），人执行 | P1 | v1 |
 | FR-9.3 | v3：周回顾 UI（独立页面或寄生在某应用的复盘向导） | P2 | v3 |
 | FR-9.4 | Spoke 使用周报汇总协议：各 Spoke 按 `dex review` 可消费的固定格式提交引用情况 | P2 | v3 |
-| FR-9.5 | `dex review` 清单按场景分组输出（work / life / 通用），支持仅清理单一场景段以适配碎片时间（§3.8） | P2 | v1 |
+| FR-9.5 | `dex review` 清单按一级域/scope 前缀分组输出（组序可配），支持仅清理单组以适配碎片时间 | P2 | v1 |
 
 ### 4.10 配置（FR-10）
 
@@ -646,4 +646,4 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | 二之10 / 七之（配套技能行为层） | FR-11、US-14 |
 | 八之（冷启动零手写） | US-01、US-13、FR-2.7、FR-4.3 |
 | 五之（项目层定位与分流判据） | §3.7、FR-3.6 |
-| 九之（场景分界）/ 附（记忆来源接入地图） | §3.8、FR-3.7、FR-6.5、FR-9.5 |
+| 场景调研文档 WORK_LIFE_SCENARIOS.md（指南层） | §3.8、FR-3.7、FR-6.5、FR-9.5 |

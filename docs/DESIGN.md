@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）· [REQUIREMENTS.md](./REQUIREMENTS.md)（需求文档）
-> 文档版本：v1.4 · 2026-09-22 · 状态：待评审（v1.4：场景分界——消费方按场景组合示例、衰减分档；v1.3：结构治理（§5.6 lint 检查集）；v1.2：harvest/interview、skills；v1.1：AGENTS.md、密钥守卫、superseded-by、dex lint）
+> 文档版本：v1.5 · 2026-09-23 · 状态：待评审（v1.5：场景语义回调——注释去语义化、分档/示例改指 WORK_LIFE_SCENARIOS.md；v1.4：场景化示例；v1.3：结构治理（§5.6）；v1.2：harvest/interview、skills；v1.1：AGENTS.md、密钥守卫、superseded-by、dex lint）
 
 ---
 
@@ -209,7 +209,7 @@ root = "~/dex"                       # 仓库根；环境变量 DEX_ROOT 优先
 entries = 10
 chars  = 2000
 
-[render.work-laptop-zcode]           # 工作侧消费方：公司机编码 agent（只授 work 范围，FR-3.7）
+[render.work-laptop-zcode]           # 示例分法的工作侧消费方：最小授权 scope 子集（FR-3.7，示例见 WORK_LIFE_SCENARIOS.md）
 scopes = ["person", "domains/work", "projects/current"]
 out = ".zcode/AGENTS.md"             # 相对其工作区（跨工具事实标准命名）
 format = "merged"                    # merged（合并视图正文）/ import（@import 片段）/ rules（.claude/rules/ 路径作用域适配，P2，FR-6.12）
@@ -225,17 +225,17 @@ scopes = ["person", "apps/todo"]
 propose = true
 rate_limit = { proposals_per_day = 20 }
 
-[mcp.clients."tg-bot"]               # 生活侧消费方：IM bot（只授 life 范围，FR-3.7/US-08）
+[mcp.clients."tg-bot"]               # 示例分法的生活侧消费方：IM bot（FR-3.7/US-08）
 scopes = ["person", "domains/life", "apps/todo"]
 propose = true
 rate_limit = { proposals_per_day = 20 }
 
-[mcp.clients."cloud-writer"]         # 远程/第三方（US-08）：单场景子集
+[mcp.clients."cloud-writer"]         # 远程/第三方（US-08）：最小授权子集
 scopes = ["person", "domains/work"]
 propose = false
 
 [stale]
-days = 90                            # 缺省；可按场景/层分档覆盖（FR-6.5：life 慢记忆如人物页可放宽至 180）
+days = 90                            # 缺省；可按 scope/层分档覆盖（FR-6.5；示例值见 WORK_LIFE_SCENARIOS.md）
 
 [index]
 fts = true                           # v2
@@ -487,7 +487,7 @@ dex search q [--scope D]：
 输出：文件、条目、最后实质变更、最近引用、建议（archive/rewrite/keep）
 ```
 
-- 分档（FR-6.5/§3.8）：`days` 可按场景/层覆盖——work 缺省 90 天；life 慢记忆（人物页、健康模式）可放宽至 180 天；具体数值 config `[stale]` 定。
+- 分档（FR-6.5）：`days` 可按 scope/层覆盖（示例：项目层 90 天、人物页等慢记忆 180 天，见 WORK_LIFE_SCENARIOS.md）；具体数值 config `[stale]` 定。
 
 ### 5.5 提案校验（守卫，CLI 与 MCP 共用）
 

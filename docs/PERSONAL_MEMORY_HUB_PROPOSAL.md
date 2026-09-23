@@ -94,12 +94,12 @@ flowchart LR
 
 ```text
 ~/dex/                             # 「图鉴」——git 私仓（路径自定，示例 ~/dex）；同一棵树即 Obsidian vault
-├── person/                         # 个人层：全应用默认可见——只放双场景（工作/生活）都成立的自我事实
+├── person/                         # 个人层：全应用默认可见——只放愿意让全部消费方看到的通用自我事实
 │   ├── profile.md                  #   我是谁、做什么、机器不可推断的长期事实
 │   └── preferences.md              #   稳定偏好（写作风格、沟通习惯、常用格式）
-├── domains/                        # 领域层：一级按场景分界（work / life），再按主题分域
-│   ├── work/                       #   工作域：技术栈、团队、会议结论、职业偏好
-│   ├── life/                       #   生活域：健康、家庭、爱好（先内容后结构，不预建）
+├── domains/                        # 领域层：按主题分域，分法是用户约定（无内置语义）
+│   ├── work/                       #   示例：工作域——技术栈、团队、会议结论（示例分法见场景调研文档）
+│   ├── life/                       #   示例：生活域——健康、家庭、爱好（先内容后结构，不预建）
 │   └── people/李四.md              #   人物页：关系、背景、沟通偏好（第一人称，只存「我与某人的关系」）
 ├── apps/<app>/                     # 应用层：某应用专属的记忆（如待办判定模式）
 ├── projects/<project>/             # 项目层：个人的项目记忆（我的视角/例外/踩坑；团队指令归 repo 的 CLAUDE.md，dex 只收编散落的个人性内容）
@@ -246,7 +246,7 @@ flowchart LR
 - **多机同步 = git**：私有仓库（自托管或平台私库）。Hub 写入低频（周回顾为主）、条目原子、纯文本——merge 友好；`.cache/` 每机重建。冲突罕见且即内容问题，人解决。
 - **git 历史的双刃**：永久留痕既是审计能力也是脱敏负担——敏感内容（凭证、他人隐私）不入 Hub；确有需要时整仓加密工具（如 git-crypt）。
 - **信任分级**：所有 agent 一律 propose-only；只有「人 + 各 Spoke 的固化管道（其内部另有确认门）」能把结论送进 scope。远程/第三方 agent 只能拿到声明的 scope 子集。
-- **场景分界（工作/生活）**：`domains/` 一级按场景分域（work / life，先内容后结构）；消费方按场景组合 scope——公司机上的编码 agent 与公司托管 agent 一律不授权生活范围、不挂个人库全量；生活侧 agent 不需要工作细节（见需求 §3.8）。
+- **分域约定与最小授权**：分域方式（如工作/生活）是用户级约定，工具不内置分域语义（P3，需求 FR-3.7）；授权遵循最小化——按消费方实际需要授予 scope 子集、默认全拒；示例分法、来源接入地图与组合建议见 [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)。
 - **完全本地**：无云依赖、无遥测；Obsidian、编辑器、grep 都是合法客户端。
 
 ## 十、分期落地
@@ -285,56 +285,9 @@ flowchart LR
 - 记忆投毒与防御实践（MINJA / AgentPoison）：<https://mem0.ai/blog/ai-memory-security-best-practices>
 - Spoke 侧固化/治理模式（提案归并、确认门、体检）参考姊妹篇：本仓 `docs/proposals/MEMORY_KNOWLEDGE_PROPOSAL.md`
 
-## 附：记忆来源接入地图（按场景）
+## 附：使用场景调研（工作 / 生活）
 
-筛选三判据：**结论密度**（单位数据里「活过三个月的关于我的结论」占比）／**过程可留源侧**／**噪音隐私比**。接入形态三种：**收割**（一次性批量蒸馏）、**digest**（周期性模式蒸馏）、**常驻**（双向集成）。优先级：★★★ 高 / ★★ 中 / ★ 低 / ☆ 谨慎。只推荐常驻的是每天用的（编码 agent、IM bot、待办），其余来源冷启动价值大于持续同步价值——避免把 Spoke 生态做成集成地狱。
-
-### 工作（domains/work · projects）
-
-| 来源 | 贡献 | 落点 | 形态 | 优先级 |
-|---|---|---|---|---|
-| 编码 agent / IDE（Claude Code、ZCode、Cursor…） | 项目个人记忆、跨项目开发模式 | `projects/`、`domains/work` | 常驻（已接） | ★★★ |
-| 代码仓库（CLAUDE.md / ADR / docs） | 个人性结论蒸馏（分流判据过滤，团队内容留 repo） | `projects/` | 收割 + 增量 | ★★★ |
-| 会议记录/转录（飞书妙记、Granola） | 决策、人物观点、工作约定 | `domains/work`、`domains/people` | digest（周/月） | ★★★ |
-| 工作日历 | 节奏与周期模式（「周报多在周四下午」的原生来源） | `person/` 或 `domains/work` | digest（月度模式） | ★★ |
-| 工作 IM（Slack/企微/飞书） | 群组性质、协作约定 | `domains/work`、`apps/` | 常驻（choose-you 同构） | ★★ |
-| 工作文档（Confluence / Notion 工作区） | 已定结论的蒸馏 | `domains/work` | 收割 + digest | ★★ |
-| 待办/项目管理（Jira、Linear、choose-you） | 任务模式、优先级习惯 | `apps/` | 常驻（已接） | ★★ |
-| 职业学习（技术阅读、课程、论文） | 技术栈演进、观点 | `domains/work` | digest | ★★ |
-| 简历/绩效自评 | 职业事实与成就（写材料时 dex 反哺） | `person/profile` | 收割 | ★ |
-
-### 生活（domains/life · domains/people）
-
-| 来源 | 贡献 | 落点 | 形态 | 优先级 |
-|---|---|---|---|---|
-| 个人 IM（微信 / Telegram 私聊） | 人物关系、个人事实、约定 | `domains/people`、`domains/life` | 增量为主（历史收割仅 Telegram 可行） | ★★★ |
-| 阅读（微信读书 / Kindle / Readwise） | 观点与偏好信号（不搬高亮原文） | `person/preferences`、`domains/life` | 收割 + digest | ★★★ |
-| 生活日历 | 纪念日、家庭约定、生活节奏 | `domains/life`、`domains/people` | digest | ★★ |
-| 家人朋友（联系人、生日、喜好） | 人物页供给 | `domains/people` | 收割 + 增量 | ★★ |
-| 健康/睡眠（Apple Health、手表） | 生理与作息模式（模式不数据） | `person/` 或 `domains/life` | digest（月/季） | ★★ |
-| 媒体消费（豆瓣 / Goodreads / Spotify） | taste profile | `person/profile` | digest（季度） | ★ |
-| 生活待办/习惯打卡 | 生活模式 | `apps/` | 常驻 | ★ |
-| 旅行（计划与回顾） | 偏好与经历 | `domains/life` | 手动增量 | ★ |
-| 购物/订阅 | 消费习惯结论（明细不收） | `domains/life` | digest | ☆ |
-
-### 双场景通用（person / 全库）
-
-| 来源 | 贡献 | 落点 | 形态 | 优先级 |
-|---|---|---|---|---|
-| 存量笔记（Obsidian / Apple Notes） | 冷启动第一矿 | 各 scope | 一次性收割 | ★★★ |
-| 全局工具配置（`~/.claude/CLAUDE.md`、`~/.zcode/AGENTS.md`） | 已成型的个人原则与偏好 | `person/`、`domains/work` | 一次性收割 | ★★★ |
-| 个人写作（博客、周记、日记） | 写作即记忆——最真实的自我表达 | 各 scope | 收割 + 手动增量 | ★★★ |
-| 浏览器（书签、剪藏、save-later） | 反复保存的规律（不收链接本身） | 按内容定 | digest | ★ |
-
-### 反推荐（写明防漂移——「大一统诱惑」在来源维度的防线）
-
-- **凭证/密码类**：任何形态不入库（NFR-1 + 密钥守卫）；
-- **财务明细、位置轨迹**：风险收益不成比例，至多「我订阅了 X」级结论；
-- **原始日志全量**（浏览历史、shell history、邮件原文）：违反「过程留源侧」；
-- **公司机密与源码细节**：repo 自己是事实源；
-- **他人原话**：任何来源（IM/会议）只蒸馏第一人称结论，人物页只存「我与某人的关系」。
-
-一句话收束：工作侧富矿是「会话与文档」（编码/会议/repo），生活侧富矿是「关系与体验」（IM/阅读/人物），双场景通用是「你自己写下的」（笔记/配置/写作）——对应三种接入形态与 scope 三层一一对齐。
+「工作 / 生活」是最常见的一种用户级分域用法，属使用指南而非工具语义（P3：工具不内置分域本体，需求 FR-3.7）。分域模式、来源接入地图（工作/生活/双场景三列与反推荐清单）、消费方组合示例、衰减节奏建议，统一见 [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)。
 
 ## 附：v0 冷启动引导词（兜底模板）
 
