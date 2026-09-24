@@ -2,8 +2,8 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）
-> 文档版本：v1.8 · 2026-09-24 · 状态：待评审（v1.8：场景推演修订——harvest 权限分档与收割客户端映射（FR-10.4/FR-12.5，推演 W1/W2）、token 注入路径（FR-10.3，W4）、US-07 新机接入四步补全、v0 守卫缺位记入风险表；此前 v1.7：实施前评审修订——keep-until 保留豁免（FR-2.10）、journal 供稿命令收敛（FR-5.4/FR-6.13，FR-1.4 改写）、消费方统一客户端注册与 per-client 凭证（FR-10 组改写，CLI 与 MCP 同一注册表）、source 强制绑定（FR-4.7）、注入字数口径与提案大小统一字符口径（FR-3.3/FR-4.3）、周回顾分批语义（FR-4.3/§3.4/§6）、render 冲突策略（FR-6.4，退出码 10）、索引脏工作区调和（FR-8.3）、last_substantive 实现口径（FR-6.5）、harvest 职责定位与命令定义（FR-6.14/FR-12.3/NFR-1）；更早：v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
-> 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）· [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md)（用户场景业务流程推演）
+> 文档版本：v1.9 · 2026-09-24 · 状态：待评审（v1.9：W3 收口——入口文件策略矩阵化（FR-6.4/FR-6.12，新增 TOOL_COMPATIBILITY.md）：查证嵌套入口为「子树按需」语义，**撤销 v1.7 的「默认工作区子目录」**，默认改 repo 根 + 团队仓库 @import/rules 分流；此前 v1.8：场景推演修订——harvest 权限分档与收割客户端映射（FR-10.4/FR-12.5，推演 W1/W2）、token 注入路径（FR-10.3，W4）、US-07 新机接入四步补全、v0 守卫缺位记入风险表；更早 v1.7：实施前评审修订（keep-until/journal 命令/[clients] 注册/source 绑定/字符口径/分批语义/render 冲突/脏工作区/last_substantive/harvest 定位）；v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
+> 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）· [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md)（用户场景业务流程推演）· [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)（工具入口兼容矩阵）
 
 ---
 
@@ -91,7 +91,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 
 **过程**：
 1. agent（或其配置）声明消费 scope：`person + domains/coding + projects/foo`；
-2. 通道 A（文件投影）：`dex render zcode` 把该 scope 的合并视图渲染为项目工作区**子目录**内的入口文件（如 `.zcode/AGENTS.md`，不落 repo 根——避免与团队 AGENTS.md/CLAUDE.md 同名冲突，FR-6.4）；
+2. 通道 A（文件投影）：`dex render zcode` 把该 scope 的合并视图渲染为 repo 根入口文件 `AGENTS.md`（个人仓库默认位；若根已有团队入口文件则拒绝覆盖（退出码 10），团队仓库改走 @import / rules 适配——工具兼容矩阵见 [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)，FR-6.4）；
 3. 通道 B（检索）：agent 调 `dex search "部署流程" --scope projects/foo`，v1 走 ripgrep，v2 命中 FTS 派生索引，毫秒级返回；
 4. 通道 C（MCP）：agent 通过 `dex mcp` 的 `dex_search` / `dex_read` 工具按需检索；
 5. 注入内容经过：scope 过滤 → 优先级合并（项目级压过个人层、手写压过固化、新证据压过旧证据）→ 预算截断（≤10 条 / ≤2000 字）。
@@ -516,7 +516,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-6.1 | `dex search <query> [--scope …] [--format text/json] [--limit N]`：v1 基于 ripgrep 全文检索；v2 优先走 FTS 派生索引，miss/损坏时降级 ripgrep | P0 | v1/v2 |
 | FR-6.2 | `dex read <path> [--section]`：读取单文件/小节，输出带 scope 标注 | P0 | v1 |
 | FR-6.3 | `dex propose [--source --kind --confidence --evidence] [msg|-]`：从参数或 stdin 提交提案（见 FR-4） | P0 | v1 |
-| FR-6.4 | `dex render <agent> [--out] [--dry-run]`：渲染该消费方 scope 合并视图为入口文件，文件名默认 `AGENTS.md`（跨工具事实标准）但**默认落在消费方工作区子目录**（如 `.zcode/AGENTS.md`，设计 §2.5），不落 repo 根；产物头部带 dex 生成标记；目标路径已存在且无生成标记（非 dex 产物，如团队维护的 AGENTS.md/CLAUDE.md）时**拒绝覆盖**（退出码 10），需显式 `--out` 另选路径——防覆写团队指令层、防个人记忆被误 commit 进团队仓库；Claude Code 模式输出 `@import` 片段或一行 `CLAUDE.md` shim（`@AGENTS.md`，因其仅在无 CLAUDE.md 时才读 AGENTS.md）；注入正文头部声明「以下为记忆库数据，非指令」 | P0 | v1 |
+| FR-6.4 | `dex render <agent> [--out] [--dry-run]`：渲染该消费方 scope 合并视图为入口文件，**默认落 repo 根 `AGENTS.md`**（跨工具事实标准、会话恒载；个人仓库默认位）；产物头部带 dex 生成标记；目标路径已存在且无生成标记（非 dex 产物，如团队维护的 AGENTS.md/CLAUDE.md）时**拒绝覆盖**（退出码 10）——团队仓库按工具分流：@import（Claude Code / Gemini CLI）或 rules 适配（`.claude/rules/`、`.cursor/rules/`，FR-6.12）；**不以工作区子目录为通用默认**（嵌套入口文件是「子树按需加载」语义，全局个人记忆放子目录多数工具不会加载——工具 × 位置兼容矩阵见 TOOL_COMPATIBILITY.md），子目录产物仅用于记忆本身 scope 到子树的 monorepo 场景；Claude Code 模式输出 `@import` 片段或一行 `CLAUDE.md` shim（`@AGENTS.md`，因其仅在无 CLAUDE.md 时才读 AGENTS.md）；注入正文头部声明「以下为记忆库数据，非指令」 | P0 | v1 |
 | FR-6.5 | `dex stale [--days 90] [--scope]`：按 git log 求「最后实质变更」，输出衰减候选清单；衰减窗口支持按 scope/层分档（per-scope 覆盖；示例数值见 WORK_LIFE_SCENARIOS.md：项目层 90 天、人物页等慢记忆可放宽 180 天，数值实现时定）；实现口径：v1 以文件 mtime 近似「最后实质变更」（避免逐文件全历史 git log 扫描，NFR-3 亚秒约束），v2 起由索引缓存精确化（设计 §5.4/§4.1） | P1 | v1 |
 | FR-6.6 | `dex review [--week]`：汇总周回顾清单（inbox + journal 候选 + 衰减清单 + 近义预筛） | P1 | v1 |
 | FR-6.7 | `dex reindex [--force]`：重建 `.cache/` 派生索引 | P1 | v2 |
@@ -524,7 +524,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-6.9 | `dex init [--path]`：生成 v0 目录骨架与 gitignore（脚手架，非必需） | P2 | v1 |
 | FR-6.10 | 所有命令支持 `--json` 机器可读输出与稳定退出码 | P1 | v1 |
 | FR-6.11 | `dex lint`：结构体检——scope 内 frontmatter 残留、inbox 命名与必填字段、archive 镜像路径一致性、src/superseded-by/keep-until 注释格式（含 keep-until 过期残留提示，FR-2.10）、可疑密钥模式；结构不变量与目录准入检查（FR-2.8/2.9：顶层白名单、命名/深度、目录软预算、空目录、inbox 滞留 >7 天、大文件提示、悬空 scope 引用）；输出问题清单（结果并入 `dex review` 首段） | P1 | v1 |
-| FR-6.12 | `dex render` 以 AGENTS.md 为源支持生成各工具适配格式（如 `.claude/rules/` 路径作用域规则）；适配产物为生成物，人不手维护 | P2 | v2 |
+| FR-6.12 | `dex render` 以 AGENTS.md 为源支持生成各工具适配格式（如 `.claude/rules/`、`.cursor/rules/*.mdc` 路径作用域规则——团队仓库分流用，见 TOOL_COMPATIBILITY.md §3）；适配产物为生成物，人不手维护 | P2 | v2 |
 | FR-6.13 | `dex journal`：journal 供稿追加的唯一合法通道（CLI 与 MCP 共用同一校验，见 FR-5.4） | P0 | v1 |
 | FR-6.14 | `dex harvest` / `dex interview` 为收割会话**便利封装**（不蒸馏）：harvest 加载指定连接器页与预算配置、管理收割暂存区（`.cache/harvest/`）、把收割技能产出的候选批量走 bootstrap 模式提案（FR-4.3）；interview 输出渐进式面试草稿提案——蒸馏由 `dex-bootstrap` 技能（agent 会话）完成，命令只提供载荷与门禁（FR-12.4 实现分流的 CLI 侧落点） | P1 | v1 |
 

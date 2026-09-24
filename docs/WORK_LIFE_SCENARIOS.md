@@ -132,7 +132,7 @@ apps/ projects/      ← 结构层固定：projects 多偏工作侧；apps 按�
 ```toml
 [clients."work-laptop-zcode"]        # 工作场合：公司机编码 agent（统一客户端注册，FR-10.1）
 scopes = ["person", "domains/work", "projects/current"]
-render = { out = ".zcode/AGENTS.md" }
+render = { out = "AGENTS.md" }       # 默认 repo 根（个人仓库）；团队仓库走 @import/rules 分流（TOOL_COMPATIBILITY.md）
 
 [clients."tg-bot"]                   # 生活场合：IM bot
 scopes = ["person", "domains/life", "apps/todo"]

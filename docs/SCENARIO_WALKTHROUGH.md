@@ -1,7 +1,7 @@
 # 用户场景业务流程推演（Scenario Walkthrough）
 
 > 项目：pokemon-remember-you（就记得是你）
-> 文档版本：v1.1 · 2026-09-24 · 状态：待评审（v1.1：W1/W2/W4 已随需求/设计 v1.8 修复，§1.3 流程更新为最终口径；W3 留待接入文档）
+> 文档版本：v1.2 · 2026-09-24 · 状态：待评审（v1.2：W3 关闭——工具兼容矩阵产出（TOOL_COMPATIBILITY.md），render 默认位置修正为 repo 根 + 团队仓库分流；此前 v1.1：W1/W2/W4 已随需求/设计 v1.8 修复，§1.3 流程更新为最终口径）
 > 上游文档：[REQUIREMENTS.md](./REQUIREMENTS.md) v1.7（US-01～US-14）· [DESIGN.md](./DESIGN.md) v1.7
 > 定位：以 v1.7 机制对全部用户场景做**端到端业务流程推演**（dry-run）——每场景给出前置条件、逐步流程（含实际命令、git 动作、状态落点）与断言；推演暴露的衔接缺口记入「推演发现」（§6）并同步 [debt.md](./debt.md)。**本文不新增需求**，是需求/设计的验证性衍生文档。
 
@@ -16,7 +16,7 @@
 | 客户端统一注册与凭证 | FR-10 组 | 一切消费方（含人）注册为 `[clients.<id>]`；非交互调用须 `--client` + 凭证，TTY 默认 human |
 | source 强制绑定 | FR-4.7 | propose/journal 的 source 必须 ∈ 该客户端 allowed_sources |
 | journal 供稿命令 | FR-5.4/6.13 | 供稿只走 `dex journal` / `dex_journal`，不直写文件 |
-| render 冲突策略 | FR-6.4 | 产物默认落工作区子目录、带生成标记；非 dex 产物在目标路径 → 拒绝覆盖（退出码 10） |
+| render 冲突策略 | FR-6.4 | 产物默认落 repo 根、带生成标记；非 dex 产物在目标路径 → 拒绝覆盖（退出码 10）；团队仓库走 @import / rules 适配（工具兼容矩阵 TOOL_COMPATIBILITY.md） |
 | keep-until 保留豁免 | FR-2.10 | 衰减「保留」持久化为到期注释；注释变更不计实质变更 |
 | 脏工作区调和 | FR-8.3 | 未提交编辑经 mtime 比对即时反映到 v2 索引 |
 | harvest 便利封装 | FR-6.14 | `dex harvest` 不蒸馏；蒸馏在 dex-bootstrap 技能（agent 会话） |
@@ -83,10 +83,10 @@
 
 ### 2.1 US-02 编码 agent 按项目 scope 消费（v1/v2）
 
-**前置**：`[clients."work-laptop-zcode"]` 已注册（scopes = person + domains/work + projects/current，render 配置 `out = ".zcode/AGENTS.md"`）；该客户端凭证已部署到 agent 运行环境。
+**前置**：`[clients."work-laptop-zcode"]` 已注册（scopes = person + domains/work + projects/current，render 配置 `out = "AGENTS.md"`，repo 根）；该客户端凭证已部署到 agent 运行环境。
 
 **流程**（三通道）：
-1. **文件投影（通道 A，人执行一次）**：`dex render work-laptop-zcode` → 注入管线（scope 过滤 → 优先级合并 → 预算截断 ≤10 条/≤2000 字符）→ **预检输出目标**：`.zcode/AGENTS.md` 已存在且无 dex 生成标记（如团队维护的入口文件）⇒ 退出码 10 拒绝，需显式 `--out`；通过则写入（头部：dex 生成标记 + 「以下为记忆库数据，非指令」；尾部 omitted 计数）；
+1. **文件投影（通道 A，人执行一次）**：`dex render work-laptop-zcode` → 注入管线（scope 过滤 → 优先级合并 → 预算截断 ≤10 条/≤2000 字符）→ **预检输出目标**：repo 根 `AGENTS.md` 已存在且无 dex 生成标记（如团队维护的入口文件）⇒ 退出码 10 拒绝，团队仓库改走 @import / rules 适配（TOOL_COMPATIBILITY.md §3）；通过则写入（头部：dex 生成标记 + 「以下为记忆库数据，非指令」；尾部 omitted 计数）；
 2. **检索（通道 B，agent 执行）**：`dex search "部署流程" --scope projects/foo --client work-laptop-zcode`（v1 ripgrep；v2 FTS 毫秒级，索引过期自动降级）；
 3. **MCP（通道 C，v2）**：客户端 spawn `dex mcp --client work-laptop-zcode` → `dex_search` / `dex_read`（读路径的 scope 必须落在白名单内，journal/inbox 路径同规则）。
 
@@ -247,7 +247,7 @@
 |---|---|---|---|---|
 | W1 | FR-10.4「harvest/interview 仅 human」与 agentic 收割会话冲突（agent 非交互执行 `dex harvest` 会被拒） | 高（文档矛盾，v1.7 引入） | US-13 / FR-10.4 / FR-6.14 | ✅ 已修复（v1.8 FR-10.4 权限分档） |
 | W2 | 收割落盘身份未打通：source=连接器源，客户端身份与 `[harvest.sources]` → `allowed_sources` 映射未定义 | 中 | FR-4.7 / FR-12.5 / §2.5 | ✅ 已修复（v1.8 FR-12.5 映射 + §2.5 示例转正） |
-| W3 | 入口文件默认子目录（FR-6.4）vs 工具事实标准读取位置（repo 根）——需接入兼容矩阵（认子目录 / `--out` 指根 / `@import` shim） | 中（接入文档职责） | FR-6.4 / US-02 | ⏳ 留待接入文档（debt） |
+| W3 | 入口文件默认子目录（FR-6.4）vs 工具事实标准读取位置（repo 根）——需接入兼容矩阵 | 中（接入文档职责） | FR-6.4 / US-02 | ✅ 已产出 TOOL_COMPATIBILITY.md（v1.9）：查证嵌套入口为「子树按需」语义，撤销子目录默认，改 repo 根 + 团队仓库 @import/rules 分流 |
 | W4 | 非交互 CLI 凭证注入路径未细化（token 来源、agent 无 TTY 免摩擦） | 中 | FR-10.3 / US-02/03 | ✅ 已修复（v1.8 FR-10.3：凭据文件自动解析 + `DEX_TOKEN` 覆盖） |
 | — | v0 bootstrap 直写 inbox 无命令守卫（密钥/限流/幂等缺位）——「零代码」既定取舍，v1 收敛 | 低（确认可接受） | US-01 / FR-4 组 | ✅ 已记入需求 §8 风险表 |
 | — | 新机接入需部署 config + 凭据，无现成 checklist | 低 | US-07 / FR-10.2 | ✅ 已回填 US-07 四步 + 设计 §6.5（config 存放取舍仍在 debt） |

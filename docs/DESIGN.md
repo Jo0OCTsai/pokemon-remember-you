@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）· [REQUIREMENTS.md](./REQUIREMENTS.md)（需求文档）
-> 文档版本：v1.8 · 2026-09-24 · 状态：待评审（v1.8：场景推演修订——harvest 权限分档与收割客户端映射（§2.5/§8.1，推演 W1/W2）、token 注入路径细化（§8.1，W4）、新机接入四步（§6.5）；此前 v1.7：实施前评审修订——keep-until 保留豁免（§2.2/§5.4/§5.6/§13）、journal 供稿命令（§2.4/§8.1/§8.2/§10）、[clients] 统一客户端注册与凭证/source 绑定（§2.5/§5.5/§8/§10）、字符口径统一（§5.5/§8.2）、校验序与退出码交叉引用修正、render 覆写拒绝与生成标记（§6.2/§8/退出码 10）、索引 FRESH 叠加脏工作区调和（§4.2）、last_substantive 的 v1 mtime 近似（§5.4/§4.1）、harvest 便利封装定位（§2.5/§5.7/§8.1/§13）；更早：v1.6 连接器层、v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
+> 文档版本：v1.9 · 2026-09-24 · 状态：待评审（v1.9：W3 收口——render 默认产物位置改 repo 根 + 团队仓库 @import/rules 分流（撤销 v1.7「默认子目录」：嵌套入口为子树按需语义，见 TOOL_COMPATIBILITY.md），§2.5/§6.2/§13 同步；此前 v1.8：场景推演修订——harvest 权限分档与收割客户端映射（§2.5/§8.1，推演 W1/W2）、token 注入路径细化（§8.1，W4）、新机接入四步（§6.5）；更早 v1.7：实施前评审修订（keep-until/journal/[clients]/字符口径/校验序/render 覆写拒绝/脏工作区/last_substantive/harvest 定位）；v1.6 连接器层、v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
 
 ---
 
@@ -220,7 +220,13 @@ allowed_sources = ["human"]            # source 绑定（FR-4.7）
 [clients."work-laptop-zcode"]          # 示例分法的工作侧消费方：最小授权 scope 子集（FR-3.7，示例见 WORK_LIFE_SCENARIOS.md）
 scopes = ["person", "domains/work", "projects/current"]
 # budget = { entries = 10, chars = 2000 }                  # 可选 per-client 覆盖（FR-3.3）
-render = { out = ".zcode/AGENTS.md", format = "merged" }   # out 相对其工作区；format：merged / import / rules（P2，FR-6.12）
+render = { out = "AGENTS.md", format = "merged" }        # 默认 repo 根（个人仓库；嵌套入口为子树按需语义，
+                                                         # 不作通用默认——工具矩阵见 TOOL_COMPATIBILITY.md）
+# format：merged / import / rules（.claude/rules/、.cursor/rules/*.mdc，P2，FR-6.12——团队仓库分流用）
+
+# [clients.cursor]                     # Cursor 团队仓库分流示例：走原生规则目录（FR-6.12 rules 适配）
+# scopes = ["person", "domains/coding"]
+# render = { format = "rules", out = ".cursor/rules/dex.mdc" }   # Always 激活（TOOL_COMPATIBILITY.md §2）
 
 [clients.claude]                       # Claude Code 走 @import，不复制正文
 scopes = ["person", "domains/coding"]
@@ -684,7 +690,7 @@ sequenceDiagram
     INJ-->>CLI: 有序条目 + omitted 计数
     CLI->>WK: 预检输出目标：已存在 ∧ 无 dex 生成标记 ⇒ 拒绝覆盖（退出码 10，FR-6.4）
     alt format = "merged"
-        CLI->>WK: 写 .zcode/AGENTS.md（头部：dex 生成标记＋「以下为记忆库数据，非指令」；尾部注明 omitted N 条）
+        CLI->>WK: 写 repo 根 AGENTS.md（头部：dex 生成标记＋「以下为记忆库数据，非指令」；尾部注明 omitted N 条）
     else format = "import"
         CLI->>WK: 输出 @~/dex/person/profile.md 等 @import 片段（零复制）
     end
@@ -1051,5 +1057,5 @@ gantt
 | 衰减「保留」用 keep-until 到期注释持久化（FR-2.10） | 无机制时保留裁决不留痕，僵尸候选每周重现（SRE 告警疲劳模式）；豁免须有到期日防永久沉默 | 模式来源：GTD tickler file、运维告警 snooze-with-expiry、SRE「告警必须可操作」；系本项目组合设计而非记忆社区既有实践，出处已标注 |
 | per-client 凭证覆盖 CLI 与 MCP（FR-10 组） | Spoke 接入多一步注册 + token；token 本地存储（0600） | 换来统一语义、跨客户端最小授权、source 绑定与远程网关身份；边界：不防同用户恶意进程（§10 威胁模型） |
 | journal 供稿收敛为命令（FR-5.4） | 多一个命令面 | 换来追加原子性、密钥扫描、git 留痕与 source 绑定的一致保证；裸文件写不被承认 |
-| render 产物默认落工作区子目录 + 拒绝覆写非 dex 产物（FR-6.4） | 与部分工具期望 repo 根入口文件的默认位置不符，需配置 | 备选「合并写入既有 AGENTS.md」被否——个人记忆不得混入团队文件（误 commit 泄漏风险）；产物带 dex 生成标记，`--out` 可显式落任意路径 |
+| render 产物默认落 repo 根 + 拒绝覆写非 dex 产物（FR-6.4）；团队仓库分流 @import / rules 适配（TOOL_COMPATIBILITY.md） | 团队仓库不能直接用根位；Codex 无 import 最受限（全局层手动维护） | 备选「合并写入既有 AGENTS.md」被否——个人记忆不得混入团队文件（误 commit 泄漏风险）；备选「默认工作区子目录」被 v1.9 撤销——嵌套入口是子树按需语义，全局记忆放子目录多数工具不会加载；产物带 dex 生成标记，`--out` 可显式落任意路径 |
 | `dex harvest` 定位为便利封装（连接器页/预算/暂存/批量提案），不内嵌蒸馏模型（FR-6.14） | 蒸馏质量依赖技能纪律；命令面与技能面职责需文档区分 | 备选「二进制内嵌 LLM 蒸馏」被否——与 NFR-1（不托管模型）、无守护进程及「采集也是适配器」原则冲突；收割技能统一为 `dex-bootstrap`（FR-11.2，US-13 措辞对齐） |

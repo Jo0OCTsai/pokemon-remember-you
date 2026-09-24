@@ -9,7 +9,7 @@
 
 - [x] **W1（高·文档矛盾，v1.7 引入）**：FR-10.4 把 harvest/interview 列入「仅 human」管理命令，与 agentic 收割会话冲突——**v1.8 已修**：权限分档，允许 human 或显式授权的收割客户端执行。
 - [x] **W2**：收割落盘身份未打通——**v1.8 已修**：FR-12.5 收割客户端映射（`[clients."harvest-<source>"]`：scopes=[]、propose=true、allowed_sources=[该 source]，设计 §2.5 示例转正）。
-- [ ] **W3**：入口文件默认子目录（FR-6.4，`.zcode/AGENTS.md`）vs 工具事实标准读取位置（repo 根）——需接入兼容矩阵（认子目录 / `--out` 指根 / `@import` shim），归接入文档。
+- [x] **W3**：入口文件默认子目录 vs 工具读取位置——**v1.9 已收口**：产出 [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)（工具 × 入口位置兼容矩阵），查证嵌套入口为「子树按需」语义 → 撤销 v1.7 子目录默认，FR-6.4 改 repo 根 + 团队仓库 @import/rules 分流。
 - [x] **W4**：非交互 CLI 凭证注入路径未细化——**v1.8 已修**：显式 `--client` + 凭据文件自动解析（0600），`DEX_TOKEN` 覆盖（FR-10.3）。
 - [x] v0 bootstrap 直写 inbox 无命令守卫——已记入需求 §8 风险表（既定取舍）；新机接入 checklist 已回填 US-07 四步 + 设计 §6.5（config 存放取舍仍开放，见下方 Medium 清单）。
 
@@ -58,3 +58,7 @@
 ## 已完成（2026-09-24 · v1.8 推演修订）
 
 - [x] W1 harvest 权限分档（FR-10.4）、W2 收割客户端映射（FR-12.5 + 设计 §2.5）、W4 token 注入路径（FR-10.3 + 设计 §8.1 全局注）、US-07 新机四步接入回填（含设计 §6.5）、v0 守卫缺位记入需求 §8 风险表。
+
+## 已完成（2026-09-24 · v1.9 W3 收口）
+
+- [x] W3 工具入口兼容矩阵（TOOL_COMPATIBILITY.md）：嵌套入口「子树按需」语义查证 → FR-6.4 撤销子目录默认、改 repo 根 + 团队仓库 @import/rules 分流（FR-6.12 扩 .cursor/rules）。推演 4 项发现（W1–W4）至此全部关闭。
