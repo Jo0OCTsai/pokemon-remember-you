@@ -1,7 +1,7 @@
 # 用户场景业务流程推演（Scenario Walkthrough）
 
 > 项目：pokemon-remember-you（就记得是你）
-> 文档版本：v1.2 · 2026-09-24 · 状态：待评审（v1.2：W3 关闭——工具兼容矩阵产出（TOOL_COMPATIBILITY.md），render 默认位置修正为 repo 根 + 团队仓库分流；此前 v1.1：W1/W2/W4 已随需求/设计 v1.8 修复，§1.3 流程更新为最终口径）
+> 文档版本：v1.3 · 2026-09-24 · 状态：待评审（v1.3：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode；此前 v1.2：W3 关闭——工具兼容矩阵产出（TOOL_COMPATIBILITY.md），render 默认位置修正为 repo 根 + 团队仓库分流；v1.1：W1/W2/W4 已随 v1.8 修复）
 > 上游文档：[REQUIREMENTS.md](./REQUIREMENTS.md) v1.7（US-01～US-14）· [DESIGN.md](./DESIGN.md) v1.7
 > 定位：以 v1.7 机制对全部用户场景做**端到端业务流程推演**（dry-run）——每场景给出前置条件、逐步流程（含实际命令、git 动作、状态落点）与断言；推演暴露的衔接缺口记入「推演发现」（§6）并同步 [debt.md](./debt.md)。**本文不新增需求**，是需求/设计的验证性衍生文档。
 
@@ -29,10 +29,10 @@
 
 ### 1.1 US-14 技能安装（v0 起，一切的起点）
 
-**前置**：本仓 clone 到位；目标工具（Claude Code / ZCode / OpenCode）支持 skills 目录。
+**前置**：本仓 clone 到位；目标工具（Claude Code / pi / ZCode——支持范围见需求 §7）支持 skills 目录。
 
 **流程**：
-1. `ln -s <本仓>/skills/dex-* ~/.claude/skills/`（ZCode/OpenCode 同理，各自技能目录）；
+1. `ln -s <本仓>/skills/dex-* ~/.claude/skills/`（pi：`~/.pi/agent/skills/`；ZCode：`~/.zcode/skills/`——各自技能目录）；
 2. 技能本体即生效（一技能一目录 + SKILL.md，本仓 `skills/` 为单一源）；
 3. v2 起异构格式：`dex render --skills` 生成薄适配器（gitignore，不手维护）。
 

@@ -1,9 +1,10 @@
 # 工具入口兼容矩阵（render 产物位置策略）
 
 > 项目：pokemon-remember-you（就记得是你）
-> 文档版本：v1.0 · 2026-09-24 · 状态：待评审
+> 文档版本：v1.1 · 2026-09-24 · 状态：待评审（v1.1：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode，其余移入「未纳入」备查）
 > 上游文档：[REQUIREMENTS.md](./REQUIREMENTS.md) FR-6.4/FR-6.12 · [DESIGN.md](./DESIGN.md) §2.5/§6.2 · [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md) §6-W3
 > 定位：回答「`dex render` 的入口文件该落哪、各工具会不会读」——场景推演 W3 的交付物；**修正了 v1.7/v1.8 的「默认工作区子目录」决策**（查证结论见 §1）；随工具生态演进持续维护，❓ 标注项接入前实测。
+> **支持范围（需求 §7 约束）**：AI coding 工具只支持 **Claude Code、pi、ZCode** 三者；其余工具暂不考虑（调研结论保留于 §2.2 备查，接入需求出现时再评估）。
 
 ---
 
@@ -20,31 +21,40 @@
 
 ## 2. 兼容矩阵
 
-| 工具 | 恒载入口 | 嵌套/子目录行为 | import 语法 | 用户级全局 | dex 推荐策略 |
-|---|---|---|---|---|---|
-| **Claude Code** | repo 根 CLAUDE.md；无 CLAUDE.md 时回退 AGENTS.md（v2.1.277+，可开关） | 子目录 CLAUDE.md 按需（操作该子树文件时） | ✅ `@path`（CLAUDE.md 内，支持仓库外绝对路径，首次弹确认） | `~/.claude/CLAUDE.md` | **@import**：用户级或 repo `.claude/CLAUDE.md` 一行 `@~/dex/person/…`（repo 侧文件可 gitignore）；`render format=import` |
-| **Codex CLI** | repo 根 AGENTS.md | 子目录 AGENTS.md 仅会话从该子树启动时生效；按文件触达动态加载为 feature request（未落地） | ❌ 无 | `~/.codex/AGENTS.md` | 个人仓库：render 落根 AGENTS.md；**团队仓库受限**（无 import）——全局层手动维护 `~/.codex/AGENTS.md`，或与团队协商根文件（见 §3 注） |
-| **OpenCode** | repo 根 AGENTS.md | 嵌套 AGENTS.md（子树语义） | ❓ 待验证 | `~/.config/opencode/AGENTS.md` | 同 Codex |
-| **Cursor** | AGENTS.md（根，另有全局） | AGENTS.md 子目录 + `.cursor/rules/*.mdc` 四种激活：Always / Auto-Attached（glob）/ Agent-Requested / Manual | ❌（以 rules 机制承担） | 全局 rules | **rules 适配**：`.cursor/rules/dex.mdc`（Always 激活），`render format=rules`（FR-6.12）；注意 Always 级常驻占 context，宜配小预算产物 |
-| **Gemini CLI** | GEMINI.md（根），层级加载（全局/根/子目录） | 子目录 GEMINI.md（层级） | ✅ `@file.md`（相对/绝对路径，仅 .md） | `~/.gemini/GEMINI.md` | **@import**：GEMINI.md 一行 `@<dex 文件或根 AGENTS.md>` |
-| **Zed** | 根 AGENTS.md | ❓ worktree 级规则待验证 | ❓ | — | 个人仓库：根 AGENTS.md |
-| **ZCode** | 工作区 AGENTS.md | ❓ 待验证 | ❓ | 用户级 AGENTS.md | 个人仓库：根 AGENTS.md |
+### 2.1 支持范围（Claude Code / pi / ZCode）
 
-> ❓ = 截至本文档调研未证实，接入前以烟测为准（在目标工具会话中问「你能看到哪些入口文件内容」即可验证）。
+| 工具 | 恒载入口 | 嵌套/子目录行为 | import 语法 | 用户级全局 | 技能目录 | dex 推荐策略 |
+|---|---|---|---|---|---|---|
+| **Claude Code** | repo 根 CLAUDE.md；无 CLAUDE.md 时回退 AGENTS.md（v2.1.277+，可开关） | 子目录 CLAUDE.md 按需（操作该子树文件时） | ✅ `@path`（CLAUDE.md 内，支持仓库外绝对路径，首次弹确认） | `~/.claude/CLAUDE.md` | `~/.claude/skills/` | **@import**：用户级或 repo `.claude/CLAUDE.md` 一行 `@~/dex/person/…`（repo 侧文件可 gitignore）；`render format=import` |
+| **pi** | 启动时从 cwd **向上父目录链** + cwd 加载 AGENTS.md **或** CLAUDE.md，整文件拼接注入系统提示（恒载） | 仅向上链生效（cwd 之下子目录不加载）——子目录同样不能承载全局注入 | ❌（无 import 语法，上下文为整文件拼接） | `~/.pi/agent/AGENTS.md` | `~/.pi/agent/skills/`（自动发现，`/skill:<name>` 触发） | 个人仓库：render 落根 AGENTS.md；团队仓库：全局 `~/.pi/agent/AGENTS.md` 手动维护（无 import，受限同 Codex 型） |
+| **ZCode** | 工作区 AGENTS.md（会话恒载） | ❓ 待实测 | ❓ 待实测（用户级文件为整文件加载） | `~/.zcode/AGENTS.md` | `~/.zcode/skills/` | 个人仓库：根 AGENTS.md；❓ 项接入前烟测（会话中问「你能看到哪些入口内容」） |
+
+### 2.2 未纳入（暂不考虑，调研结论备查）
+
+| 工具 | 关键行为 | 若将来接入的策略 |
+|---|---|---|
+| Codex CLI | 根 AGENTS.md 恒载；子目录仅会话从该子树启动时生效（动态加载为 feature request）；无 import | 根位（个人仓库）；全局 `~/.codex/AGENTS.md` |
+| OpenCode | 根 AGENTS.md + 嵌套（子树语义）；全局 `~/.config/opencode/AGENTS.md` | 同 Codex 型 |
+| Cursor | AGENTS.md（根）+ `.cursor/rules/*.mdc` 四种激活（Always/Auto-glob/Agent-Requested/Manual） | rules 适配：`.cursor/rules/dex.mdc`（Always），`render format=rules`（FR-6.12） |
+| Gemini CLI | GEMINI.md 层级（全局/根/子目录）；✅ `@file.md` import（相对/绝对） | GEMINI.md 一行 `@<dex 路径>` |
+| Zed | 根 AGENTS.md；worktree 规则 ❓ | 根位 |
+
+> ❓ = 截至本文档调研未证实，接入前以烟测为准。
 
 ## 3. render 策略决策树（FR-6.4 的操作化）
 
 ```text
 repo 根是否已有团队入口文件（AGENTS.md / CLAUDE.md 等非 dex 产物）？
-├─ 否（个人仓库）→ dex render 落根 AGENTS.md（默认；退出码 10 冲突保护恒在）
-└─ 是（团队仓库）→ 按消费工具分流，各落各的适配位（render 按 client 分别配置）：
+├─ 否（个人仓库）→ dex render 落根 AGENTS.md（默认；三工具均恒载，退出码 10 冲突保护恒在）
+└─ 是（团队仓库）→ 按消费工具分流（支持范围内）：
     ├─ Claude Code → format=import：repo .claude/CLAUDE.md 一行 @import（该文件 gitignore）
     │                或用户级 ~/.claude/CLAUDE.md（零 repo 足迹，全局生效）
-    ├─ Gemini CLI  → GEMINI.md 一行 @import（同上）
-    ├─ Cursor      → format=rules：.cursor/rules/dex.mdc（Always 激活，gitignore 该文件）
-    ├─ Codex       → 无 import 语法，最受限：全局 ~/.codex/AGENTS.md 手动维护
-    │                （或与团队协商：根 AGENTS.md 由 dex 管理、团队内容另放 rules——属团队治理决策）
+    ├─ pi / ZCode  → 无 import（pi 已证实；ZCode 待验证）：
+    │                用户级全局文件（~/.pi/agent/AGENTS.md、~/.zcode/AGENTS.md）手动维护，
+    │                或与团队协商根 AGENTS.md 由 dex 管理（团队治理决策）
     └─ 子树级记忆（monorepo 包级）→ 子目录 AGENTS.md（子树按需语义恰好匹配，唯一正确的子目录用法）
+
+未纳入工具（§2.2）不在分流范围；接入需求出现时按其行内策略评估。
 ```
 
 **通用注意**：
@@ -54,7 +64,8 @@ repo 根是否已有团队入口文件（AGENTS.md / CLAUDE.md 等非 dex 产物
 ## 4. 调研来源（2026-09-24）
 
 - AGENTS.md 约定：<https://agents.md>
-- Codex AGENTS.md 嵌套加载语义与动态加载 feature request：<https://learn.chatgpt.com> · <https://github.com>（openai/codex issue）
+- pi coding agent 上下文文件（启动加载 AGENTS.md/CLAUDE.md：全局 + 父目录链 + cwd，整文件拼接）：<https://github.com/badlogic/pi-mono>（packages/coding-agent/docs/usage.md）
 - Claude Code 记忆层级（子目录按需 / AGENTS.md 回退 v2.1.277+ / @import）：<https://code.claude.com/docs/en/memory> · <https://github.com/anthropics/claude-code/issues/6235>
+- Codex AGENTS.md 嵌套加载语义与动态加载 feature request：<https://learn.chatgpt.com> · <https://github.com>（openai/codex issue）
 - Cursor rules 四种激活与 AGENTS.md 支持：<https://cursor.com/docs>（Rules）
 - Gemini CLI GEMINI.md 层级与 `@file.md` import：<https://geminicli.com/docs>

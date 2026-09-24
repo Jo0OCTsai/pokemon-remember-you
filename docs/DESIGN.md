@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）· [REQUIREMENTS.md](./REQUIREMENTS.md)（需求文档）
-> 文档版本：v1.9 · 2026-09-24 · 状态：待评审（v1.9：W3 收口——render 默认产物位置改 repo 根 + 团队仓库 @import/rules 分流（撤销 v1.7「默认子目录」：嵌套入口为子树按需语义，见 TOOL_COMPATIBILITY.md），§2.5/§6.2/§13 同步；此前 v1.8：场景推演修订——harvest 权限分档与收割客户端映射（§2.5/§8.1，推演 W1/W2）、token 注入路径细化（§8.1，W4）、新机接入四步（§6.5）；更早 v1.7：实施前评审修订（keep-until/journal/[clients]/字符口径/校验序/render 覆写拒绝/脏工作区/last_substantive/harvest 定位）；v1.6 连接器层、v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
+> 文档版本：v1.10 · 2026-09-24 · 状态：待评审（v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§2.5 示例与 FR-6.4 分流口径同步，其余备查 TOOL_COMPATIBILITY.md §2.2）；此前 v1.9：W3 收口——render 默认产物位置改 repo 根 + 团队仓库分流（撤销 v1.7「默认子目录」，见 TOOL_COMPATIBILITY.md）；更早 v1.8：场景推演修订（harvest 权限分档/收割客户端映射/token 注入路径/新机四步）；v1.7：实施前评审修订；v1.6 连接器层、v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
 
 ---
 
@@ -224,9 +224,10 @@ render = { out = "AGENTS.md", format = "merged" }        # 默认 repo 根（个
                                                          # 不作通用默认——工具矩阵见 TOOL_COMPATIBILITY.md）
 # format：merged / import / rules（.claude/rules/、.cursor/rules/*.mdc，P2，FR-6.12——团队仓库分流用）
 
-# [clients.cursor]                     # Cursor 团队仓库分流示例：走原生规则目录（FR-6.12 rules 适配）
+# 未纳入工具预留示例（Cursor 暂不考虑——支持范围见 TOOL_COMPATIBILITY.md §2.1/2.2）：
+# [clients.cursor]                     # rules 适配形态（FR-6.12，接入需求出现时启用）
 # scopes = ["person", "domains/coding"]
-# render = { format = "rules", out = ".cursor/rules/dex.mdc" }   # Always 激活（TOOL_COMPATIBILITY.md §2）
+# render = { format = "rules", out = ".cursor/rules/dex.mdc" }   # Always 激活
 
 [clients.claude]                       # Claude Code 走 @import，不复制正文
 scopes = ["person", "domains/coding"]
@@ -1057,5 +1058,5 @@ gantt
 | 衰减「保留」用 keep-until 到期注释持久化（FR-2.10） | 无机制时保留裁决不留痕，僵尸候选每周重现（SRE 告警疲劳模式）；豁免须有到期日防永久沉默 | 模式来源：GTD tickler file、运维告警 snooze-with-expiry、SRE「告警必须可操作」；系本项目组合设计而非记忆社区既有实践，出处已标注 |
 | per-client 凭证覆盖 CLI 与 MCP（FR-10 组） | Spoke 接入多一步注册 + token；token 本地存储（0600） | 换来统一语义、跨客户端最小授权、source 绑定与远程网关身份；边界：不防同用户恶意进程（§10 威胁模型） |
 | journal 供稿收敛为命令（FR-5.4） | 多一个命令面 | 换来追加原子性、密钥扫描、git 留痕与 source 绑定的一致保证；裸文件写不被承认 |
-| render 产物默认落 repo 根 + 拒绝覆写非 dex 产物（FR-6.4）；团队仓库分流 @import / rules 适配（TOOL_COMPATIBILITY.md） | 团队仓库不能直接用根位；Codex 无 import 最受限（全局层手动维护） | 备选「合并写入既有 AGENTS.md」被否——个人记忆不得混入团队文件（误 commit 泄漏风险）；备选「默认工作区子目录」被 v1.9 撤销——嵌套入口是子树按需语义，全局记忆放子目录多数工具不会加载；产物带 dex 生成标记，`--out` 可显式落任意路径 |
+| render 产物默认落 repo 根 + 拒绝覆写非 dex 产物（FR-6.4）；团队仓库分流（支持范围 = Claude Code/pi/ZCode：@import 或用户级全局文件，TOOL_COMPATIBILITY.md） | 团队仓库不能直接用根位；pi/ZCode 无 import 语法，全局层手动维护 | 备选「合并写入既有 AGENTS.md」被否——个人记忆不得混入团队文件（误 commit 泄漏风险）；备选「默认工作区子目录」被 v1.9 撤销——嵌套入口是子树按需语义，全局记忆放子目录多数工具不会加载；产物带 dex 生成标记，`--out` 可显式落任意路径 |
 | `dex harvest` 定位为便利封装（连接器页/预算/暂存/批量提案），不内嵌蒸馏模型（FR-6.14） | 蒸馏质量依赖技能纪律；命令面与技能面职责需文档区分 | 备选「二进制内嵌 LLM 蒸馏」被否——与 NFR-1（不托管模型）、无守护进程及「采集也是适配器」原则冲突；收割技能统一为 `dex-bootstrap`（FR-11.2，US-13 措辞对齐） |

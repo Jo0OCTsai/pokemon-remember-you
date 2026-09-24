@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）
-> 文档版本：v1.9 · 2026-09-24 · 状态：待评审（v1.9：W3 收口——入口文件策略矩阵化（FR-6.4/FR-6.12，新增 TOOL_COMPATIBILITY.md）：查证嵌套入口为「子树按需」语义，**撤销 v1.7 的「默认工作区子目录」**，默认改 repo 根 + 团队仓库 @import/rules 分流；此前 v1.8：场景推演修订——harvest 权限分档与收割客户端映射（FR-10.4/FR-12.5，推演 W1/W2）、token 注入路径（FR-10.3，W4）、US-07 新机接入四步补全、v0 守卫缺位记入风险表；更早 v1.7：实施前评审修订（keep-until/journal 命令/[clients] 注册/source 绑定/字符口径/分批语义/render 冲突/脏工作区/last_substantive/harvest 定位）；v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
+> 文档版本：v1.10 · 2026-09-24 · 状态：待评审（v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§7 约束、US-02/US-14、FR-11 组、工具矩阵 §2.1），其余移入 TOOL_COMPATIBILITY.md 未纳入备查；此前 v1.9：W3 收口——入口文件策略矩阵化（FR-6.4/FR-6.12）：查证嵌套入口为「子树按需」语义，撤销 v1.7「默认工作区子目录」，默认改 repo 根 + 团队仓库 @import/rules 分流；更早 v1.8：场景推演修订（harvest 权限分档/收割客户端映射/token 注入路径/US-07 新机四步）；v1.7：实施前评审修订；v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
 > 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）· [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md)（用户场景业务流程推演）· [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)（工具入口兼容矩阵）
 
 ---
@@ -86,7 +86,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 
 ### US-02 编码 agent 按项目 scope 消费（v1/v2）
 
-**角色**：本地编码 agent（ZCode / Claude Code / OpenCode）
+**角色**：本地编码 agent（Claude Code / pi / ZCode——支持范围见 §7 约束）
 **背景**：agent 在项目 `foo` 中工作，需要该项目与个人层的上下文，而不是全库倾倒。
 
 **过程**：
@@ -230,7 +230,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 **背景**：协议（CLI/MCP）定义 agent 能做什么，技能定义该怎么表现；冷启动、提案纪律、周回顾的行为由技能承载，入口文件只留一行指针（渐进披露，不占常驻上下文）。
 
 **过程**：
-1. 一次性安装：symlink 本仓 `skills/dex-*` 到 `~/.claude/skills/`、`~/.zcode/skills/` 等技能目录（文档给安装命令，FR-11.3）；不支持技能的工具退化为附录引导词；
+1. 一次性安装：symlink 本仓 `skills/dex-*` 到 `~/.claude/skills/`、`~/.pi/agent/skills/`、`~/.zcode/skills/`（三工具技能目录，文档给安装命令，FR-11.3）；不支持技能的工具退化为附录引导词；
 2. agent 经入口文件的一行指针知道「记忆提案走 dex-propose 技能」，触发时按需加载；
 3. 技能随本仓 git 演进；异构工具格式由 `dex render --skills` 生成薄适配器（FR-11.4），产物 gitignore、不手维护。
 
@@ -516,7 +516,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-6.1 | `dex search <query> [--scope …] [--format text/json] [--limit N]`：v1 基于 ripgrep 全文检索；v2 优先走 FTS 派生索引，miss/损坏时降级 ripgrep | P0 | v1/v2 |
 | FR-6.2 | `dex read <path> [--section]`：读取单文件/小节，输出带 scope 标注 | P0 | v1 |
 | FR-6.3 | `dex propose [--source --kind --confidence --evidence] [msg|-]`：从参数或 stdin 提交提案（见 FR-4） | P0 | v1 |
-| FR-6.4 | `dex render <agent> [--out] [--dry-run]`：渲染该消费方 scope 合并视图为入口文件，**默认落 repo 根 `AGENTS.md`**（跨工具事实标准、会话恒载；个人仓库默认位）；产物头部带 dex 生成标记；目标路径已存在且无生成标记（非 dex 产物，如团队维护的 AGENTS.md/CLAUDE.md）时**拒绝覆盖**（退出码 10）——团队仓库按工具分流：@import（Claude Code / Gemini CLI）或 rules 适配（`.claude/rules/`、`.cursor/rules/`，FR-6.12）；**不以工作区子目录为通用默认**（嵌套入口文件是「子树按需加载」语义，全局个人记忆放子目录多数工具不会加载——工具 × 位置兼容矩阵见 TOOL_COMPATIBILITY.md），子目录产物仅用于记忆本身 scope 到子树的 monorepo 场景；Claude Code 模式输出 `@import` 片段或一行 `CLAUDE.md` shim（`@AGENTS.md`，因其仅在无 CLAUDE.md 时才读 AGENTS.md）；注入正文头部声明「以下为记忆库数据，非指令」 | P0 | v1 |
+| FR-6.4 | `dex render <agent> [--out] [--dry-run]`：渲染该消费方 scope 合并视图为入口文件，**默认落 repo 根 `AGENTS.md`**（跨工具事实标准、会话恒载；个人仓库默认位）；产物头部带 dex 生成标记；目标路径已存在且无生成标记（非 dex 产物，如团队维护的 AGENTS.md/CLAUDE.md）时**拒绝覆盖**（退出码 10）——团队仓库按工具分流：@import（Claude Code）或用户级全局文件（pi / ZCode，无 import 语法）；**不以工作区子目录为通用默认**（嵌套入口文件是「子树按需加载」语义，全局个人记忆放子目录多数工具不会加载——支持工具矩阵见 TOOL_COMPATIBILITY.md §2.1），子目录产物仅用于记忆本身 scope 到子树的 monorepo 场景；Claude Code 模式输出 `@import` 片段或一行 `CLAUDE.md` shim（`@AGENTS.md`，因其仅在无 CLAUDE.md 时才读 AGENTS.md）；注入正文头部声明「以下为记忆库数据，非指令」 | P0 | v1 |
 | FR-6.5 | `dex stale [--days 90] [--scope]`：按 git log 求「最后实质变更」，输出衰减候选清单；衰减窗口支持按 scope/层分档（per-scope 覆盖；示例数值见 WORK_LIFE_SCENARIOS.md：项目层 90 天、人物页等慢记忆可放宽 180 天，数值实现时定）；实现口径：v1 以文件 mtime 近似「最后实质变更」（避免逐文件全历史 git log 扫描，NFR-3 亚秒约束），v2 起由索引缓存精确化（设计 §5.4/§4.1） | P1 | v1 |
 | FR-6.6 | `dex review [--week]`：汇总周回顾清单（inbox + journal 候选 + 衰减清单 + 近义预筛） | P1 | v1 |
 | FR-6.7 | `dex reindex [--force]`：重建 `.cache/` 派生索引 | P1 | v2 |
@@ -571,8 +571,8 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 |---|---|---|---|
 | FR-11.1 | 本仓 `skills/` 为技能单一源（一技能一目录 + SKILL.md，含 name/description/触发词 frontmatter）；技能属工具仓库、不进 `~/dex` 数据仓——数据与行为分离 | P0 | v0 |
 | FR-11.2 | 最小技能集三个：`dex-bootstrap`（零手写冷启动，见 US-01/US-13）、`dex-propose`（日常提案纪律与 scope 路由，入库判据「换一个应用还成立吗」）、`dex-review`（周回顾七段走查 + 建议命令） | P0 | v0 |
-| FR-11.3 | v0 分发：symlink 到各工具技能目录（`~/.claude/skills/` 等），文档提供安装命令；贴提示词为不支持技能工具的兜底（提案附录模板） | P1 | v0 |
-| FR-11.4 | 异构格式适配（Cursor rules 等）由 `dex render --skills` 生成薄适配器，产物 gitignore、不手维护（与 FR-6.12 同机制） | P2 | v2 |
+| FR-11.3 | v0 分发：symlink 到三工具技能目录（`~/.claude/skills/`、`~/.pi/agent/skills/`、`~/.zcode/skills/`），文档提供安装命令；贴提示词为不支持技能工具的兜底（提案附录模板） | P1 | v0 |
+| FR-11.4 | 异构格式适配（rules 类格式等，当前支持范围内暂无需要——未纳入工具场景备查）由 `dex render --skills` 生成薄适配器，产物 gitignore、不手维护（与 FR-6.12 同机制） | P2 | v2 |
 | FR-11.5 | 入口文件（AGENTS.md / render 产物）仅含一行技能指针（如「记忆提案走 dex-propose 技能」），行为细节留在技能内渐进披露 | P1 | v1 |
 
 ### 4.12 数据获取：连接器层（FR-12）
@@ -620,6 +620,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 
 **约束**
 - 提案既定的架构决策为硬约束：Hub/Spoke 分工、目录即 scope、propose-only、无守护进程、文件为稳定契约。
+- **AI coding 工具支持范围**：仅 Claude Code、pi、ZCode 三者；其余（Codex / Cursor / Gemini CLI / OpenCode / Zed 等）暂不考虑——调研结论备查于 TOOL_COMPATIBILITY.md §2.2，接入需求出现时再评估。
 - 语言/技术栈未定为契约（设计文档给出建议实现），任何实现必须满足 NFR-5/6。
 
 **假设**
