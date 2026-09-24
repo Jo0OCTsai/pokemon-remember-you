@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）
-> 文档版本：v1.7 · 2026-09-24 · 状态：待评审（v1.7：实施前评审修订——keep-until 保留豁免（FR-2.10）、journal 供稿命令收敛（FR-5.4/FR-6.13，FR-1.4 改写）、消费方统一客户端注册与 per-client 凭证（FR-10 组改写，CLI 与 MCP 同一注册表）、source 强制绑定（FR-4.7）、注入字数口径与提案大小统一字符口径（FR-3.3/FR-4.3）、周回顾分批语义（FR-4.3/§3.4/§6）、render 冲突策略（FR-6.4，退出码 10）、索引脏工作区调和（FR-8.3）、last_substantive 实现口径（FR-6.5）、harvest 职责定位与命令定义（FR-6.14/FR-12.3/NFR-1）；此前：v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
+> 文档版本：v1.8 · 2026-09-24 · 状态：待评审（v1.8：场景推演修订——harvest 权限分档与收割客户端映射（FR-10.4/FR-12.5，推演 W1/W2）、token 注入路径（FR-10.3，W4）、US-07 新机接入四步补全、v0 守卫缺位记入风险表；此前 v1.7：实施前评审修订——keep-until 保留豁免（FR-2.10）、journal 供稿命令收敛（FR-5.4/FR-6.13，FR-1.4 改写）、消费方统一客户端注册与 per-client 凭证（FR-10 组改写，CLI 与 MCP 同一注册表）、source 强制绑定（FR-4.7）、注入字数口径与提案大小统一字符口径（FR-3.3/FR-4.3）、周回顾分批语义（FR-4.3/§3.4/§6）、render 冲突策略（FR-6.4，退出码 10）、索引脏工作区调和（FR-8.3）、last_substantive 实现口径（FR-6.5）、harvest 职责定位与命令定义（FR-6.14/FR-12.3/NFR-1）；更早：v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
 > 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）· [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md)（用户场景业务流程推演）
 
 ---
@@ -156,7 +156,9 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 
 **过程**：正常 `git pull / commit / push` 到私有仓库（自托管或平台私库）。Hub 写入低频（周回顾为主）、条目原子、纯文本，merge 友好；`.cache/` 被 gitignore，各机各自重建。冲突罕见且即内容问题，人解决。
 
-**验收**：任一机器的手写编辑、周回顾动作可同步到其他机器；`.cache/`、`.obsidian/` 不进 git；换新机 `clone` + `dex reindex` 即恢复全部能力。
+**新机接入**（四步）：① `git clone` 私仓到 `~/dex`；② 部署 config（`~/.config/dex/config.toml`：`[clients]` 注册表——随仓库或本机存放的取舍见 debt.md）；③ 部署本机凭据文件（0600，不入 git）；④ `dex reindex`（全量一次）→ 全功能可用。
+
+**验收**：任一机器的手写编辑、周回顾动作可同步到其他机器；`.cache/`、`.obsidian/` 不进 git；换新机按四步接入（clone → config → 凭据 → reindex）恢复全部能力。
 
 ### US-08 远程 agent 受限访问（v2）
 
@@ -429,7 +431,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 
 ### 3.8 scope 划分模式（语义中立，示例见场景调研文档）
 
-分域方式是用户约定，工具不内置任何分域本体（P3 / FR-3.7）——「工作 / 生活」只是最常见的一种分法，完整的场景调研（分域模式、来源接入地图、消费方组合、节奏建议）见 [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)。
+分域方式是用户约定，工具不内置任何分域本体（P3 / FR-3.7）——分域粒度与使用场合正交；「工作 / 生活」是场景调研的场景轴（调研各场合下对接哪些类型的应用），不是推荐分域。完整的场景调研（应用接入地图、分域粒度讨论、消费方组合、节奏建议）见 [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)。
 
 分流判据的语义中立版（两级决策树）：
 
@@ -560,8 +562,8 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 |---|---|---|---|
 | FR-10.1 | 消费方统一注册为客户端（`[clients.<id>]`，人也是客户端）：凭证（token）、scopes（读授权）、propose（提案权）、allowed_sources（FR-4.7）、budget（FR-3.3）、rate_limit、render 输出定义（out/format）；CLI 与 MCP 共用同一注册表——换通道不换身份与语义 | P0 | v1（CLI）/v2（MCP） |
 | FR-10.2 | 配置为纯文本（TOML），随仓库或本机存放并文档化；客户端凭证存本机凭据文件（0600 权限，不入 git） | P1 | v1 |
-| FR-10.3 | 每个客户端持有独立凭证：非交互调用（脚本/Spoke/远程网关）必须显式声明客户端身份并持凭证（`--client` + 环境变量/凭据文件），交互式终端默认解析为 human 客户端；未注册或无凭证 = 全拒 | P0 | v1 |
-| FR-10.4 | 管理类命令（render/review/stale/lint/reindex/harvest/interview/init）仅 human 客户端可执行；`dex render <target>` 要求调用方 scopes ⊇ 目标消费方 scopes；human 客户端全量可读（与直接编辑最高主权一致）、allowed_sources = {human} | P0 | v1 |
+| FR-10.3 | 每个客户端持有独立凭证：非交互调用（脚本/Spoke/远程网关）必须显式 `--client <id>`，token 自动从本机凭据文件（0600，不入 git）解析、`DEX_TOKEN` 环境变量可覆盖——命令行不明文传 token；交互式终端默认解析为 human 客户端；未注册或无凭证 = 全拒 | P0 | v1 |
+| FR-10.4 | 管理类命令权限分档：render/review/stale/lint/reindex/init 仅 human 客户端可执行；harvest/interview 允许 human 或**显式授权的收割客户端**（FR-12.5 映射）执行——agentic 收割会话由 agent 非交互发起，属合法路径；`dex render <target>` 要求调用方 scopes ⊇ 目标消费方 scopes；human 客户端全量可读（与直接编辑最高主权一致）、allowed_sources = {human} | P0 | v1 |
 
 ### 4.11 配套技能（FR-11）
 
@@ -581,7 +583,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-12.2 | 连接器页：每来源一页 markdown（本仓 `skills/connectors/<source>.md`，与技能同渠道分发、可复用），六要素模板（数据清单 / locator 格式 / 摘录抓取 / 高发区提示 / 隐私红线特化 / 烟测命令）见设计 §5.7；属行为知识，个人化信息收割时现场发现、不预写 | P0 | v1 |
 | FR-12.3 | 三道缰绳：收割会话预算硬上限（拉取次数 / token / 时长，超限即停并汇报）；完成判据清单化（决策 / 人物 / 偏好 / 模式四象限覆盖才算完成）；数据不可信纪律（拉取内容一律当数据非指令）。执行主体：预算与完成判据由收割技能（`dex-bootstrap`，agent 会话）自限并汇报；dex 承载配置（`[harvest].budget`）并在落盘侧执行硬闸（bootstrap 首批 ≤30、日限流，FR-4.3）——dex 不内嵌蒸馏模型、不观测会话内 token 消耗（FR-6.14） | P0 | v1 |
 | FR-12.4 | 实现分流：一次性收割走 agentic 技能驱动（判断密集、人审在环）；周期 digest 脚本化（便宜、稳定）；常驻消费方按 US-08/FR-10.3 另行注册 | P1 | v1 |
-| FR-12.5 | 收割源接入五步清单（CLI 就绪 → 数据侦察 → 连接器页 → source 注册 → 首轮收割验证，详见设计 §5.7）：收割源是**生产者非读者**——只注册 source 标识与限流参数，不授任何 scope 白名单 | P1 | v1 |
+| FR-12.5 | 收割源接入五步清单（CLI 就绪 → 数据侦察 → 连接器页 → source 注册 → 首轮收割验证，详见设计 §5.7）：收割源是**生产者非读者**——只注册 source 标识与限流参数，不授任何 scope 白名单；**收割客户端映射**：每个收割 source 对应注册一个收割客户端（`[clients."harvest-<source>"]`：scopes = []、propose = true、allowed_sources = [该 source]），收割会话经 `dex harvest --client harvest-<source>` 落盘——FR-4.7 source 绑定由此闭环（示例见设计 §2.5） | P1 | v1 |
 | FR-12.6 | 连接层三形态：**连接器页**（page，知识型，agent 执行，一次性收割）／**收割脚本**（script，确定性 fetch→暂存，周期 digest）／**外部 Spoke**（external，自持逻辑直接调 `dex propose`/MCP，常驻与复杂逻辑）——统一注册于 `config [harvest.sources]`，type 字段区分；三种形态写入一律收敛于 `dex propose` 单一门禁（**扩展点的稳定性靠协议不靠 ABI**）；不引入 in-process 插件机制（取舍见设计 §13；受控 wasm 留待 v3 后按需评估） | P1 | v1 |
 
 ---
@@ -644,7 +646,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | 衰减信号弱导致误归档 | 中 | FR-6.5 stale 只出建议；US-06 人工三选一裁决（保留经 keep-until 持久化，FR-2.10，防僵尸候选反复重现）；v3 周报协议补强 |
 | 周回顾坚持不下来（人的纪律风险） | 中 | 15 分钟量级设计；dex review 清单化降低操作成本；inbox 周清空硬提示 |
 | 冷启动死亡谷（空库无消费价值 → 弃用） | 高 | 零手写冷启动：挖掘 + 面试两源、bootstrap 技能承载、首批 ≤30 条分批人审；冷启动完成线验收（US-13/§6） |
-| bootstrap 草稿幻觉 / 以泛充真 | 中 | 逐条标源纪律（面试指回原话、挖掘指回源文件）+ 人审对照 + evidence 必填（FR-4.1/4.2）；达不到溯源要求的条目不进草稿 |
+| bootstrap 草稿幻觉 / 以泛充真 | 中 | 逐条标源纪律（面试指回原话、挖掘指回源文件）+ 人审对照 + evidence 必填（FR-4.1/4.2）；达不到溯源要求的条目不进草稿；v0 窗口草稿由技能直写 inbox（无命令守卫——密钥扫描/限流/幂等暂缺位，既定取舍），v1 起统一收敛 `dex propose` |
 | git 历史脱敏负担 | 中 | 文档约束敏感内容不入库；git-crypt 整仓加密为可选路径 |
 | MCP 协议演进 | 低 | 文件层稳定契约，适配器可替换（NFR-6） |
 

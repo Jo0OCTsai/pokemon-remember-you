@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）· [REQUIREMENTS.md](./REQUIREMENTS.md)（需求文档）
-> 文档版本：v1.7 · 2026-09-24 · 状态：待评审（v1.7：实施前评审修订——keep-until 保留豁免（§2.2/§5.4/§5.6/§13）、journal 供稿命令（§2.4/§8.1/§8.2/§10）、[clients] 统一客户端注册与凭证/source 绑定（§2.5/§5.5/§8/§10）、字符口径统一（§5.5/§8.2）、校验序与退出码交叉引用修正、render 覆写拒绝与生成标记（§6.2/§8/退出码 10）、索引 FRESH 叠加脏工作区调和（§4.2）、last_substantive 的 v1 mtime 近似（§5.4/§4.1）、harvest 便利封装定位（§2.5/§5.7/§8.1/§13）；此前：v1.6 连接器层、v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
+> 文档版本：v1.8 · 2026-09-24 · 状态：待评审（v1.8：场景推演修订——harvest 权限分档与收割客户端映射（§2.5/§8.1，推演 W1/W2）、token 注入路径细化（§8.1，W4）、新机接入四步（§6.5）；此前 v1.7：实施前评审修订——keep-until 保留豁免（§2.2/§5.4/§5.6/§13）、journal 供稿命令（§2.4/§8.1/§8.2/§10）、[clients] 统一客户端注册与凭证/source 绑定（§2.5/§5.5/§8/§10）、字符口径统一（§5.5/§8.2）、校验序与退出码交叉引用修正、render 覆写拒绝与生成标记（§6.2/§8/退出码 10）、索引 FRESH 叠加脏工作区调和（§4.2）、last_substantive 的 v1 mtime 近似（§5.4/§4.1）、harvest 便利封装定位（§2.5/§5.7/§8.1/§13）；更早：v1.6 连接器层、v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
 
 ---
 
@@ -241,8 +241,10 @@ rate_limit = { proposals_per_day = 20 }
 scopes = ["person", "domains/work"]
 propose = false
 
-# [clients."harvest-im-x"]             # 收割脚本（FR-12.6 script 形态）：生产者非读者（FR-12.5），
-# scopes = []                          # 不授任何读 scope；allowed_sources = ["im-x"] 授其连接器 source
+[clients."harvest-im-x"]               # 收割客户端（FR-12.5 映射）：收割会话/脚本的落盘身份——
+scopes = []                            # 生产者非读者：不授任何读 scope
+propose = true                         # 仅可经 dex harvest / dex propose 落盘 inbox（受 harvest 限流约束）
+allowed_sources = ["im-x"]             # 仅可署名其连接器 source（FR-4.7 绑定闭环；FR-10.4 允许其执行 harvest/interview）
 
 # 未注册客户端（CLI 无身份/凭证、MCP 未知 clientInfo）一律全拒（FR-10.3）。
 
@@ -762,9 +764,10 @@ sequenceDiagram
     R--)B: pull
     B->>B: dex search → 检测 meta.head ≠ HEAD → 增量索引（git log 快速路径）
     Note over B: .cache/ 本机私有，永不进 git
-    C->>R: clone（新机接入）
-    C->>C: dex reindex（全量路径一次）
-    C-->>C: 全功能可用（US-07）
+    C->>R: clone（新机接入①）
+    C->>C: 部署 config（[clients] 注册表）② + 本机凭据文件（0600）③
+    C->>C: dex reindex（全量路径一次）④
+    C-->>C: 全功能可用（US-07 四步接入）
     alt 罕见：A、B 同文件并发修改
         R-->>A: push 冲突
         A->>A: 人工合并（冲突即内容问题）
@@ -861,7 +864,7 @@ flowchart TD
 | `dex init` | `dex init [--path ~/dex]` | 目录骨架 + .gitignore | 0/8 已存在 |
 | `dex mcp` | `dex mcp --client <id>`（凭证经参数/环境变量） | stdio JSON-RPC 循环 | — |
 
-> 全局：非交互调用需 `--client <id>`（凭证经 `DEX_TOKEN` 环境变量或本机凭据文件注入）；交互式终端默认解析为 human 客户端（FR-10.3/10.4）；管理类命令（render/review/stale/lint/reindex/harvest/interview/init）仅 human 客户端可执行（FR-10.4）。
+> 全局：非交互调用需显式 `--client <id>`，token 自动从本机凭据文件（0600，不入 git）解析、`DEX_TOKEN` 环境变量可覆盖——命令行不明文传 token（FR-10.3，推演 W4）；交互式终端默认解析为 human 客户端；管理类命令权限分档（FR-10.4）：render/review/stale/lint/reindex/init 仅 human，harvest/interview 另允许显式授权的收割客户端（FR-12.5 映射，如 `dex harvest --from im-x --client harvest-im-x`）。
 
 ### 8.2 MCP 工具 JSON Schema
 
@@ -984,7 +987,7 @@ dex/
 | 内容注入 / 记忆投毒 | render 产物头部统一声明「数据而非指令」＋条目附来源标注；提案经周回顾人审确认门；矛盾显式化（superseded-by）防止错误结论静默扩散；密钥守卫防凭证入库（MINJA / AgentPoison 类威胁的内容层防御） |
 | 进程边界 | 无守护进程；MCP stdio 生命周期 = 客户端会话；无网络监听端口（NFR-1/2） |
 | 审计 | 一切写动作 = git commit（propose、journal 供稿、归位、否决、归档、改写），`git log` 即完整审计流；越权拒绝写入本机审计日志（`.cache/audit.log`，尽力而为、可随缓存重建丢失） |
-| 威胁模型边界 | 凭证防误配置、跨客户端最小授权、为远程网关提供身份载体；**不防同用户恶意进程**（token 本地可读、文件树为明文，后者物理不可防）；scope 白名单约束协议通道，不约束磁盘文件——「公司机不持有生活域」属 clone 内容问题而非授权配置问题（WORK_LIFE §5） |
+| 威胁模型边界 | 凭证防误配置、跨客户端最小授权、为远程网关提供身份载体；**不防同用户恶意进程**（token 本地可读、文件树为明文，后者物理不可防）；scope 白名单约束协议通道，不约束磁盘文件——「公司机不持有生活域」属 clone 内容问题而非授权配置问题（WORK_LIFE §8） |
 
 ---
 

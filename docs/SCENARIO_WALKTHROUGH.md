@@ -1,7 +1,7 @@
 # 用户场景业务流程推演（Scenario Walkthrough）
 
 > 项目：pokemon-remember-you（就记得是你）
-> 文档版本：v1.0 · 2026-09-24 · 状态：待评审
+> 文档版本：v1.1 · 2026-09-24 · 状态：待评审（v1.1：W1/W2/W4 已随需求/设计 v1.8 修复，§1.3 流程更新为最终口径；W3 留待接入文档）
 > 上游文档：[REQUIREMENTS.md](./REQUIREMENTS.md) v1.7（US-01～US-14）· [DESIGN.md](./DESIGN.md) v1.7
 > 定位：以 v1.7 机制对全部用户场景做**端到端业务流程推演**（dry-run）——每场景给出前置条件、逐步流程（含实际命令、git 动作、状态落点）与断言；推演暴露的衔接缺口记入「推演发现」（§6）并同步 [debt.md](./debt.md)。**本文不新增需求**，是需求/设计的验证性衍生文档。
 
@@ -65,7 +65,7 @@
 
 **流程**：
 1. **收割会话（技能驱动）**：编码 agent 会话内加载 `dex-bootstrap` 技能 + 连接器页 → 按需拉取（来源 CLI / 本地文件，agent 工具执行）→ 蒸馏（三判据 + 隐私红线 + 分流树，只收个人性内容）→ 全程自限三道缰绳：预算（`[harvest].budget`，超限即停并汇报）、完成判据（决策/人物/偏好/模式四象限）、拉取内容一律当数据；
-2. **落盘（命令门禁）**：`dex harvest --from im-x --limit 30`（FR-6.14 便利封装，不蒸馏）——加载连接器页与预算配置、管理 `.cache/harvest/` 暂存区、把技能产出的候选批量走 bootstrap 模式提案（守卫 0–8，首批 ≤30、confidence 降序，超出留暂存区分批送审）；
+2. **落盘（命令门禁）**：`dex harvest --from im-x --client harvest-im-x --limit 30`（FR-6.14 便利封装，不蒸馏；落盘身份 = 收割客户端——FR-12.5 映射、FR-10.4 分档授权）——加载连接器页与预算配置、管理 `.cache/harvest/` 暂存区、把技能产出的候选批量走 bootstrap 模式提案（守卫 0–8，首批 ≤30、confidence 降序，超出留暂存区分批送审）；
 3. **渐进面试**：`dex interview --round follow-up` 或 agent 会话顺手补问 → 增量 propose；
 4. **分批裁决**：周回顾分批清 inbox（单批 ≤15 分钟）。
 
@@ -73,9 +73,9 @@
 
 **断言（冷启动完成线）**：`person/` ≥10 条全带溯源；≥2 个常用项目有 `projects/` 内容；`dex render` 产物达注入预算 ~50%；agent 首次 `dex search` 有命中；首轮回顾分批完成。
 
-**推演发现**（⚠ 两个衔接缺口，详见 §6）：
-- **W1**：FR-10.4 把 `harvest` 列入「仅 human 可执行」的管理命令，但收割会话发生在 agent 会话里、由 agent 执行 `dex harvest`——非交互且非 human 身份，正面冲突；
-- **W2**：收割提案 source 是连接器源（如 `im-x`），但落盘走哪个客户端身份、`[harvest.sources]` 与 `[clients].allowed_sources` 如何打通，文档未定义。
+**推演发现**（✅ 均已随 v1.8 修复，详见 §6）：
+- **W1（已修复）**：FR-10.4 权限分档——harvest/interview 允许 human 或显式授权的收割客户端；
+- **W2（已修复）**：FR-12.5 收割客户端映射——`[clients."harvest-im-x"]`：scopes=[]、propose=true、allowed_sources=["im-x"]。
 
 ---
 
@@ -192,7 +192,7 @@
 
 **日常流程**：周回顾机多动作 = 多 commit → `git push` → 其他机 `git pull` → 各机 `dex reindex` 增量（`.cache/` 本机私有）；冲突罕见且即内容问题，人解决。
 
-**新机接入标准路径（推演补全的 checklist）**：
+**新机接入标准路径（推演补全，已回填 US-07 与设计 §6.5）**：
 1. `git clone` 私仓到 `~/dex`（DEX_ROOT 可覆盖）；
 2. 部署 config（`~/.config/dex/config.toml`：`[clients]` 注册表——随仓库或本机存放的取舍见 debt「config 多机一致性」）；
 3. 为本机客户端部署凭据文件（0600，不入 git）；
@@ -243,11 +243,11 @@
 
 ## 6. 推演发现汇总（已同步 debt.md）
 
-| # | 发现 | 级别 | 关联 |
-|---|---|---|---|
-| W1 | **FR-10.4「harvest/interview 仅 human」与 agentic 收割会话冲突**：收割发生在编码 agent 会话内、由 agent 非交互执行 `dex harvest`，按现行 FR-10.4 会被拒绝。建议：harvest/interview 移出「仅 human」清单，允许 human 或显式授权的收割客户端执行 | 高（文档矛盾，v1.7 引入） | US-13 / FR-10.4 / FR-6.14 |
-| W2 | **收割落盘身份未打通**：收割提案 source = 连接器源（im-x），但落盘客户端身份与 `[harvest.sources]` → `[clients].allowed_sources` 的映射未定义。建议：每个收割 source 对应一个收割客户端（`[clients."harvest-im-x"].allowed_sources = ["im-x"]`），会话经 `dex harvest --client harvest-im-x` 落盘 | 中（与 W1 一并裁决） | FR-4.7 / FR-12.5 / §2.5 |
-| W3 | **入口文件默认子目录 vs 工具读取位置**：FR-6.4 默认 `.zcode/AGENTS.md` 防冲突，但 AGENTS.md 事实标准位置是 repo 根——需接入兼容矩阵（认子目录 / `--out` 指根 / `@import` shim） | 中（接入文档职责） | FR-6.4 / US-02 |
-| W4 | **非交互 CLI 凭证注入路径未细化**：token 从本机凭据文件自动取还是必须 `DEX_TOKEN`；agent 无 TTY 环境如何免摩擦。建议：显式 `--client` + token 自动从凭据文件解析（0600），`DEX_TOKEN` 可覆盖 | 中 | FR-10.3 / US-02/03 |
-| — | v0 bootstrap 直写 inbox 无命令守卫（密钥/限流/幂等缺位）——「零代码」既定取舍，v1 收敛；接入文档写明 | 低（确认可接受） | US-01 / FR-4 组 |
-| — | 新机接入需部署 config + 凭据，无现成 checklist——已并入 debt「config 多机一致性」条目 | 低 | US-07 / FR-10.2 |
+| # | 发现 | 级别 | 关联 | 状态 |
+|---|---|---|---|---|
+| W1 | FR-10.4「harvest/interview 仅 human」与 agentic 收割会话冲突（agent 非交互执行 `dex harvest` 会被拒） | 高（文档矛盾，v1.7 引入） | US-13 / FR-10.4 / FR-6.14 | ✅ 已修复（v1.8 FR-10.4 权限分档） |
+| W2 | 收割落盘身份未打通：source=连接器源，客户端身份与 `[harvest.sources]` → `allowed_sources` 映射未定义 | 中 | FR-4.7 / FR-12.5 / §2.5 | ✅ 已修复（v1.8 FR-12.5 映射 + §2.5 示例转正） |
+| W3 | 入口文件默认子目录（FR-6.4）vs 工具事实标准读取位置（repo 根）——需接入兼容矩阵（认子目录 / `--out` 指根 / `@import` shim） | 中（接入文档职责） | FR-6.4 / US-02 | ⏳ 留待接入文档（debt） |
+| W4 | 非交互 CLI 凭证注入路径未细化（token 来源、agent 无 TTY 免摩擦） | 中 | FR-10.3 / US-02/03 | ✅ 已修复（v1.8 FR-10.3：凭据文件自动解析 + `DEX_TOKEN` 覆盖） |
+| — | v0 bootstrap 直写 inbox 无命令守卫（密钥/限流/幂等缺位）——「零代码」既定取舍，v1 收敛 | 低（确认可接受） | US-01 / FR-4 组 | ✅ 已记入需求 §8 风险表 |
+| — | 新机接入需部署 config + 凭据，无现成 checklist | 低 | US-07 / FR-10.2 | ✅ 已回填 US-07 四步 + 设计 §6.5（config 存放取舍仍在 debt） |

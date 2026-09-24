@@ -7,11 +7,11 @@
 
 ### 推演新增（2026-09-24 · 场景推演发现，详见 [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md) §6）
 
-- [ ] **W1（高·文档矛盾，v1.7 引入）**：FR-10.4 把 harvest/interview 列入「仅 human」管理命令，但收割会话发生在 agent 会话内、由 agent 非交互执行 `dex harvest`——按现行规则会被拒。建议：移出仅 human 清单，允许 human 或显式授权的收割客户端执行。
-- [ ] **W2**：收割落盘身份未打通——收割提案 source = 连接器源（im-x），落盘客户端与 `[harvest.sources]` → `[clients].allowed_sources` 的映射未定义。建议：每个收割 source 对应一个收割客户端（`[clients."harvest-im-x"].allowed_sources = ["im-x"]`），会话经 `dex harvest --client harvest-im-x` 落盘（与 W1 一并裁决）。
+- [x] **W1（高·文档矛盾，v1.7 引入）**：FR-10.4 把 harvest/interview 列入「仅 human」管理命令，与 agentic 收割会话冲突——**v1.8 已修**：权限分档，允许 human 或显式授权的收割客户端执行。
+- [x] **W2**：收割落盘身份未打通——**v1.8 已修**：FR-12.5 收割客户端映射（`[clients."harvest-<source>"]`：scopes=[]、propose=true、allowed_sources=[该 source]，设计 §2.5 示例转正）。
 - [ ] **W3**：入口文件默认子目录（FR-6.4，`.zcode/AGENTS.md`）vs 工具事实标准读取位置（repo 根）——需接入兼容矩阵（认子目录 / `--out` 指根 / `@import` shim），归接入文档。
-- [ ] **W4**：非交互 CLI 凭证注入路径未细化——token 从本机凭据文件自动取还是必须 `DEX_TOKEN`；建议显式 `--client` + 凭据文件自动解析（0600），`DEX_TOKEN` 覆盖。
-- [ ] v0 bootstrap 直写 inbox 无命令守卫（密钥/限流/幂等缺位）——「零代码」既定取舍、v1 收敛，接入文档写明；新机接入 checklist（config + 凭据部署）并入下方「config 多机一致性」。
+- [x] **W4**：非交互 CLI 凭证注入路径未细化——**v1.8 已修**：显式 `--client` + 凭据文件自动解析（0600），`DEX_TOKEN` 覆盖（FR-10.3）。
+- [x] v0 bootstrap 直写 inbox 无命令守卫——已记入需求 §8 风险表（既定取舍）；新机接入 checklist 已回填 US-07 四步 + 设计 §6.5（config 存放取舍仍开放，见下方 Medium 清单）。
 
 ### Medium（进入实施前建议收敛，或明确记为待定决策）
 
@@ -52,5 +52,9 @@
 ## 已完成（2026-09-24 · v1.7 评审修订）
 
 - [x] High 全部 7 项：journal 供稿矛盾（FR-5.4/6.13）、render 冲突策略（FR-6.4/退出码 10）、MCP 身份凭证（FR-10 组/[clients]）、dex_read scope 过滤（FR-7.3）、索引脏工作区调和（FR-8.3）、last_substantive v1 mtime 近似（FR-6.5/设计 §5.4）、harvest 职责定位（FR-6.14/FR-12.3）。
-- [x] 决策落地：keep-until 保留豁免（FR-2.10）、source 强制绑定（FR-4.7）、字数口径统一（FR-3.3/FR-4.3）、周回顾分批语义、per-client budget 配置（[clients].budget）、威胁模型边界声明（设计 §10）、harvest/interview FR 条目补齐（FR-6.14）、「公司机 clone 内容 vs 授权配置」边界说明（WORK_LIFE §5）。
+- [x] 决策落地：keep-until 保留豁免（FR-2.10）、source 强制绑定（FR-4.7）、字数口径统一（FR-3.3/FR-4.3）、周回顾分批语义、per-client budget 配置（[clients].budget）、威胁模型边界声明（设计 §10）、harvest/interview FR 条目补齐（FR-6.14）、「公司机 clone 内容 vs 授权配置」边界说明（WORK_LIFE §8）。
 - [x] 客观一致性：校验序 0–8 统一、propose 退出码 9 补齐、4KB→4000 字符统一、[mcp.clients]/[render.*]→[clients] 引用清零、dex-harvest 技能名对齐、[harvest].model 移除。
+
+## 已完成（2026-09-24 · v1.8 推演修订）
+
+- [x] W1 harvest 权限分档（FR-10.4）、W2 收割客户端映射（FR-12.5 + 设计 §2.5）、W4 token 注入路径（FR-10.3 + 设计 §8.1 全局注）、US-07 新机四步接入回填（含设计 §6.5）、v0 守卫缺位记入需求 §8 风险表。
