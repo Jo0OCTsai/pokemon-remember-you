@@ -65,7 +65,7 @@ flowchart LR
 
     subgraph HUB["Hub · 个人记忆中枢（git 私仓 · markdown 文件树）"]
         direction TB
-        INBOX["inbox/ 提案区<br/>agent 唯一可写位置"]
+        INBOX["inbox/ 提案区<br/>经 dex propose 写入（agent 提案写入面）"]
         SCOPE["scope 分层目录<br/>person/ · domains/ · apps/ · projects/"]
         JRNL["journal/ 每日一页<br/>各应用摘要 + 手写日志"]
         ARC["archive/ 归档"]
@@ -103,7 +103,7 @@ flowchart LR
 ├── apps/<app>/                     # 应用层：某应用专属的记忆（如待办判定模式）
 ├── projects/<project>/             # 项目层：个人的项目记忆（我的视角/例外/踩坑；团队指令归 repo 的 CLAUDE.md，dex 只收编散落的个人性内容）
 ├── journal/2026-09-20.md           # 情景层：每日一页，各应用摘要 + 手写日志汇流
-├── inbox/                          # 提案区：agent 唯一可写位置（带来源与证据）
+├── inbox/                          # 提案区：agent 提案写入面（经 dex propose，带来源与证据）；journal 供稿小节为第二写入面（FR-5.4）
 ├── archive/                        # 归档：保留原文，不再注入
 ├── index/                          # 生成式导览（MOC）：由工具生成，不手维护
 └── .cache/                         # 派生索引（FTS/向量），gitignore，每机重建
@@ -181,7 +181,7 @@ stateDiagram-v2
 |---|---|---|
 | 文件投影 | 零依赖底线 | `dex render <agent>` 把「该消费方 scope 的合并视图」渲染成入口文件（默认名 `AGENTS.md`，跨工具事实标准）放进其工作区；Claude Code 仅在工作区无 CLAUDE.md 时才读 AGENTS.md，故其消费方优先 `@import`——`~/.claude/CLAUDE.md` 里 `@~/dex/person/profile.md` 等引用即全局生效，项目级 `.claude/CLAUDE.md` 引 `projects/<proj>/`。注意：仓库外路径首次 import 会弹一次确认框；import 启动即全量加载、不省 context，条目变多后注入预算改由 `dex render` 承担 |
 | CLI | 应用与脚本集成 | `dex search <q> [--scope …]`（v1 用 ripgrep，v2 走派生索引）、`dex read`、`dex propose`（stdin 提案）、`dex render`、`dex stale`、`dex reindex`、`dex review`（生成周回顾清单） |
-| MCP stdio | 通用 agent 生态 | 工具面只三类：`dex_search` / `dex_read` / `dex_propose`——**没有直写 scope 的工具**；以 `dex mcp` 子命令随同一二进制分发，按需拉起，无常驻进程 |
+| MCP stdio | 通用 agent 生态 | 工具面只四类：`dex_search` / `dex_read` / `dex_propose` / `dex_journal`（journal 供稿，FR-5.4）——**没有直写 scope 的工具**；以 `dex mcp` 子命令随同一二进制分发，按需拉起，无常驻进程 |
 
 **配套技能（行为层，v0 起以纯 markdown 分发）**：协议定义 agent 能做什么，技能定义该怎么表现。本仓 `skills/` 为单一源（一技能一目录 + SKILL.md），v0 经 symlink 接入 Claude Code / ZCode / OpenCode；异构格式（Cursor rules 等）由 `dex render --skills` 生成薄适配器（FR-11.4，产物 gitignore）。最小技能集三个：
 

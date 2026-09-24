@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 定位：**使用指南层，非工具语义**——「工作 / 生活」是用户级分域约定（P3：目录即 scope、不做本体论）。本文以这一最常见分法为样本做场景调研；换一种分法（按客户三分、不分）同样适用，工具侧零改动。
-> 文档版本：v1.0 · 2026-09-23 · 状态：待评审
+> 文档版本：v1.1 · 2026-09-24 · 状态：待评审（v1.1：评审修订——[clients] 统一注册示例、授权边界诚实化（scope 约束协议通道不约束磁盘）、慢记忆 keep-until 建议）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）· [REQUIREMENTS.md](./REQUIREMENTS.md)（需求，§3.8/FR-3.7）· [DESIGN.md](./DESIGN.md)（设计）
 
 ---
@@ -45,19 +45,20 @@ apps/ projects/      ← 天然偏向 work（projects 基本都是）；apps 按
 ## 5. 消费方组合与最小授权（示例）
 
 ```toml
-[render.work-laptop-zcode]           # 示例分法的工作侧：公司机编码 agent
+[clients."work-laptop-zcode"]        # 示例分法的工作侧：公司机编码 agent（统一客户端注册，FR-10.1）
 scopes = ["person", "domains/work", "projects/current"]
+render = { out = ".zcode/AGENTS.md" }
 
-[mcp.clients."tg-bot"]               # 示例分法的生活侧：IM bot
+[clients."tg-bot"]                   # 示例分法的生活侧：IM bot
 scopes = ["person", "domains/life", "apps/todo"]
 propose = true
 
-[mcp.clients."cloud-writer"]         # 远程/第三方（US-08）：最小授权子集
+[clients."cloud-writer"]             # 远程/第三方（US-08）：经网关持凭证，最小授权子集
 scopes = ["person", "domains/work"]
 propose = false
 ```
 
-**最小授权原则**（语义中立，覆盖一切分法）：按消费方实际需要授予 scope 子集，默认全拒（FR-10.3）。公司环境的托管 agent「不挂个人库全量」是该原则的实例而非场景特例——多机同步（US-07）之外最易被忽视的暴露面。
+**最小授权原则**（语义中立，覆盖一切分法）：按消费方实际需要授予 scope 子集，默认全拒（FR-10.3）。公司环境的托管 agent「不挂个人库全量」是该原则的实例而非场景特例——多机同步（US-07）之外最易被忽视的暴露面。注意边界：scope 白名单约束的是 CLI/MCP 协议通道，**不改变磁盘内容**——公司机只要 clone 了仓库，生活域文件就在磁盘上；「公司机不持有生活记忆」须靠 clone 内容解决（独立远端/裁剪分支），属仓库内容问题而非授权配置问题（设计 §10 威胁模型）。
 
 ## 6. 记忆来源接入地图（按本分法组织）
 
@@ -112,7 +113,7 @@ propose = false
 
 ## 7. 节奏与参数建议（示例值，实现时定）
 
-- **衰减分档**：work 项目层缺省 90 天；life 慢记忆（人物页、健康模式）可放宽至 180 天——机制为 per-scope 覆盖（FR-6.5 / 设计 §5.4），数值是本分法下的示例；
+- **衰减分档**：work 项目层缺省 90 天；life 慢记忆（人物页、健康模式）可放宽至 180 天——机制为 per-scope 覆盖（FR-6.5 / 设计 §5.4），数值是本分法下的示例；慢记忆暂不归档时用 keep-until 到期注释「谢绝提醒」（FR-2.10），到期强制复审；
 - **回顾分组**：`dex review` 按一级域分组（FR-9.5）；本分法下可先 work 后 life，工作日碎片时间只清 work 段；
 - **升降级高频来源**：coding 场景（`projects/foo/` → `domains/work` 或跨场景成立则 `person/`），周回顾重点关照。
 
