@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）
-> 文档版本：v1.13 · 2026-09-25 · 状态：待评审（v1.13：安全补强——威胁模型单源化：新增 [SECURITY.md](./SECURITY.md)（NFR-8/§8 引用）；新增 FR-6.16 render 输出净化、FR-10.5 凭证生命周期、FR-10.6 守卫审计日志、FR-10.7 仓库层 config 变更提示、FR-11.7 发行物完整性与可信通道声明；§6 v1 验收补净化用例、§8 风险表补供应链/远端私仓两行；此前 v1.12：安装路径工具化——FR-6.9 `dex init` 澄清含 `git init` 与首次提交（幂等补齐 / git 缺失降级 warning）、新增 FR-11.6 `dex skills install`（发行物内嵌技能 + symlink 管理，取代 clone 依赖）、FR-10.4 管理命令清单 / US-01 / US-14 措辞同步；此前 v1.11：debt 清偿（Medium 16 + Low 14 全量）——注入优先级字典序权威化（FR-3.2/US-05）、收割暂存区迁 `inbox/staging/`（FR-6.14/FR-2.8）、周回顾七段权威段序（FR-6.6/FR-11.2/US-04）、近义预筛 v1 运行时不落 index/、空目录约束收窄（FR-2.9）、人速记归 journal（FR-4.2/FR-5.1）、FR-2.3 期别 v0、evidence ≤2000 字符（FR-4.1）、scope 越权整单拒绝（FR-7.3）、NFR-3 量化 P95、NFR-5 明示 git 例外（FR-4.5）、config 两层存放（FR-10.2/US-07）、FR-1.6 `.dex-ignore` 回补、FR-6.15 `dex index`、FR-9.5 `--group`、US-01/US-13/v1 验收措辞与量化；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§7 约束、US-02/US-14、FR-11 组、工具矩阵 §2.1），其余移入 TOOL_COMPATIBILITY.md 未纳入备查；更早 v1.9：W3 收口——入口文件策略矩阵化（FR-6.4/FR-6.12）；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
+> 文档版本：v1.15 · 2026-09-25 · 状态：待评审（v1.15：Claude Code AGENTS.md 统一——repo 根与用户级 `~/.claude/AGENTS.md` 均原生支持且为唯一入口，FR-6.4 去除 shim/回退口径（三工具统一根位）、FR-3.6/US-01 步骤 4/§3.7 个人记忆叠加位改 AGENTS.md，**全文档移除旧入口文件名引用**（Claude 侧仅认 AGENTS.md，含收割清单与团队文件描述）；v1.14：实施前评审修订——High：FR-2.8 顶层白名单补 `.dex/` 与系统杂项忽略策略、§3.3 流程图改检索/注入双分支（检索不做合并与预算，对齐 P5/US-02）；Medium：FR-3.1 person 恒在改白名单条件式＋journal 纳入恒排除并定义显式检索面、FR-6.1 缺省检索集=白名单∩四层（CLI/MCP 同口径）与内嵌 ripgrep 措辞、FR-6.5 stale 改单遍 git log 口径（复活即重置计时、git 缺失回退 mtime）、FR-2.2 src 注释两级作用域（条目级优先）、FR-3.2 补④终局稳定序、FR-6.4 手改检测拒绝覆盖＋--force/--dry-run 语义与 out 路径基准、FR-10.3 TTY human 免凭证、FR-4.1 幂等指针与 evidence 双件套适用范围（本地文件收割单件合法）、FR-2.8 inbox 滞留检查递归与 bootstrap 落盘统一顶层、FR-5.4/FR-4.3 journal 日限流与限流日界、FR-10.2 键级深合并指针、FR-6.11 lint --json 信封特例、FR-11.5/US-14 技能指针措辞、US-01/US-06/US-07/US-10/§6 验收与措辞修订、FR-1.4 v0 例外注记、NFR-5 git 使用面措辞、FR-2.10 两级并存优先级；v1.13：安全补强——威胁模型单源化：新增 [SECURITY.md](./SECURITY.md)（NFR-8/§8 引用）；新增 FR-6.16 render 输出净化、FR-10.5 凭证生命周期、FR-10.6 守卫审计日志、FR-10.7 仓库层 config 变更提示、FR-11.7 发行物完整性与可信通道声明；§6 v1 验收补净化用例、§8 风险表补供应链/远端私仓两行；此前 v1.12：安装路径工具化——FR-6.9 `dex init` 澄清含 `git init` 与首次提交（幂等补齐 / git 缺失降级 warning）、新增 FR-11.6 `dex skills install`（发行物内嵌技能 + symlink 管理，取代 clone 依赖）、FR-10.4 管理命令清单 / US-01 / US-14 措辞同步；此前 v1.11：debt 清偿（Medium 16 + Low 14 全量）——注入优先级字典序权威化（FR-3.2/US-05）、收割暂存区迁 `inbox/staging/`（FR-6.14/FR-2.8）、周回顾七段权威段序（FR-6.6/FR-11.2/US-04）、近义预筛 v1 运行时不落 index/、空目录约束收窄（FR-2.9）、人速记归 journal（FR-4.2/FR-5.1）、FR-2.3 期别 v0、evidence ≤2000 字符（FR-4.1）、scope 越权整单拒绝（FR-7.3）、NFR-3 量化 P95、NFR-5 明示 git 例外（FR-4.5）、config 两层存放（FR-10.2/US-07）、FR-1.6 `.dex-ignore` 回补、FR-6.15 `dex index`、FR-9.5 `--group`、US-01/US-13/v1 验收措辞与量化；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§7 约束、US-02/US-14、FR-11 组、工具矩阵 §2.1），其余移入 TOOL_COMPATIBILITY.md 未纳入备查；更早 v1.9：W3 收口——入口文件策略矩阵化（FR-6.4/FR-6.12）；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
 > 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）· [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md)（用户场景业务流程推演）· [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)（工具入口兼容矩阵）· [SECURITY.md](./SECURITY.md)（威胁模型与缓解登记）
 
 ---
@@ -19,7 +19,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 
 1. **跨应用记忆共享**：任何 agent / 应用按 scope 声明接入，读取与提案记忆，换工具不失忆。
 2. **人机共用的知识库**：同一棵文件树，人用编辑器 / Obsidian 直接维护，AI 经 MCP / CLI / 文件投影消费。
-3. **本地优先与主权**：全本地、git 管仓、无守护进程；人是唯一的知识写入口（周回顾确认），agent 永远只能提案。
+3. **本地优先与主权**：全本地、git 管仓、无守护进程；周回顾是唯一的**制度化**知识写入口（agent 提案的唯一归位通道），人的直接编辑是最高主权例外（US-05），agent 永远只能提案。
 4. **克制可维护**：强制结构只有「目录即 scope」，条目为纯 markdown 无 frontmatter，规避分类法腐化。
 
 ### 1.3 非目标（明确不做）
@@ -77,12 +77,12 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 
 **过程**：
 1. Alice 创建 git 私仓 `~/dex`，建立 `person/`、`domains/`、`apps/`、`projects/`、`journal/`、`inbox/`、`archive/`、`index/` 目录（v1 起 `dex init` 一键完成——含 `git init` 与首次提交、幂等补齐，FR-6.9；手动建仓等价合法）；
-2. 安装 `dex-bootstrap` 技能（symlink 本仓 `skills/`，见 FR-11；不支持技能的工具用附录引导词兜底），对任一编码 agent 发起冷启动：技能先采访 5 个核心问题（角色与主业／主力栈与工具／语言与沟通偏好／硬性禁区／常用输出格式），再扫描既有 CLAUDE.md / AGENTS.md / auto memory，产出 `person/profile.md`、`person/preferences.md` 与对应 `projects/<proj>/` 草稿——每条标源（面试条目指回原话、挖掘条目指回源文件，FR-2.7），全部落 `inbox/bootstrap/`，首批 ≤30 条（FR-4.3）；
+2. 安装 `dex-bootstrap` 技能（symlink 本仓 `skills/`，见 FR-11；不支持技能的工具用附录引导词兜底），对任一编码 agent 发起冷启动：技能先采访 5 个核心问题（角色与主业／主力栈与工具／语言与沟通偏好／硬性禁区／常用输出格式），再扫描既有 AGENTS.md / auto memory，产出 `person/profile.md`、`person/preferences.md` 与对应 `projects/<proj>/` 草稿——每条标源（面试条目指回原话、挖掘条目指回源文件，FR-2.7），全部落 `inbox/bootstrap/`（v0 技能直写窗口；v1 起统一经 `dex propose` 落 inbox 顶层，US-13），首批 ≤30 条（FR-4.3）；
 3. Alice 首次回顾：逐条对照来源裁决（编辑 / 确认 / 否决）后 `git mv` 归位——只有裁决，没有从零手写（手写可选，直接编辑的最高主权随时可用）；
-4. 在 `~/.claude/CLAUDE.md` 追加 `@~/dex/person/profile.md`、`@~/dex/person/preferences.md` 引用；项目仓库的 `.claude/CLAUDE.md` 追加 `@~/dex/projects/foo/`（仓库外路径首次 import 会弹一次确认框，同意即可；import 启动即全量加载、不省 context，条目变多后注入预算改由 `dex render` 承担）；
+4. 在个人项目仓库根 `AGENTS.md` 追加 `@~/dex/person/profile.md`、`@~/dex/person/preferences.md`、`@~/dex/projects/foo/` 引用（Claude Code 已原生支持 AGENTS.md，与 pi / ZCode 同位；用户级全局走 `~/.claude/AGENTS.md`；仓库外路径首次 import 会弹一次确认框，同意即可；import 启动即全量加载、不省 context，条目变多后注入预算改由 `dex render` 承担）；
 5. 用 Obsidian 打开 `~/dex` 作为 vault，日常直接编辑。
 
-**验收**：当天内，`person/` 经面试 + 收割有人确认归位 ≥10 条且每条带 src 溯源；Claude Code 在任意项目会话中已能遵守 Alice 的写作偏好；Obsidian 可正常打开与编辑；`git log` 有初始提交与首轮回顾提交。全程零代码、零安装，无需手写即可达成上述验收（手写为可选最高主权，US-05）。
+**验收**：当天内，`person/` 经面试 + 收割有人确认归位 ≥10 条且每条带 src 溯源；Claude Code 在任意项目会话中能引用到个人层内容（被问及写作偏好时回答与 `person/preferences.md` 条目一致）；Obsidian 可正常打开与编辑；`git log` 有初始提交与首轮回顾提交。全程零代码、零安装，无需手写即可达成上述验收（手写为可选最高主权，US-05）。
 
 ### US-02 编码 agent 按项目 scope 消费（v1/v2）
 
@@ -149,7 +149,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 2. 输出归档候选清单（文件、条目、最后实质变更日期、最近引用记录）；
 3. Alice 裁决：`git mv` 4 个文件到 `archive/projects/old-website/`、改写 1 个、保留 1 个（预期近期重启——加 `<!-- keep-until: 2026-12-15 预期重启 -->` 注释，到期前不再列示、到期复审，FR-2.10）。
 
-**验收**：归档文件原文保留、git 历史完整；归档后任何 scope 注入与检索默认不再包含 archive 内容；人重新启用只需 `git mv` 回 scope 目录。
+**验收**：归档文件原文保留、git 历史完整；归档后任何 scope 注入与检索默认不再包含 archive 内容；人重新启用只需 `git mv` 回 scope 目录（复活动作即重置衰减计时——v1 单遍口径触及即变更，FR-6.5）。
 
 ### US-07 多机同步（v0 起，git）
 
@@ -158,7 +158,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 
 **过程**：正常 `git pull / commit / push` 到私有仓库（自托管或平台私库）。Hub 写入低频（周回顾为主）、条目原子、纯文本，merge 友好；`.cache/` 被 gitignore，各机各自重建。冲突罕见且即内容问题，人解决。
 
-**新机接入**（四步）：① `git clone` 私仓到 `~/dex`（启用仓库层 config 时 `[clients]` 注册表随 clone 自动到位，FR-10.2）；② 部署本机层 config（`~/.config/dex/config.toml`：机器覆盖项与凭据文件路径）；③ 部署本机凭据文件（0600，不入 git）；④ `dex reindex`（全量一次）→ 全功能可用。
+**新机接入**（四步）：① `git clone` 私仓到 `~/dex`（启用仓库层 config 时 `[clients]` 注册表随 clone 自动到位，FR-10.2）；② 部署本机层 config（`~/.config/dex/config.toml`：机器覆盖项与凭据文件路径）；③ 部署本机凭据文件（0600，不入 git）；④ `dex reindex`（全量一次；v2 起命令，v0/v1 无索引层此步跳过）→ 全功能可用。
 
 **验收**：任一机器的手写编辑、周回顾动作可同步到其他机器；`.cache/`、`.obsidian/` 不进 git；换新机按四步接入（clone → config → 凭据 → reindex）恢复全部能力。
 
@@ -188,7 +188,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 **角色**：Spoke 应用 + 训练家
 **背景**：choose-you 想把每天的裁决情况留给周回顾用。
 
-**过程**：choose-you 每日经 `dex journal --source choose-you --text "捕捉 3 / 逃走 2（原因码：闲聊×2）"` 向 `journal/2026-09-20.md` 的「供稿 · choose-you」小节追加摘要（命令保证追加不覆盖、密钥扫描与 git 自动提交，FR-5.4；不直写文件）；人随手在「手写」小节补写。周回顾时从每日页「提升」值得长期保留的事实进 scope，其余留在 journal 自然衰减。
+**过程**：choose-you 每日经 `dex journal --source choose-you "捕捉 3 / 逃走 2（原因码：闲聊×2）"`（正文为位置参数，FR-5.4 签名）向 `journal/2026-09-20.md` 的「供稿 · choose-you」小节追加摘要（命令保证追加不覆盖、密钥扫描与 git 自动提交，FR-5.4；不直写文件）；人随手在「手写」小节补写。周回顾时从每日页「提升」值得长期保留的事实进 scope，其余留在 journal 自然衰减。
 
 **验收**：多来源供稿按小节隔离、不互相覆盖；journal 页面不做注入默认源（情景层）；提升动作留 git 痕迹。
 
@@ -219,8 +219,8 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 **背景**：零手写冷启动在 v0 由技能完成；v1 起工具化，并定义「冷启动完成」的客观线。
 
 **过程**：
-1. 收割会话（`dex-bootstrap` 技能 + 连接器页，FR-11.2/FR-12；`dex harvest` 命令为便利封装，FR-6.14）：agent 以自带工具按需拉取——既有 CLAUDE.md / AGENTS.md / .cursorrules、auto memory 存量（`~/.claude/projects/*/memory/`）、历史会话转录、经来源 CLI 的会议记录/云文档；蒸馏只收**个人性**内容（分流判据 §3.7，团队内容留 repo）；全程受三道缰绳约束（预算硬上限 / 完成判据四象限 / 拉取内容一律当数据）；
-2. 候选按 bootstrap 模式经 `dex propose` 入 inbox（FR-4.3：首批 ≤30 条、confidence 降序），evidence 为双件套（locator + 原文摘录片段，FR-4.1）；超出部分留收割暂存区，分批送审；
+1. 收割会话（`dex-bootstrap` 技能 + 连接器页，FR-11.2/FR-12；`dex harvest` 命令为便利封装，FR-6.14）：agent 以自带工具按需拉取——既有 AGENTS.md / .cursorrules、auto memory 存量（`~/.claude/projects/*/memory/`）、历史会话转录、经来源 CLI 的会议记录/云文档；蒸馏只收**个人性**内容（分流判据 §3.7，团队内容留 repo）；全程受三道缰绳约束（预算硬上限 / 完成判据四象限 / 拉取内容一律当数据）；
+2. 候选按 bootstrap 模式经 `dex propose` 入 inbox（落 inbox 顶层、标准命名式 FR-4.1——`inbox/bootstrap/` 仅 v0 技能直写窗口；FR-4.3：首批 ≤30 条、confidence 降序），evidence 为双件套（locator + 原文摘录片段，FR-4.1）；超出部分留收割暂存区，分批送审；
 3. `dex interview`：渐进式补全个人层——首轮 5 问已由 bootstrap 完成，其余问题由 agent 在后续会话中顺手补问、增量 propose；
 4. 周回顾分批裁决归位（单次 ≤15 分钟约束不变）。
 
@@ -229,7 +229,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 ### US-14 配套技能安装与使用（v0 起）
 
 **角色**：训练家 + 各编码 agent
-**背景**：协议（CLI/MCP）定义 agent 能做什么，技能定义该怎么表现；冷启动、提案纪律、周回顾的行为由技能承载，入口文件只留一行指针（渐进披露，不占常驻上下文）。
+**背景**：协议（CLI/MCP）定义 agent 能做什么，技能定义该怎么表现；冷启动、提案纪律、周回顾的行为由技能承载，入口文件的技能提示只留一行指针（渐进披露，不占常驻上下文；注入正文另计，FR-6.4）。
 
 **过程**：
 1. 一次性安装：v0——symlink 本仓 `skills/dex-*` 到 `~/.claude/skills/`、`~/.pi/agent/skills/`、`~/.zcode/skills/`（三工具技能目录，文档给安装命令，FR-11.3）；v1 起——`dex skills install` 一键探测装齐（发行物内嵌技能物化 + symlink，幂等 / 死链重建 / 冲突退出码 10，FR-11.6；clone 本仓不再是分发前置）；不支持技能的工具退化为附录引导词；
@@ -310,16 +310,17 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    REQ(["消费方发起检索/注入请求<br/>声明 scope：person + domains/coding + projects/foo"]) --> EXPAND["scope 展开<br/>person 恒在；按声明取目录并集<br/>inbox / archive / index / .cache 恒排除"]
+    REQ(["消费方发起检索/注入请求<br/>声明 scope：person + domains/coding + projects/foo"]) --> EXPAND["scope 展开<br/>person 恒在（仅当 ∈ 客户端白名单，FR-3.1）；按声明取目录并集<br/>journal / inbox / archive / index / .cache 恒不进缺省集（显式声明可检索，FR-3.1）"]
     EXPAND --> COLLECT["收集条目<br/>目录内 .md → 段落/要点级条目"]
-    COLLECT --> MERGE["优先级合并排序（字典序依序判定）<br/>① scope 具体性：projects ＞ apps ＞ domains ＞ person<br/>② 手写 ＞ 固化（有 src 注释＝固化，仅同级裁决）<br/>③ 新证据 ＞ 旧证据（git 最后实质变更）"]
+    COLLECT --> SEARCH["检索路径（dex search / dex_search）<br/>scope 过滤 + limit 截断<br/>不做合并与预算（P5：预算约束注入、不约束检索）"]
+    COLLECT --> MERGE["注入路径：优先级合并排序（字典序依序判定）<br/>① scope 具体性：projects ＞ apps ＞ domains ＞ person<br/>② 手写 ＞ 固化（有 src 注释＝固化，仅同级裁决）<br/>③ 新证据 ＞ 旧证据（最后实质变更，口径同 FR-6.5）"]
     MERGE --> CONFLICT{"同主题近义冲突？"}
     CONFLICT -->|"是"| KEEP["保留最高优先级者并注明来源<br/>（多处冗余是允许的，周回顾再合并）"]
     CONFLICT -->|"否"| NEXT["继续"]
     KEEP --> BUDGET
-    NEXT --> BUDGET["预算截断<br/>≤10 条 / ≤2000 字<br/>超出部分丢弃并输出 omitted 计数"]
+    NEXT --> BUDGET["预算截断<br/>≤10 条 / ≤2000 字<br/>超出部分整条丢弃并输出 omitted 计数<br/>（仅计预算截断项；冲突压制/superseded 排除另计）"]
     BUDGET --> OUT1["入口文件（dex render / @import）"]
-    BUDGET --> OUT2["检索结果（dex search / dex_search）"]
+    SEARCH --> OUT2["检索结果（limit 截断输出）"]
 ```
 
 ### 3.4 周回顾操作流程
@@ -383,7 +384,7 @@ sequenceDiagram
     HM->>GIT: git push
 
     GIT--)OM: pull（自动或手动）
-    OM->>OM: dex reindex 增量更新 .cache/（本机私有）
+    OM->>OM: dex reindex 增量更新 .cache/（本机私有，v2 起）
     OM->>OM: dex render 刷新入口文件
 
     CM->>CM: 手写 journal + 手写 scope 编辑
@@ -412,24 +413,24 @@ flowchart TD
 
 ### 3.7 开发项目的知识分流（AI coding 场景）
 
-开发项目的记忆本就散落在多层（repo 的 CLAUDE.md/AGENTS.md、agent 的 auto memory、repo 的 docs/ADR、git history）。Hub 不替代其中任何一层，只回答「一条新知识落到哪层」——判据：**属于项目还是属于我**。
+开发项目的记忆本就散落在多层（repo 的 AGENTS.md、agent 的 auto memory、repo 的 docs/ADR、git history）。Hub 不替代其中任何一层，只回答「一条新知识落到哪层」——判据：**属于项目还是属于我**。
 
 | 判据 | 去处 | 例子 |
 |---|---|---|
 | 只在本次会话/本工具有意义 | Spoke 过程数据（auto memory / journal 供稿） | 「这次重构改了哪些文件」 |
-| 属于项目、换机器换人也要 | repo（CLAUDE.md / docs / ADR） | 「构建命令 make dev」「选型决策记录」 |
+| 属于项目、换机器换人也要 | repo（AGENTS.md / docs / ADR） | 「构建命令 make dev」「选型决策记录」 |
 | 属于「我」在该项目的个人视角、不该 commit | Hub `projects/<proj>/` | 「owner 是李四、周五不发布」「我的部署踩坑」 |
 | 换个项目仍成立（关于「我」的开发模式） | Hub `person/` 或 `domains/coding/` | 「提交前必跑 lint」「偏好 uv 而非 pip」 |
 
 三层注入拓扑（互补不替代，优先级合并 FR-3.2 现成可用）：
 
 ```text
-repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动，随 repo 走）
+repo 的 AGENTS.md             → 团队指令层：build/test/规范（不动，随 repo 走）
 ~/dex/projects/<proj>/        → 个人项目记忆层：我的视角/例外/踩坑
 ~/dex/person/ + domains/      → 个人通用层：跨项目的我
 ```
 
-- repo 的 `.claude/CLAUDE.md` 加一行 `@~/dex/projects/<proj>/` 即完成叠加（US-01 步骤 4）；「收编散落的 CLAUDE.md」收窄定义为只收编**个人性**散落内容（CLAUDE.local.md、auto memory 里的个人偏好），团队文件留在 repo；
+- repo 根 `AGENTS.md`（个人仓库）或用户级 `~/.claude/AGENTS.md` 加一行 `@~/dex/projects/<proj>/` 即完成叠加（US-01 步骤 4）；「收编散落的个人配置」收窄定义为只收编**个人性**散落内容（auto memory 里的个人偏好等），团队文件留在 repo；
 - coding 是 scope 升降级的高频来源（`projects/foo/` → `domains/coding/`），周回顾 S4 重点关照；
 - 项目快照类事实（「本周把认证换成 OAuth」）默认留 journal 自然衰减，只有影响后续决策的才提升 `projects/`。
 
@@ -462,7 +463,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-1.1 | `dex` 数据仓库为 git 私仓，默认路径 `~/dex`，可经环境变量 `DEX_ROOT` / 配置覆盖 | P0 | v0 |
 | FR-1.2 | 顶层目录固定为：`person/ domains/ apps/ projects/ journal/ inbox/ archive/ index/`，另有 gitignore 的 `.cache/` | P0 | v0 |
 | FR-1.3 | scope 层级语义由目录路径承载：`person`（全应用默认可见）＞ `domains/<d>` ＞ `apps/<app>` / `projects/<proj>`；不建路由表、不做本体论 | P0 | v0 |
-| FR-1.4 | agent 可写位置仅两处且都必须经命令：提案写入 `inbox/`（经 `dex propose` / `dex_propose`），journal 供稿写入自有小节（经 `dex journal` / `dex_journal`，FR-5.4）——除此之外不存在任何 agent 写入面；`archive/` 内容默认不进入任何注入与检索，显式声明 scope（如 `--scope archive`）可检索 | P0 | v0 |
+| FR-1.4 | agent 可写位置仅两处且都必须经命令：提案写入 `inbox/`（经 `dex propose` / `dex_propose`），journal 供稿写入自有小节（经 `dex journal` / `dex_journal`，FR-5.4）——除此之外不存在任何 agent 写入面；`archive/` 内容默认不进入任何注入与检索，显式声明 scope（如 `--scope archive`）可检索（放行规则见 FR-3.1）；v0 窗口 bootstrap 技能直写 `inbox/bootstrap/` 为既定例外（§8 风险表），v1 起全部收敛命令门禁 | P0 | v0 |
 | FR-1.5 | `index/` 为工具生成的导览（MOC），人不手维护 | P2 | v3 |
 | FR-1.6 | `.dex-ignore`（可选，仓库根）：检索与注入的忽略规则（语法同 gitignore）——生效于检索遍历与注入收集（设计 §5.1 排除集），不改变 scope 白名单授权语义；lint 顶层白名单固定收录（FR-2.8） | P2 | v1 |
 
@@ -471,37 +472,37 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | 编号 | 需求 | 优先级 | 期别 |
 |---|---|---|---|
 | FR-2.1 | scope 内文件按主题一文件、一条一个要点，**不加 frontmatter** | P0 | v0 |
-| FR-2.2 | 来源追溯用 HTML 注释（如 `<!-- src: choose-you 固化 2026-09 · 证据×6 -->`），人读不干扰；有 src 注释视为「固化」内容，无则视为「手写」 | P0 | v0 |
+| FR-2.2 | 来源追溯用 HTML 注释（如 `<!-- src: choose-you 固化 2026-09 · 证据×6 -->`），人读不干扰；有 src 注释视为「固化」内容，无则视为「手写」；src 注释**两级作用域**（与 keep-until 同构，FR-2.10）：条目级（紧随条目行，仅裁决该条目）与文件级（紧随 H1 标题行，对该文件全部条目生效）——条目级优先于文件级，两级均无 = 手写（混合文件按条目判定）；格式与位置由 `dex lint` 校验（FR-6.11） | P0 | v0 |
 | FR-2.3 | 归位动作必须剥掉提案元数据，scope 内不残留 frontmatter（v0 人工归位即含该动作，US-01/FR-9.1；v1 起 `dex lint` 机检兜底，FR-6.11） | P0 | v0（人工）/v1（机检） |
 | FR-2.4 | 同一事实多处出现是允许的冗余；以 git 最近改写为准，周回顾合并 | P1 | v0 |
 | FR-2.5 | 矛盾显式化：人确认某条目被新结论推翻时，给旧条目加 `<!-- superseded-by: <目标条目/文件> -->` 注释而非静默删除；被标注条目不再参与注入；禁止任何一侧静默裁决矛盾 | P1 | v1 |
 | FR-2.6 | 从 journal 提升条目时建议补溯源注释（如 `<!-- src: journal 2026-09-20 -->`），强化周回顾与衰减裁决信号 | P2 | v1 |
 | FR-2.7 | bootstrap 来源条目（面试/收割）一律带 src 注释（如 `<!-- src: bootstrap-interview 2026-09-22 -->`、`<!-- src: harvest ~/.claude/projects/foo/memory -->`），视为固化档；人实质改写后可更新或抹掉注释即升手写 | P1 | v0 |
-| FR-2.8 | 结构不变量由 `dex lint` 机检：顶层白名单 = 八大 scope 目录（FR-1.2）＋固定合法项 `.git/`、`.cache/`、`.obsidian/`、`.gitignore`、`.dex-ignore`（名单外顶层目录/文件报错）、目录命名 kebab-case（文件名允许 CJK）、`domains/` 深度 ≤2、`apps/`/`projects/` 一级、inbox 顶层无 >7 天未裁决文件（周清空机检；`inbox/staging/` 收割暂存豁免——未送审缓冲，FR-6.14，转正时全量走守卫）、单文件条目数/字数软上限（超出提示拆分） | P1 | v1 |
+| FR-2.8 | 结构不变量由 `dex lint` 机检：顶层白名单 = 八大 scope 目录（FR-1.2）＋固定合法项 `.git/`、`.cache/`、`.obsidian/`、`.gitignore`、`.dex-ignore`、`.dex/`（仓库层 config 目录，FR-10.2）（名单外顶层目录/文件报错；`.DS_Store`/`Thumbs.db`/`desktop.ini` 系统杂项固定忽略）、目录命名 kebab-case（文件名允许 CJK）、`domains/` 深度 ≤2、`apps/`/`projects/` 一级、inbox 树无 >7 天未裁决文件（周清空机检，递归含子目录；`inbox/staging/` 收割暂存豁免——未送审缓冲，FR-6.14，转正时全量走守卫；v0 遗留 `inbox/bootstrap/` 草稿同受检、lint 提示归位或清理——v1 起 bootstrap 模式统一落 inbox 顶层，US-13）、单文件条目数/字数软上限（超出提示拆分） | P1 | v1 |
 | FR-2.9 | 目录准入「先内容后结构」：不建空目录（约束对象 = 内容驱动子目录——domains/apps/projects 及以下；顶层八大结构目录豁免，`journal/inbox/archive/index/` 允许长期为空，US-01 与 `dex init` 一次建齐合法，FR-6.9）；候选新域的散条先落最近 scope，同类条目 ≥10 且连续两周进入回顾清单才建域迁移；`domains/` 一级软预算 ≤8（超出 lint 提示合并）；目录改名走 scope 变更协议（`git mv` + 同步 config/render/MCP 白名单/@import 引用 + 提交留痕）——目录即消费方声明的 API，稳定性即契约 | P1 | v1 |
-| FR-2.10 | 保留豁免（keep-until）：衰减候选被裁决「保留」时，在条目加 `<!-- keep-until: YYYY-MM-DD 原因 -->` 注释——到期前 `dex stale` 不再列示（条目保持活性、照常注入与检索），到期后重新进入清单强制复审（豁免永远不是永久决定）；keep-until 属注释类变更，不计实质变更（不重置衰减计时）；格式由 `dex lint` 校验，条目实质变更后残留的过期注释由 lint 提示清理；keep-until 注释两级作用域：条目级（紧随条目行）与文件级（紧随 H1 标题行、对该文件全部条目生效——「预期重启」类项目级豁免用文件级），lint 校验两级格式与位置 | P1 | v1 |
+| FR-2.10 | 保留豁免（keep-until）：衰减候选被裁决「保留」时，在条目加 `<!-- keep-until: YYYY-MM-DD 原因 -->` 注释——到期前 `dex stale` 不再列示（条目保持活性、照常注入与检索），到期后重新进入清单强制复审（豁免永远不是永久决定）；keep-until 属注释类变更，不计实质变更（不重置衰减计时）；格式由 `dex lint` 校验，条目实质变更后残留的过期注释由 lint 提示清理；keep-until 注释两级作用域：条目级（紧随条目行）与文件级（紧随 H1 标题行、对该文件全部条目生效——「预期重启」类项目级豁免用文件级），lint 校验两级格式与位置；条目级与文件级并存时**条目级优先**（更具体者胜） | P1 | v1 |
 
 ### 4.3 scope 声明与注入（FR-3）
 
 | 编号 | 需求 | 优先级 | 期别 |
 |---|---|---|---|
-| FR-3.1 | 消费方声明 scope 列表（如 `person,domains/coding,projects/foo`）；`person` 恒在并集；`inbox/archive/index/.cache` 恒排除 | P0 | v1 |
-| FR-3.2 | 合并优先级为**字典序比较器**（依序判定，先①后②后③）：① 具体 ＞ 泛化（projects ＞ apps ＞ domains ＞ person）→ ② 手写 ＞ 固化（**仅同级 scope 之间裁决**——如 projects/ 固化例外仍压过 person/ 手写通则，与 FR-3.4 一致）→ ③ 新证据 ＞ 旧证据 | P0 | v1 |
-| FR-3.3 | 注入预算：默认 ≤10 条 / ≤2000 字，可按客户端配置（`[clients.<id>].budget`）；「字」= Unicode 字符数，含 markdown 语法、不含 src/superseded-by/keep-until 等注释；超限按优先级截断并输出 omitted 计数 | P0 | v1 |
+| FR-3.1 | 消费方声明 scope 列表（如 `person,domains/coding,projects/foo`）；`person` 恒在并集——**仅当 person ∈ 该客户端白名单**（未授权 person 的客户端不强制并入，fail-closed 与 FR-7.3 一致；读客户端注册建议含 person，FR-3.7）；`journal/inbox/archive/index/.cache` 恒不进缺省检索集与注入集——显式声明 `--scope archive`（FR-1.4）/`--scope journal` 可检索，但须通过白名单判定（human 全量可读恒通过，FR-10.4）；注入管线恒排除不变 | P0 | v1 |
+| FR-3.2 | 合并优先级为**字典序比较器**（依序判定，先①后②后③）：① 具体 ＞ 泛化（projects ＞ apps ＞ domains ＞ person）→ ② 手写 ＞ 固化（**仅同级 scope 之间裁决**——如 projects/ 固化例外仍压过 person/ 手写通则，与 FR-3.4 一致）→ ③ 新证据 ＞ 旧证据 → ④ 终局稳定序：`path:line` 字典序（前三级全平手时保证全序——render 金样本跨实现可复现，设计 §5.2） | P0 | v1 |
+| FR-3.3 | 注入预算：默认 ≤10 条 / ≤2000 字，可按客户端配置（`[clients.<id>].budget`）；「字」= Unicode 字符数，含 markdown 语法、不含 src/superseded-by/keep-until 等注释；超限按优先级截断并输出 omitted 计数（omitted 仅计因预算截断丢弃的条目；冲突压制/superseded 排除另行计数，设计 §5.2-4） | P0 | v1 |
 | FR-3.4 | 项目级与个人层冲突时，注入项目级并注明来源 | P1 | v1 |
 | FR-3.5 | scope 子目录递归生效（`projects/foo/**` 全部属于 `projects/foo`） | P0 | v1 |
-| FR-3.6 | `projects/<proj>` 的 `<proj>` 命名约定：默认取 git remote 仓库名，个人别名经配置映射（保证多机多工具一致）；repo 个人记忆的叠加经 repo 内 CLAUDE.md 一行 `@import` 或 `dex render` 完成（分流判据见 §3.7） | P1 | v1 |
+| FR-3.6 | `projects/<proj>` 的 `<proj>` 命名约定：默认取 git remote 仓库名，个人别名经配置映射（保证多机多工具一致）；repo 个人记忆的叠加经 repo 内 AGENTS.md 一行 `@import` 或 `dex render` 完成（分流判据见 §3.7） | P1 | v1 |
 | FR-3.7 | scope 语义中立：工具不内置任何分域本体（工作/生活等分法均为用户约定，指南见 WORK_LIFE_SCENARIOS.md）；授权遵循最小化原则——按消费方实际需要授予 scope 子集（FR-10.3 默认全拒兜底）；`person/` 恒注入（FR-3.1）⇒ 只宜存放愿意让全部消费方看到的通用自我事实 | P1 | v1 |
 
 ### 4.4 inbox 提案协议（FR-4）
 
 | 编号 | 需求 | 优先级 | 期别 |
 |---|---|---|---|
-| FR-4.1 | 提案文件落 `inbox/`，命名含日期、来源与短 id；frontmatter 字段：`source`（必填）、`kind`（fact/preference/pattern，必填）、`confidence`（0–100，可选）、`evidence`（必填）；evidence 定位为人审时的查证指针而非永久引用（源文件后续清理允许悬空，审结即完成使命）；收割类提案的 evidence 为双件套：locator（回源指针）＋蒸馏时抓取的原文摘录片段（回放默认用片段，不依赖源在线，设计 §5.7）；evidence 总长 ≤2000 字符（Unicode 字符数；locator＋摘录片段合计同限——防绕过正文上限的洪水向量） | P0 | v1 |
+| FR-4.1 | 提案文件落 `inbox/`，命名含日期、来源与短 id；frontmatter 字段：`source`（必填）、`kind`（fact/preference/pattern，必填）、`confidence`（0–100，可选）、`evidence`（必填）；evidence 定位为人审时的查证指针而非永久引用（源文件后续清理允许悬空，审结即完成使命）；收割类提案的 evidence：**连接器收割**（FR-12 外部来源）为双件套——locator（回源指针）＋蒸馏时抓取的原文摘录片段（回放默认用片段，不依赖源在线，设计 §5.7）；**本地文件收割**（auto memory、既有 AGENTS.md，US-12）locator 即文件路径、原文可直接回放、摘录可选（单件合法）；evidence 总长 ≤2000 字符（Unicode 字符数；locator＋摘录片段合计同限——防绕过正文上限的洪水向量）；幂等（同 source+kind+content 的未裁决提案重提交返回既有文件）与 shortid 生成/碰撞规则见设计 §2.3/§5.5 | P0 | v1 |
 | FR-4.2 | 无 `source` 或 `evidence` 的提案在写入时即被拒绝（并在周回顾中直接否决存量无证据提案）；人速记/剪藏默认归 journal 手写小节（FR-5.1）、不走 inbox——证据必填的提案协议面向 agent；人显式自提案经 `dex propose --source human` 并自拟 evidence（FR-4.7） | P0 | v1 |
-| FR-4.3 | 提案正文大小限制（默认 4000 字符，Unicode 字符数，CLI 与 MCP 同一口径）；单 source 每日限流（默认 20 条，视为异常上限——常态提案远低于此，持续触顶说明该 source 异常），均可配置；周回顾按「单批 ≤15 分钟、分批直至清空」消化 inbox（§3.4）；bootstrap 模式例外：冷启动收割首批入 inbox ≤30 条（confidence 降序），超出留收割暂存区分批送审（US-13） | P1 | v1 |
+| FR-4.3 | 提案正文大小限制（默认 4000 字符，Unicode 字符数，CLI 与 MCP 同一口径）；单 source 每日限流（默认 20 条，视为异常上限——常态提案远低于此，持续触顶说明该 source 异常），均可配置（「每日」= 本地时区自然日，计数按当日已落盘提案——校验失败被拒不落盘、不计数）；周回顾按「单批 ≤15 分钟、分批直至清空」消化 inbox（§3.4）；bootstrap 模式例外：冷启动收割首批入 inbox ≤30 条（confidence 降序），超出留收割暂存区分批送审（US-13） | P1 | v1 |
 | FR-4.4 | `inbox/` 周清空约束：`dex review` 显式提示未清空项，不允许堆积成第二待办清单 | P1 | v1 |
-| FR-4.5 | 提案写入即 git 自动提交（留痕），提交信息含 source（模板全集见设计 §2.3）；git 为唯一已声明外部依赖（NFR-5）——不可用时降级为仅落盘不提交 + warning（数据不丢、留痕缺失），可经 config `[git].auto_commit = false` 关闭 | P1 | v1 |
+| FR-4.5 | 提案写入即 git 自动提交（留痕），提交信息含 source（模板全集见设计 §2.3）；git 为唯一已声明外部依赖（NFR-5）——不可用时降级为仅落盘不提交 + warning（数据不丢、留痕缺失），可经 config `[git].auto_commit = false` 关闭；同机并发自动提交的 index.lock 退避与错误码见设计 §5.5（E_REPO_STATE·8） | P1 | v1 |
 | FR-4.6 | `dex propose` 做机械密钥模式扫描（gitleaks 类正则；默认拒绝、可配置为仅警告），不做语义内容审查——人是裁决者；`dex journal` 供稿同款扫描（FR-5.4）；手写路径建议配置同款 git pre-commit 扫描 | P1 | v1 |
 | FR-4.7 | source 强制绑定客户端身份：每个客户端配 allowed_sources 集合（默认 = {客户端 id}），propose 与 journal 供稿的 source 必须属于该集合，否则拒绝——防伪报 source 绕过 per-source 限流与伪造审计；human 客户端限定 source = human；收割脚本/收割会话经注册显式授予其连接器 source（如 harvest-im-x 客户端授 im-x） | P0 | v1 |
 
@@ -512,23 +513,23 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-5.1 | 每日一页 `journal/YYYY-MM-DD.md`；结构为「供稿 · <source>」小节（应用摘要）+「手写」小节（人）；「手写」小节同时是人速记/剪藏的默认落点（提案生命周期「人直接捕获」路径——不经 inbox 与提案协议，FR-4.2） | P0 | v0 |
 | FR-5.2 | 多来源供稿按小节隔离，追加不覆盖；同日缺页可由供稿方或人创建 | P1 | v1 |
 | FR-5.3 | journal 属情景层，默认不进入注入 scope；其价值经周回顾「提升」进入 scope | P0 | v0 |
-| FR-5.4 | 供稿命令收敛：journal 供稿仅经 `dex journal --source S [--date D] [msg|-]`（MCP 工具 `dex_journal` 同语义）——由 dex 保证小节定位与追加不覆盖（小节不存在则创建、同日重复供稿追加至小节尾部）、密钥模式扫描（FR-4.6 同款）、git 自动提交（FR-4.5 同款）、source 客户端绑定（FR-4.7）；供稿方不得绕过命令直写文件 | P0 | v1 |
+| FR-5.4 | 供稿命令收敛：journal 供稿仅经 `dex journal --source S [--date D] [msg|-]`（MCP 工具 `dex_journal` 同语义）——由 dex 保证小节定位与追加不覆盖（小节不存在则创建、同日重复供稿追加至小节尾部）、密钥模式扫描（FR-4.6 同款）、git 自动提交（FR-4.5 同款）、source 客户端绑定（FR-4.7）、日限流（`journal_per_day` 缺省 60，防供稿洪水——守卫子集为 0/1/5/6/8，设计 §5.5）；供稿方不得绕过命令直写文件 | P0 | v1 |
 
 ### 4.6 CLI 命令集（FR-6）
 
 | 编号 | 需求 | 优先级 | 期别 |
 |---|---|---|---|
-| FR-6.1 | `dex search <query> [--scope …] [--format text/json] [--limit N]`：v1 基于 ripgrep 全文检索；v2 优先走 FTS 派生索引，miss/损坏时降级 ripgrep | P0 | v1/v2 |
+| FR-6.1 | `dex search <query> [--scope …] [--format text/json] [--limit N]`：v1 基于内嵌 ripgrep 同源引擎的全文检索（静态链接进二进制，不新增外部可执行依赖——NFR-5 口径不变，设计 §1.4）；v2 优先走 FTS 派生索引，miss/损坏时降级 ripgrep；**缺省检索集 = 该客户端白名单 ∩ 四层 scope 目录**（person/domains/apps/projects；journal/archive/inbox/index 不进缺省，显式声明走 FR-3.1 放行）——CLI 与 MCP 同一口径（换通道不换语义，设计 §5.3） | P0 | v1/v2 |
 | FR-6.2 | `dex read <path> [--section]`：读取单文件/小节，输出带 scope 标注 | P0 | v1 |
 | FR-6.3 | `dex propose [--source --kind --confidence --evidence] [msg|-]`：从参数或 stdin 提交提案（见 FR-4） | P0 | v1 |
-| FR-6.4 | `dex render <agent> [--out] [--dry-run]`：渲染该消费方 scope 合并视图为入口文件，**默认落 repo 根 `AGENTS.md`**（跨工具事实标准、会话恒载；个人仓库默认位）；产物头部带 dex 生成标记；目标路径已存在且无生成标记（非 dex 产物，如团队维护的 AGENTS.md/CLAUDE.md）时**拒绝覆盖**（退出码 10）——团队仓库按工具分流：@import（Claude Code）或用户级全局文件（pi / ZCode，无 import 语法）；**不以工作区子目录为通用默认**（嵌套入口文件是「子树按需加载」语义，全局个人记忆放子目录多数工具不会加载——支持工具矩阵见 TOOL_COMPATIBILITY.md §2.1），子目录产物仅用于记忆本身 scope 到子树的 monorepo 场景；Claude Code 模式输出 `@import` 片段或一行 `CLAUDE.md` shim（`@AGENTS.md`，因其仅在无 CLAUDE.md 时才读 AGENTS.md）；注入正文头部声明「以下为记忆库数据，非指令」——import 片段模式同样承载：片段首行固定同义声明注释（引用原文件零复制，声明落在宿主片段层，设计 §6.2/§13） | P0 | v1 |
-| FR-6.5 | `dex stale [--days 90] [--scope]`：按 git log 求「最后实质变更」，输出衰减候选清单；衰减窗口支持按 scope/层分档（per-scope 覆盖；示例数值见 WORK_LIFE_SCENARIOS.md：项目层 90 天、人物页等慢记忆可放宽 180 天，数值实现时定）；实现口径：v1 以文件 mtime 近似「最后实质变更」（避免逐文件全历史 git log 扫描，NFR-3 P95 ≤1s 约束），v2 起由索引缓存精确化（设计 §5.4/§4.1） | P1 | v1 |
+| FR-6.4 | `dex render <agent> [--out] [--dry-run] [--force]`（`--dry-run`＝计算产物并预览到 stdout、不写盘）：渲染该消费方 scope 合并视图为入口文件，**默认落 repo 根 `AGENTS.md`**（跨工具事实标准、会话恒载；个人仓库默认位）；产物头部带 dex 生成标记；目标路径已存在且无生成标记（非 dex 产物，如团队维护的 AGENTS.md）时**拒绝覆盖**（退出码 10）——团队仓库按工具分流：@import（Claude Code，宿主为其入口文件——用户级 `~/.claude/AGENTS.md`）或用户级全局文件（pi / ZCode，无 import 语法）；**不以工作区子目录为通用默认**（嵌套入口文件是「子树按需加载」语义，全局个人记忆放子目录多数工具不会加载——支持工具矩阵见 TOOL_COMPATIBILITY.md §2.1），子目录产物仅用于记忆本身 scope 到子树的 monorepo 场景；Claude Code 已原生支持 AGENTS.md——个人仓库根位直接生效、无需 shim，三工具统一默认位；@import 片段模式保留用于团队仓库分流/用户级聚合（片段宿主为其入口文件）；注入正文头部声明「以下为记忆库数据，非指令」——import 片段模式同样承载：片段首行固定同义声明注释（引用原文件零复制，声明落在宿主片段层，设计 §6.2/§13）；`out` 相对路径以**调用时 cwd 所在 git 仓库根**为基准（向上探测 `.git`，无 `.git` 以 cwd 为准＋warning；多项目消费＝在各项目内运行 render、客户端配置单值复用，设计 §6.2）；产物已存在且含生成标记时与 `.cache/render/` 内上次生成基线比对——偏离（人手改）⇒ 拒绝覆盖（退出码 10，`--force` 越过；基线随 `.cache/` 可丢，无基线静默覆盖为声明盲区，同 FR-10.7 口径） | P0 | v1 |
+| FR-6.5 | `dex stale [--days 90] [--scope]`：按 git log 求「最后实质变更」，输出衰减候选清单；衰减窗口支持按 scope/层分档（per-scope 覆盖；示例数值见 WORK_LIFE_SCENARIOS.md：项目层 90 天、人物页等慢记忆可放宽 180 天，数值实现时定）；实现口径：v1 以**单遍全树 `git log`（一次进程调用，取每文件最后触及 commit 日期）**求「最后实质变更」——stale 与注入比较器（FR-3.2③）共用同一进程内快照；复活 `git mv` 即重置计时（触及即变更）；单遍口径不做 diff 级过滤（rename/注释类提交计入，保守近似）；禁止逐文件 `git log --follow` 全历史扫描（万条目级性能）；v2 起由索引 `files.last_commit` 缓存精确化并做 diff 级过滤（注释类变更不计，FR-2.10；设计 §5.4/§4.1）；git 不可用（NFR-5）时回退文件 mtime 近似 + W_GIT_UNAVAILABLE（降级成功口径，设计 §8.3-7） | P1 | v1 |
 | FR-6.6 | `dex review [--week] [--group <一级域前缀>]`：汇总周回顾清单，**权威七段段序**（本条为段数与段序的唯一口径）：① lint 体检（FR-6.11）② inbox 待裁决提案 ③ journal 提升候选 ④ 衰减清单＋Spoke 使用周报粘贴区 ⑤ scope 升降级候选 ⑥ 近义预筛与矛盾组（运行时字符串相似度聚类，仅聚类不裁决、不落不依赖 `index/`——`index/` 为 v3 导览，FR-1.5）⑦ 结构整理候选（FR-2.8/2.9 结构面）；清单按一级域/scope 前缀分组输出（FR-9.5），`--group` 仅输出单组 | P1 | v1 |
 | FR-6.7 | `dex reindex [--force]`：重建 `.cache/` 派生索引 | P1 | v2 |
 | FR-6.8 | `dex mcp`：以子命令启动 MCP stdio server | P0 | v2 |
 | FR-6.9 | `dex init [--path]`：生成八大目录骨架与 `.gitignore`（脚手架，非必需——手动建仓等价合法，US-01；空目录豁免见 FR-2.9）；目标目录尚非 git 仓库时执行 `git init` 并创建首次提交（空骨架 commit——git log 从初始提交起全程留痕，与 US-01 手动路径同口径）；已在 git 仓库内运行则幂等补齐缺失骨架（不覆盖已有文件），已完整初始化 → 退出码 8；git 缺失时骨架照建、版本控制初始化降级为 warning 不阻断（FR-4.5 同口径） | P2 | v1 |
 | FR-6.10 | 所有命令支持 `--json` 机器可读输出与稳定退出码；`--json` ≡ `--format json`（同一开关的两种拼写，同给冲突时 `--format` 优先）；JSON 输出统一信封与 `E_*/W_*` 错误/警告枚举见设计 §8.4 | P1 | v1 |
-| FR-6.11 | `dex lint`：结构体检——scope 内 frontmatter 残留、inbox 命名与必填字段、archive 镜像路径一致性、src/superseded-by/keep-until 注释格式（含 keep-until 过期残留与两级作用域位置校验，FR-2.10）、superseded-by 目标存在性（目标被归档/删除后悬空提示，FR-2.5）、可疑密钥模式；结构不变量与目录准入检查（FR-2.8/2.9：顶层白名单、命名/深度、目录软预算、空目录、inbox 滞留 >7 天、大文件提示、悬空 scope 引用）；输出问题清单（结果并入 `dex review` 首段） | P1 | v1 |
+| FR-6.11 | `dex lint`：结构体检——scope 内 frontmatter 残留、inbox 命名与必填字段、archive 镜像路径一致性、src/superseded-by/keep-until 注释格式（含 keep-until 过期残留与两级作用域位置校验，FR-2.10）、superseded-by 目标存在性（目标被归档/删除后悬空提示，FR-2.5）、可疑密钥模式；结构不变量与目录准入检查（FR-2.8/2.9：顶层白名单、命名/深度、目录软预算、空目录、inbox 滞留 >7 天、大文件提示、悬空 scope 引用）；输出问题清单（结果并入 `dex review` 首段）；发现问题时退出码 1 但 `--json` 信封 ok=true、问题走 `data.findings`（lint 语义是「产出报告」而非「操作失败」的信封特例，设计 §8.4） | P1 | v1 |
 | FR-6.12 | `dex render` 以 AGENTS.md 为源支持生成各工具适配格式（如 `.claude/rules/`、`.cursor/rules/*.mdc` 路径作用域规则——团队仓库分流用，见 TOOL_COMPATIBILITY.md §3）；适配产物为生成物，人不手维护 | P2 | v2 |
 | FR-6.13 | `dex journal`：journal 供稿追加的唯一合法通道（CLI 与 MCP 共用同一校验，见 FR-5.4） | P0 | v1 |
 | FR-6.14 | `dex harvest` / `dex interview` 为收割会话**便利封装**（不蒸馏）：harvest 加载指定连接器页与预算配置、管理收割暂存区（`inbox/staging/<source>/`——git 跟踪、随仓库多机同步；待审候选属数据非缓存，不可因删 `.cache/` 丢失，FR-8.4/NFR-4 语义不变；staging 豁免 inbox 滞留 lint（FR-2.8），转正时全量走守卫）、把收割技能产出的候选批量走 bootstrap 模式提案（FR-4.3）；interview 输出渐进式面试草稿提案——蒸馏由 `dex-bootstrap` 技能（agent 会话）完成，命令只提供载荷与门禁（FR-12.4 实现分流的 CLI 侧落点） | P1 | v1 |
@@ -541,7 +542,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 |---|---|---|---|
 | FR-7.1 | 工具仅四类：`dex_search`、`dex_read`、`dex_propose`、`dex_journal`；**没有直写 scope 的工具** | P0 | v2 |
 | FR-7.2 | `dex mcp` 随 CLI 同一二进制分发，stdio 按需拉起，无常驻进程 | P0 | v2 |
-| FR-7.3 | 读与检索按客户端 scopes 强制过滤（CLI 与 MCP 同一规则：`dex read` / `dex_search` 解析出的 scope 必须落在调用客户端白名单内，否则拒绝）；默认拒绝未注册客户端；`dex_read` 请求 journal/inbox 等路径时同样按白名单判定；越权判定为**整单拒绝**（不静默剔除越权项后继续——调用方必须感知申请被拒，防误以为获得完整范围）；MCP `dex_search` 的 `scope` 参数缺省 = 该客户端白名单全集（省略即按已授权范围检索） | P0 | v2 |
+| FR-7.3 | 读与检索按客户端 scopes 强制过滤（CLI 与 MCP 同一规则：`dex read` / `dex_search` 解析出的 scope 必须落在调用客户端白名单内，否则拒绝）；**默认拒绝未注册客户端**；`dex_read` 请求 journal/inbox 等路径时同样按白名单判定——journal/inbox 属显式授权面（白名单含该 scope 或 human 全量可读才放行，FR-3.1）；越权判定为**整单拒绝**（不静默剔除越权项后继续——调用方必须感知申请被拒，防误以为获得完整范围）；MCP `dex_search` 的 `scope` 参数缺省 = 该客户端白名单全集（∩ 可检索缺省集：四层 scope 目录，CLI 与 MCP 同口径，FR-6.1/设计 §5.3；省略即按已授权范围检索） | P0 | v2 |
 | FR-7.4 | MCP 会话的 propose 同样受 FR-4 校验与限流 | P0 | v2 |
 
 ### 4.8 派生索引（FR-8）
@@ -568,11 +569,11 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | 编号 | 需求 | 优先级 | 期别 |
 |---|---|---|---|
 | FR-10.1 | 消费方统一注册为客户端（`[clients.<id>]`，人也是客户端）：凭证（token）、scopes（读授权）、propose（提案权）、allowed_sources（FR-4.7）、budget（FR-3.3）、rate_limit、render 输出定义（out/format）；CLI 与 MCP 共用同一注册表——换通道不换身份与语义 | P0 | v1（CLI）/v2（MCP） |
-| FR-10.2 | 配置为纯文本（TOML）**两层存放**并文档化：仓库层 `~/dex/.dex/config.toml`（可选，git 跟踪）承载非凭证配置（[clients] 注册表、budget/stale/harvest 等，多机随 clone/pull 同步）＋ 本机层 `~/.config/dex/config.toml`（必选缺省）承载机器特有覆盖与凭据文件路径，**同键本机层覆盖仓库层**；客户端凭证存本机凭据文件（0600 权限，不入 git）——凭证永不进仓库层 | P1 | v1 |
-| FR-10.3 | 每个客户端持有独立凭证：非交互调用（脚本/Spoke/远程网关）必须显式 `--client <id>`，token 自动从本机凭据文件（0600，不入 git）解析、`DEX_TOKEN` 环境变量可覆盖——命令行不明文传 token；交互式终端默认解析为 human 客户端；未注册或无凭证 = 全拒 | P0 | v1 |
+| FR-10.2 | 配置为纯文本（TOML）**两层存放**并文档化：仓库层 `~/dex/.dex/config.toml`（可选，git 跟踪）承载非凭证配置（[clients] 注册表、budget/stale/harvest 等，多机随 clone/pull 同步）＋ 本机层 `~/.config/dex/config.toml`（必选缺省）承载机器特有覆盖与凭据文件路径，**同键本机层覆盖仓库层**；**键级深合并**（同叶键本机层覆盖仓库层，`[clients.<id>]` 按 id 键级合并，`[auth]` 仅本机层有效）；配置键全集（键/类型/缺省/允许层）见设计 §2.5 键表；客户端凭证存本机凭据文件（0600 权限，不入 git）——凭证永不进仓库层 | P1 | v1 |
+| FR-10.3 | 每个客户端持有独立凭证：非交互调用（脚本/Spoke/远程网关）必须显式 `--client <id>`，token 自动从本机凭据文件（0600，不入 git）解析、`DEX_TOKEN` 环境变量可覆盖——命令行不明文传 token；交互式终端（TTY 物理在场）默认解析为 human 客户端且**免凭证**（人的操作即信任根，SECURITY.md §2 边界⑤；human 为内建缺省客户端，无需预注册或部署 token 即可使用管理命令）；未注册或无凭证（非交互）= 全拒 | P0 | v1 |
 | FR-10.4 | 管理类命令权限分档：render/review/stale/lint/reindex/init/skills 仅 human 客户端可执行；harvest/interview 允许 human 或**显式授权的收割客户端**（FR-12.5 映射）执行——agentic 收割会话由 agent 非交互发起，属合法路径；`dex render <target>` 要求调用方 scopes ⊇ 目标消费方 scopes；human 客户端全量可读（与直接编辑最高主权一致）、allowed_sources = {human} | P0 | v1 |
 | FR-10.5 | 凭证生命周期：token 为无状态随机串（≥256-bit 熵，生成示例与存储路径见设计 §10 / SECURITY.md §5），加载时校验 token 长度 ≥32 字符（熵的代理指标，防网关场景弱 token 被爆破），不满足 ⇒ 该客户端按无凭证处理（全拒）并提示重新生成；轮换 = 更新本机凭据文件中该客户端的值（无黑名单，配置即真相；单机操作，全网失效走吊销）；吊销 = 删除或注释掉 `[clients.<id>]` 条目（注释即禁用；仓库层注册表随 git 同步生效、本机层即时，FR-10.3 兜底）；凭据文件权限宽于 0600 ⇒ 加载时 warning W_CREDS_PERMS（防意外扩散，不阻断——防恶意归威胁模型边界外，SECURITY.md §4/§5） | P1 | v1 |
-| FR-10.6 | 守卫审计日志：协议通道的拒绝事件（越权/未注册/无凭证/source 不匹配/限流/密钥命中/路径非法）追加写 `.cache/audit.log`（尽力而为，随缓存可丢）；字段 = UTC 时间｜客户端 id｜命令或工具名｜申请 scope/路径｜结果码，**不记录**记忆内容、evidence 与 token 本体（防日志成为二次泄漏面）；单文件软上限、超限轮转（默认值实现时定）——写动作的审计仍由 git commit 承担（设计 §10），本日志只补 git 看不到的协议面（SECURITY.md §6） | P2 | v1 |
+| FR-10.6 | 守卫审计日志：协议通道的拒绝事件（越权/未注册/无凭证/source 不匹配/限流/密钥命中/路径非法）追加写 `.cache/audit.log`（尽力而为，随缓存可丢）；字段 = UTC 时间｜客户端 id｜命令或工具名｜申请 scope/路径｜结果码，**不记录**记忆内容、evidence 与 token 本体（防日志成为二次泄漏面）；单文件软上限、超限轮转（默认 1 MiB，SECURITY.md §6）——写动作的审计仍由 git commit 承担（设计 §10），本日志只补 git 看不到的协议面（SECURITY.md §6） | P2 | v1 |
 | FR-10.7 | 仓库层 config 变更提示：加载仓库层 `~/dex/.dex/config.toml` 时计算内容 hash 与 `.cache/` 内上次记录比对，不一致 ⇒ warning W_CONFIG_CHANGED（提示 `git log -p -- .dex/config.toml` 核实授权变更）——防「远端被攻破/恶意机器 push 经 `[clients]` 自我扩权」的可见性缺失（SECURITY.md T6/§9）；`.cache/` 无基线时静默建立（盲区已声明） | P2 | v1 |
 
 ### 4.11 配套技能（FR-11）
@@ -583,7 +584,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-11.2 | 最小技能集三个：`dex-bootstrap`（零手写冷启动，见 US-01/US-13）、`dex-propose`（日常提案纪律与 scope 路由，入库判据「换一个应用还成立吗」）、`dex-review`（周回顾七段走查——段序同 FR-6.6（①lint ②inbox ③journal ④衰减 ⑤升降级 ⑥近义与矛盾组 ⑦结构整理）+ 建议命令） | P0 | v0 |
 | FR-11.3 | v0 分发：symlink 到三工具技能目录（`~/.claude/skills/`、`~/.pi/agent/skills/`、`~/.zcode/skills/`），文档提供安装命令；贴提示词为不支持技能工具的兜底（提案附录模板） | P1 | v0 |
 | FR-11.4 | 异构格式适配（rules 类格式等，当前支持范围内暂无需要——未纳入工具场景备查）由 `dex render --skills` 生成薄适配器，产物 gitignore、不手维护（与 FR-6.12 同机制） | P2 | v2 |
-| FR-11.5 | 入口文件（AGENTS.md / render 产物）仅含一行技能指针（如「记忆提案走 dex-propose 技能」），行为细节留在技能内渐进披露 | P1 | v1 |
+| FR-11.5 | 入口文件（AGENTS.md / render 产物）中**技能相关内容**仅一行指针（如「记忆提案走 dex-propose 技能」；注入正文另计，FR-6.4），行为细节留在技能内渐进披露 | P1 | v1 |
 | FR-11.6 | `dex skills install [--tool <id>…] [--from <本仓工作副本>]`：技能安装命令化（FR-11.3 v0 手动 symlink 的工具化，手动路径保留为兜底）——安装源缺省为 dex 发行物**内嵌技能**（构建时自本仓 `skills/` 打包、与二进制同版本——技能行为与 CLI 契约不漂移；FR-11.1 单一源语义不变，本仓仍是编写源），`--from` 指定本仓工作副本（开发 / dogfood 快路径）；物化到 dex 管理目录（如 `~/.local/share/dex/skills/`，实现时定）后 symlink 到各工具技能目录（三目录同 FR-11.3；缺省探测全部支持工具，`--tool` 限定子集，id 同 §7 支持范围）；幂等（指向一致的既有 symlink 跳过）、死链自动重建、目标已有非本仓同名条目拒绝不覆盖（退出码 10）；`dex skills uninstall [--tool <id>…]` 对应移除；与 `dex render --skills`（FR-11.4 格式适配器生成）职责分离 | P2 | v1 |
 | FR-11.7 | 发行物完整性与可信通道声明：发行物附 `checksums.txt`（SHA-256，覆盖二进制与内嵌技能物），安装文档给校验命令——不引入签名体系（GPG/sigstore，过度工程，取舍登记于 SECURITY.md §7）；文档显式声明技能与连接器页属**可信通道**（用户自可信源安装、随发行物版本化；`--from` 不可信副本自担风险）；「数据非指令」约束记忆数据、不约束技能/连接器页（行为与数据分离，提案 §七；SECURITY.md §7） | P2 | v1 |
 
@@ -608,7 +609,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | NFR-2 | 架构 | 无守护进程：v0/v1 纯文件与 CLI；MCP stdio 按需拉起即退 |
 | NFR-3 | 性能 | v1 ripgrep 检索在万条目级仓库 P95 ≤ 1s；v2 FTS 命中 P95 ≤ 50ms；`dex render`（10 条/2000 字预算）P95 ≤ 1s（合成基准见设计 §12 容量行） |
 | NFR-4 | 可靠性 | `.cache/` 任意损坏不影响正确性（自动降级 + 可 `reindex` 重建）；git 历史是最终事实源 |
-| NFR-5 | 分发 | 单二进制跨平台（macOS/Linux 优先，Windows 可选），无运行时依赖——**git 为唯一已声明的外部依赖**（§7 假设）：仅 propose/journal 自动提交与 stale/review 的 git log 口径用到；git 缺失时读取与落盘不受影响，自动提交降级为 warning（FR-4.5） |
+| NFR-5 | 分发 | 单二进制跨平台（macOS/Linux 优先，Windows 可选），无运行时依赖——**git 为唯一已声明的外部依赖**（§7 假设）：仅 propose/journal 自动提交与 stale/review/render 的单遍 git log 口径用到（FR-6.5）；git 缺失时读取与落盘不受影响，自动提交降级为 warning（FR-4.5） |
 | NFR-6 | 寿命 | 数据为纯 markdown + git：10 年后无任何本工具也可完整读写；协议/工具全部可替换 |
 | NFR-7 | 同步 | 条目原子、纯文本、低频写入，git merge 友好；`.cache/` `.obsidian/` 不进 git |
 | NFR-8 | 安全 | 路径穿越防护（`..`、symlink 逃逸拒绝）；CLI 与 MCP 强制客户端凭证与 scope 白名单；source 与客户端身份绑定（FR-4.7）；提案限流防洪水；内容层防御——render 产物统一标注「数据非指令」、密钥模式扫描（FR-4.6）防记忆投毒与凭证入库、render 输出 HTML 净化（FR-6.16）；凭证生命周期与授权配置可见性（FR-10.5/10.7）、协议面拒绝事件审计日志（FR-10.6）。威胁模型边界（设计 §10）：凭证防误配置与跨客户端最小授权、为远程网关提供身份载体；**不防同用户恶意进程**（token 本地可读、文件树为明文，后者物理不可防）；威胁登记与「明确不防」清单单源维护于 [SECURITY.md](./SECURITY.md) |
@@ -622,8 +623,8 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | 期 | 范围 | 验收标准（可勾选） |
 |---|---|---|
 | **v0 约定先行** | 建仓 + 目录 + 零手写冷启动（bootstrap 技能）+ @import + Obsidian | ☐ git 私仓建立，八大目录就位 ☐ `person/` 经面试 + 收割人确认 ≥10 条且每条带溯源（零手写）☐ 三技能 symlink 安装且 `dex-bootstrap` 可完成一轮面试 + 收割 ☐ Claude Code 会话能引用到个人层内容 ☐ Obsidian 打开同一 vault 正常编辑 ☐ 全程零代码、无需手写即可达成全部验收项（手写为可选最高主权，US-05） |
-| **v1 CLI** | ripgrep 版 search/read/propose/render/stale/review/lint + interview/harvest（冷启动工具化） | ☐ 七命令（search/read/propose/render/stale/review/lint）全部可用且 `--json` 输出稳定 ☐ ≥1 个应用（choose-you）稳定供稿 journal 与 inbox（目标 2 个） ☐ 一次真实周回顾单批 ≤15 分钟、分批直至 inbox 清空 ☐ render 产物被至少一个 agent 实际消费 ☐ 注入预算与 scope 过滤生效（构造越权用例不泄露）☐ render 产物净化生效（构造含 HTML 标签条目的注入用例，产物中已转义、注释不透传，FR-6.16）☐ 冷启动完成线达成（US-13） |
-| **v2 MCP + 索引** | `dex mcp` + FTS5 → sqlite-vec + 多 agent render | ☐ ≥2 个 MCP 客户端经 `dex mcp` 完成 search/read/propose 全链路 ☐ MCP 无直写工具且白名单外不可读 ☐ FTS 索引使 search 进入毫秒级 ☐ 删除 `.cache/` 后功能不回退为零 |
+| **v1 CLI** | ripgrep 版 search/read/propose/journal/render/stale/review/lint + init/skills + interview/harvest（冷启动工具化） | ☐ 七命令（search/read/propose/render/stale/review/lint）全部可用且 `--json` 输出稳定 ☐ ≥1 个应用（choose-you）稳定供稿 journal 与 inbox（目标 2 个） ☐ 一次真实周回顾单批 ≤15 分钟、分批直至 inbox 清空 ☐ render 产物被至少一个 agent 实际消费 ☐ 注入预算与 scope 过滤生效（构造越权用例不泄露）☐ render 产物净化生效（构造含 HTML 标签条目的注入用例，产物中已转义、注释不透传，FR-6.16）☐ 冷启动完成线达成（US-13） |
+| **v2 MCP + 索引** | `dex mcp` + FTS5 → sqlite-vec + 多 agent render | ☐ ≥2 个 MCP 客户端经 `dex mcp` 完成 search/read/propose 全链路 ☐ MCP 无直写工具且白名单外不可读 ☐ FTS 索引使 search 达 NFR-3 口径（P95 ≤50ms） ☐ 删除 `.cache/` 后功能不回退为零 |
 | **v3 经营强化** | 周回顾 UI + index/ 导览 + Spoke 周报协议 | ☐ 周回顾 UI 完成一轮真实回顾 ☐ `index/` 导览自动生成且人未手维护 ☐ ≥2 个 Spoke 按协议提交使用周报并进入衰减裁决 |
 
 ---

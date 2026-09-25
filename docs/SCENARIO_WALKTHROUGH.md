@@ -1,8 +1,8 @@
 # 用户场景业务流程推演（Scenario Walkthrough）
 
 > 项目：pokemon-remember-you（就记得是你）
-> 文档版本：v1.7 · 2026-09-25 · 状态：待评审（v1.7：安全补强同步——US-02 render 流程/时序补 HTML 净化步骤（FR-6.16）、US-08 威胁模型边界注补 SECURITY.md 指针；此前 v1.6：安装路径同步（需求 v1.12 修订）——US-14/US-01 的流程、前置与时序图补 v1 `dex skills install`（FR-11.6）与 `dex init`（FR-6.9 澄清含 git init 与首次提交）注记；此前 v1.5：全部 14 个场景补充 Mermaid 时序图——参与者即各工具/平台/系统，直观展示用户跨端操作步骤；此前 v1.4：debt 清偿同步——七段权威段序落定（FR-6.6）、空目录豁免已裁决（FR-2.9）、收割暂存区迁 inbox/staging（FR-6.14）、config 两层存放（FR-10.2）、悬空 debt 引用清理；v1.3：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode；v1.2：W3 关闭——工具兼容矩阵产出（TOOL_COMPATIBILITY.md），render 默认位置修正为 repo 根 + 团队仓库分流；v1.1：W1/W2/W4 已随 v1.8 修复）
-> 上游文档：[REQUIREMENTS.md](./REQUIREMENTS.md) v1.7（US-01～US-14）· [DESIGN.md](./DESIGN.md) v1.7
+> 文档版本：v1.9 · 2026-09-25 · 状态：待评审（v1.9：Claude Code 原生支持 AGENTS.md 同步——US-01 时序的 import 落点改 AGENTS.md 口径；v1.8：实施前评审修订同步——上游版本钉更 v1.13、US-10 journal 命令签名对齐 FR-5.4（正文为位置参数）、US-06/stale 口径对齐单遍 git log（复活动作即重置计时，FR-6.5）；v1.7：安全补强同步——US-02 render 流程/时序补 HTML 净化步骤（FR-6.16）、US-08 威胁模型边界注补 SECURITY.md 指针；此前 v1.6：安装路径同步（需求 v1.12 修订）——US-14/US-01 的流程、前置与时序图补 v1 `dex skills install`（FR-11.6）与 `dex init`（FR-6.9 澄清含 git init 与首次提交）注记；此前 v1.5：全部 14 个场景补充 Mermaid 时序图——参与者即各工具/平台/系统，直观展示用户跨端操作步骤；此前 v1.4：debt 清偿同步——七段权威段序落定（FR-6.6）、空目录豁免已裁决（FR-2.9）、收割暂存区迁 inbox/staging（FR-6.14）、config 两层存放（FR-10.2）、悬空 debt 引用清理；v1.3：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode；v1.2：W3 关闭——工具兼容矩阵产出（TOOL_COMPATIBILITY.md），render 默认位置修正为 repo 根 + 团队仓库分流；v1.1：W1/W2/W4 已随 v1.8 修复）
+> 上游文档：[REQUIREMENTS.md](./REQUIREMENTS.md) v1.15（US-01～US-14）· [DESIGN.md](./DESIGN.md) v1.15（本文随上游演进持续同步，版本号对齐当前上游）
 > 定位：以 v1.7 机制对全部用户场景做**端到端业务流程推演**（dry-run）——每场景给出前置条件、逐步流程（含实际命令、git 动作、状态落点）与断言；推演暴露的衔接缺口记入「推演发现」（§6）并同步 [debt.md](./debt.md)。**本文不新增需求**，是需求/设计的验证性衍生文档。
 
 ---
@@ -76,7 +76,7 @@ sequenceDiagram
 sequenceDiagram
     participant H as 训练家（人）
     participant AG as 编码 agent<br/>（dex-bootstrap 技能）
-    participant LEG as 既有资产<br/>CLAUDE.md / AGENTS.md / auto memory
+    participant LEG as 既有资产<br/>AGENTS.md / auto memory
     participant DEX as ~/dex<br/>（git 仓库）
     participant CC as Claude Code 配置
     participant OB as Obsidian
@@ -99,7 +99,7 @@ sequenceDiagram
             H->>DEX: rm + commit（git 留痕）
         end
     end
-    H->>CC: 全局 CLAUDE.md 追加 @~/dex/person/… import<br/>项目仓库 .claude/CLAUDE.md 追加 @~/dex/projects/foo/
+    H->>CC: 入口追加 @import（个人仓库根 AGENTS.md 或用户级 ~/.claude/AGENTS.md<br/>——Claude Code 原生支持）：@~/dex/person/…、@~/dex/projects/foo/
     CC-->>H: 仓库外路径首次 import 弹确认 → 同意
     H->>OB: 打开同一 vault，日常直接编辑
 ```
@@ -108,9 +108,9 @@ sequenceDiagram
 
 **流程**：
 1. **建仓**：`mkdir ~/dex && cd ~/dex && git init`；建 `person/ domains/ apps/ projects/ journal/ inbox/ archive/ index/` 八目录与 `.gitignore`（忽略 `.cache/`、`.obsidian/`）；首次 commit（v1 起 `dex init` 一键完成——含 `git init` 与首次提交、幂等补齐，FR-6.9）；
-2. **冷启动**（对任一编码 agent 触发 `dex-bootstrap` 技能）：面试 5 核心问题（角色／主力栈／语言偏好／硬性禁区／输出格式）→ 扫描既有 CLAUDE.md / AGENTS.md / auto memory → 逐条标源草稿（面试条目指回原话、挖掘条目指回源文件）→ 直写 `inbox/bootstrap/`，首批 ≤30 条、confidence 降序；
+2. **冷启动**（对任一编码 agent 触发 `dex-bootstrap` 技能）：面试 5 核心问题（角色／主力栈／语言偏好／硬性禁区／输出格式）→ 扫描既有 AGENTS.md / auto memory → 逐条标源草稿（面试条目指回原话、挖掘条目指回源文件）→ 直写 `inbox/bootstrap/`，首批 ≤30 条、confidence 降序；
 3. **首次回顾**：逐条裁决——确认：编辑内容、剥 frontmatter、`git mv inbox/bootstrap/x.md person/preferences.md`（= 确认动作，commit）；否决：`rm`（commit）；
-4. **接入 Claude Code**：`~/.claude/CLAUDE.md` 追加 `@~/dex/person/profile.md`、`@~/dex/person/preferences.md`；项目仓库 `.claude/CLAUDE.md` 追加 `@~/dex/projects/foo/`（仓库外路径首次 import 弹确认，同意即可）；
+4. **接入 Claude Code**：个人项目仓库根 `AGENTS.md` 或用户级 `~/.claude/AGENTS.md` 追加 `@~/dex/person/profile.md`、`@~/dex/person/preferences.md`、`@~/dex/projects/foo/`（均原生支持；仓库外路径首次 import 弹确认，同意即可）；
 5. **Obsidian 打开同一 vault**，日常直接编辑。
 
 **状态落点**：`person/` ≥10 条、每条带 `<!-- src: … -->`；`inbox/` 清空；git log 含初始提交 + 首轮回顾提交。
@@ -262,7 +262,7 @@ sequenceDiagram
     participant RV as 周回顾
 
     loop 每日供稿
-        CY->>DEX: dex journal --client choose-you --source choose-you<br/>--text "捕捉 3 / 逃走 2（原因码：闲聊×2）"
+        CY->>DEX: dex journal --client choose-you --source choose-you<br/>"捕捉 3 / 逃走 2（原因码：闲聊×2）"（正文为位置参数）
         DEX->>JP: 定位「供稿 · choose-you」小节（不存在则创建）
         DEX->>DEX: 守卫子集（身份绑定／格式／大小／密钥）
         DEX->>JP: 追加到小节尾部（同日重复供稿追加，不跨小节改写）
@@ -278,7 +278,7 @@ sequenceDiagram
 **前置**：同 US-03（choose-you 客户端）。
 
 **流程**：
-1. 每日：`dex journal --client choose-you --source choose-you --text "捕捉 3 / 逃走 2（原因码：闲聊×2）"`；
+1. 每日：`dex journal --client choose-you --source choose-you "捕捉 3 / 逃走 2（原因码：闲聊×2）"`（正文为位置参数，FR-5.4 签名）；
 2. 命令保证：定位当日页 `journal/2026-09-20.md` 的「供稿 · choose-you」小节（不存在则创建；同日重复供稿追加到小节尾部，不跨小节改写）→ 守卫子集（身份绑定/格式/大小/密钥）→ `git commit`；
 3. 人随手在「手写」小节补写（直接编辑，最高主权，不经任何命令）；
 4. 周回顾时从每日页「提升」值得长期保留的事实进 scope（其余自然衰减）。
@@ -407,7 +407,7 @@ sequenceDiagram
     participant H as Alice（人）
     participant ARC as archive/<br/>（镜像路径）
 
-    Note over E: 最后实质变更 2026-06-10（v1 以 mtime 近似）
+    Note over E: 最后实质变更 2026-06-10（v1 以单遍 git log 近似——最后触及 commit，FR-6.5）
     DEX->>E: 95 天未变且无周报引用 → 列入 stale 清单
     DEX-->>H: 附建议：archive / rewrite / keep-until
     H->>E: 预期 12 月重启 → 选「保留」：加 keep-until 到期注释<br/>（keep-until: 2026-12-15 预期重启改版）
@@ -422,17 +422,17 @@ sequenceDiagram
         Note over ARC: 默认注入与检索不含 archive
         opt 需要时
             H->>ARC: dex search "OOM" --scope archive（显式检索，FR-1.4）
-            H->>E: 复活 = git mv 回 scope + 首次编辑重置计时
+            H->>E: 复活 = git mv 回 scope<br/>（复活动作即重置计时——v1 单遍口径触及即变更，FR-6.5）
         end
     end
 ```
 
 **流程**（以 `projects/old-website/deploy.md` 一条踩坑记忆走完整周期，最后变更 2026-06-10）：
-1. `dex stale`（human）：mtime 近似「最后实质变更」（v1 口径）+ 周报引用豁免 → 列出 95 天未变条目，附建议（archive/rewrite/keep-until）；
+1. `dex stale`（human）：单遍 git log 求「最后实质变更」（v1 口径——最后触及 commit，FR-6.5）+ 周报引用豁免 → 列出 95 天未变条目，附建议（archive/rewrite/keep-until）；
 2. Alice 预期 12 月重启该项目 → **保留**：加 `<!-- keep-until: 2026-12-15 预期重启改版 -->`（注释变更**不计实质变更**，不重置计时）→ 此后 stale 不再列示，条目保持活性、照常注入与检索；
 3. 分支 a（12 月重启成真）：回来核实并更新条目 → 实质变更重置计时，keep-until 功成身退（lint 提示清理残留）；
 4. 分支 b（没重启）：keep-until 过期 → 条目**重新进清单强制复审** → 这次 `git mv projects/old-website/ archive/projects/old-website/`（镜像路径，commit）；
-5. 归档后：默认注入与检索不含 archive；需要时**显式检索** `dex search "OOM" --scope archive`（FR-1.4）；复活 = `git mv` 回 scope + 首次编辑重置计时。
+5. 归档后：默认注入与检索不含 archive；需要时**显式检索** `dex search "OOM" --scope archive`（FR-1.4）；复活 = `git mv` 回 scope（复活动作即重置计时——v1 单遍口径触及即变更，FR-6.5；首次编辑同样重置）。
 
 **三动作分工**：keep-until = 谢绝提醒（照常注入）；改写 = 续命（重置计时）；归档 = 退役（默认不可见、显式可查）。
 

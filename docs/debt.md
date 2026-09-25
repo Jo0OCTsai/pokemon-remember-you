@@ -1,11 +1,27 @@
 # 债务与待办（活清单）
 
-> 来源：2026-09-24 实施前文档评审（隔离 sdd-reviewer + ad-reviewer + 主会话客观检查）+ 2026-09-24 场景推演。
-> 约定：完成勾选移入「已完成」段；新债务随时追加。High 项已随 v1.7 关闭、推演 W1–W4 已随 v1.8/v1.9 关闭、Medium 16 项 + Low 14 项已随 v1.11（2026-09-25）全量清偿——当前**无未清债务**。
+> 来源：2026-09-24 实施前文档评审（隔离 sdd-reviewer + ad-reviewer + 主会话客观检查）+ 2026-09-24 场景推演 + 2026-09-25 实施前最终评审（隔离 sdd-reviewer + ad-reviewer + 主会话客观交叉检查，v1.14 修订）。
+> 约定：完成勾选移入「已完成」段；新债务随时追加。High 项已随 v1.7 关闭、推演 W1–W4 已随 v1.8/v1.9 关闭、Medium 16 项 + Low 14 项已随 v1.11（2026-09-25）全量清偿、2026-09-25 实施前最终评审发现（High 2 + Medium 12 + Low）已随 v1.14（需求/设计，2026-09-25）全量清偿——当前**无未清债务**，仅余实施期待定参数（见下）。
 
-## 待处理
+## 待处理（实施期待定参数登记——非债务，实现时收口）
 
-（无——2026-09-25 v1.11 全量清偿；新债务随时追加于此）
+- Windows ACL 等价检查口径（SECURITY.md §5，NFR-5 Windows 为可选平台）
+- ZCode 嵌套入口 / import 行为实测（TOOL_COMPATIBILITY.md §2.1 ❓ 项，接入前烟测）
+- 衰减分档数值校准（90/180 天为示例档，WORK_LIFE_SCENARIOS.md §10，按 scope 实际节奏定）
+
+## 实施期收口记录（2026-09-25 · v1 实施会话）
+
+- [x] skills 物化目录定值：`~/.local/share/dex/skills/`（FR-11.6；实现 `dex skills install` 物化 + symlink 三工具目录）
+- [x] 实施期新增配置键（§2.5 键表外正向漂移，已登记）：`[guard].secret_advisory`（bool 缺省 false，FR-4.6「可配置为仅警告」的落点）
+- [x] 实施期新增警告码（§8.4 六码外）：`W_CONFIG_NOTICE`（通用配置类提示——承载 §2.5「[auth] 出现在仓库层 ⇒ warning 并忽略」等规范要求警告但无专用码的场景；另用于 review 的 inbox 未清空提示）
+- [x] lint 硬/软分流冻结（§5.6 与 FR-6.11 措辞调和）：error 级发现 → 退出码 1；仅 warning 级（软预算/提示）→ 退出码 0；两级的 `--json` 信封恒 ok=true、问题走 data.findings
+- [x] init 首次提交信息冻结：`init: dex skeleton`；幂等补齐提交：`init: 补齐骨架`（12 类 REVIEW_ACTION 模板表外，FR-6.9 语义内）
+
+## 已完成（2026-09-25 · v1.14 实施前最终评审修订：High 2 + Medium 12 + Low）
+
+- [x] **High**：FR-2.8/设计 §5.6 lint 顶层白名单补 `.dex/`（与 FR-10.2 仓库层 config 冲突消除）＋`.DS_Store` 类系统杂项固定忽略；REQUIREMENTS §3.3 流程图改检索/注入双分支（检索不做合并与预算，对齐 P5/US-02/FR-3.3）。
+- [x] **Medium**：FR-3.1/设计 §5.1/§8.2 person 恒在改**白名单条件式**＋journal 纳入恒排除并定义显式检索放行面；FR-6.1/设计 §5.3 缺省检索集 = 白名单 ∩ 四层 scope 目录（**CLI 与 MCP 同口径**，通道一致性测试矛盾消除）；FR-6.5/设计 §5.4 stale 与注入比较器 v1 改**单遍全树 git log**（mtime 近似的 pull/clone 失真消除；复活即重置计时；git 缺失回退 mtime + W_GIT_UNAVAILABLE）；FR-2.2/设计 §2.2 **src 注释两级作用域**（条目级优先，与 keep-until 同构）；FR-3.2/设计 §5.2 补 **④ 终局稳定序 path:line**（金样本可复现）；FR-6.4/设计 §6.2/§8.1 render **out 路径基准**（调用时 cwd 所在 git 仓库根）＋**手改检测拒绝覆盖 + `--force`**（基线 `.cache/render/`）＋`--dry-run` 语义；FR-10.3/设计 §8.1/SECURITY §2 **TTY human 免凭证**（物理在场即信任根，首跑引导闭环）；FR-4.1 evidence 双件套适用范围收窄（连接器收割双件套、本地文件收割单件合法）＋幂等/shortid 指针；FR-2.8/设计 §5.6 inbox 滞留检查**递归**＋v1 bootstrap 统一落 inbox 顶层；设计 §2.5 **配置键表 + 键级深合并 + 凭据文件格式**（[auth]/[stale.scopes]/busy_timeout_ms/harvest minutes/[aliases]/journal_per_day 一次定死，限流单源化 [clients].rate_limit）；FR-6.11/设计 §8.3/§8.4 lint 退出码 1 的 **--json 信封特例**（ok=true + data.findings）。
+- [x] **Low（择要）**：journal 退出码补 5、CLI --limit 封顶 20、§7.3 图补守卫 0/8、§6.1 凭证注入措辞、设计 §10 T1–T16、US-10/推演 journal 位置参数、US-01 验收可断言化、v2 验收对齐 NFR-3、§6 v1 范围补 journal/init/skills、US-07 reindex v2 注记、NFR-5 git 使用面、§1.2/FR-11.5/US-14 措辞、FR-2.10 两级并存优先级、FR-4.3 限流日界、FR-4.5 并发指针、FR-1.4 v0 例外注记、omitted 口径、git 子进程 ≥2.20、幂等查重载体、freshness 计入容量基准、gantt 补 v1f、§6.2 技能指针行、SECURITY import 净化豁免与轮转 1 MiB、推演上游版本钉 v1.13、提案 OpenCode 回改与 src 示例、audit 轮转默认 1 MiB、journal 日限流（journal_per_day=60）。
 
 ## 已完成（2026-09-25 · v1.11 debt 清偿：Medium 16 项）
 

@@ -5,7 +5,7 @@
 > ③ 全本地、git 管仓、无守护进程——文件是稳定契约，协议只是适配器。
 > 核心分工：**Spoke（各应用/agent）持有过程数据，Hub 只持有结论**。
 > 项目命名：**pokemon-remember-you（就记得是你）**——与 pokemon-choose-you（就决定是你了）为姊妹项目，「就决定是你了」负责抓住任务，「就记得是你」负责记住训练家；CLI 二进制名 **dex**（图鉴，兼有 index 双关），数据仓库即「图鉴」`~/dex`，MCP 以 `dex mcp` 子命令随同一二进制分发。
-> 调研时间：2026-09-20（增量更新：2026-09-21）。
+> 调研时间：2026-09-20（增量更新：2026-09-21；2026-09-25 随需求 v1.14 同步：技能分发范围措辞对齐 §7 收窄、src 注释示例对齐两级作用域、v1 命令清单补 journal；2026-09-25 二次同步：Claude Code 原生支持 AGENTS.md（repo 根与用户级）——观察 8/§四/架构图 import 落点统一 AGENTS.md，全文档移除旧入口文件名引用）。
 
 ## 一、要解决的问题
 
@@ -13,7 +13,7 @@ agent 时代，每个人的上下文散落在互不可见的孤岛里：
 
 | 孤岛 | 持有什么 | 问题 |
 |---|---|---|
-| 编码 agent（Claude Code / ZCode / OpenCode…） | per-project CLAUDE.md、用户级配置、会话摘要 | 记忆绑定单一工具，项目间不共享，换工具即失忆 |
+| 编码 agent（Claude Code / ZCode / OpenCode…） | per-project AGENTS.md、用户级配置、会话摘要 | 记忆绑定单一工具，项目间不共享，换工具即失忆 |
 | 各类应用（待办、写作、IM 助手…） | 应用内反馈数据、使用记录 | 教训只在本应用内生效，且多数连本应用也未消费 |
 | 个人笔记（Obsidian / Notion…） | 人写知识 | AI 读不到或要专门搭桥；笔记与 agent 记忆是两套系统 |
 
@@ -25,12 +25,12 @@ agent 时代，每个人的上下文散落在互不可见的孤岛里：
 
 1. **需求已被验证，且收敛到「本地 MCP 记忆服务」形态**：Mem0 的 OpenMemory MCP（2025-05）做成了「本地优先、跨 MCP 客户端共享记忆」的服务，证明跨应用共享记忆是真实需求；但它走自建服务栈与私有存储，人不能直接维护记忆内容。
 2. **文件即知识是另一条主线**：Basic Memory 把知识库做成「磁盘上的 markdown + MCP 工具（search/read/write）+ 轻量知识图谱」，人与 AI 双向编辑同一份文件；Anthropic 官方 memory tool 同样是「记忆文件目录 + CRUD 工具」。**启发**：文件形态对人最友好、对工具最中立；**教训**：frontmatter/图谱结构越重，维护成本越高。
-3. **scope 分层有成熟先例**：Claude Code 的 CLAUDE.md 层级（企业/项目/用户三级 + `@import` 引用）本质就是「按覆盖范围分层的记忆 + 合并优先级」；AGENTS.md 正在成为跨工具的入口文件约定。把它从「一个编码工具的约定」泛化为「个人中枢的 scope 模型」即可。
+3. **scope 分层有成熟先例**：Claude Code 的 AGENTS.md 层级（企业/项目/用户三级 + `@import` 引用）本质就是「按覆盖范围分层的记忆 + 合并优先级」；AGENTS.md 正在成为跨工具的入口文件约定。把它从「一个编码工具的约定」泛化为「个人中枢的 scope 模型」即可。
 4. **同一个 vault 人机共用是可行日常**：Obsidian + MCP 的社区实践（混合检索：关键词 + 语义；plain text 作为长寿格式）验证了「一个仓库既给人用又给 agent 用」的形态已经跑通。
 5. **个人 KB 的历史教训是分类法腐化**：PARA / Zettelkasten / 重标签体系普遍经验——schema 越重烂得越快。Hub 的强制结构必须克制：**目录即 scope 是唯一强制结构**，导览靠生成式索引。
 6. **固化/治理模式沿用记忆领域共识**（Mem0 的提案归并、确认门、定期体检）：Hub 的写入必须是「提案 → 人确认 → 归位」，agent 永远不能直写 scope 目录。
 7. **「文件 + git」已收敛为主流形态**（2026-09-21 增量调研）：Letta Context Repositories（2026-02）把编码 agent 记忆重建为 git 版本化文件系统（提交/分支/合并，「treat context like source code」）；Accenture 开源 agent-memory（Mercury 家族）——git 提交的 `memory/` 目录 + 纯 markdown + 任意 vendor 读写，是本方案最接近的先例，但为**团队向、agent 可直写**。dex 的差异化正在于此：单人、propose-only、目录即 scope、注入有预算。同期 Claude Code 上线 auto memory（`~/.claude/projects/<repo>/memory/`，MEMORY.md 索引仅加载前 200 行/25KB，per-project 机器本地）——按 Hub/Spoke 分工属 Spoke 过程数据：可禁用（`autoMemoryEnabled: false`）或并存并定期收割进 Hub（见需求 US-12）。
-8. **入口文件事实标准是 AGENTS.md**：20–30+ 工具读取（Codex CLI / Cursor / Gemini CLI / Aider / Zed / Jules…），通行做法是以 AGENTS.md 为源、各工具入口同步或 symlink。注意 Claude Code 仅在工作区及上级均无 CLAUDE.md 时才读 AGENTS.md——其消费方优先 `@import`，或生成一行 `CLAUDE.md` shim（`@AGENTS.md`）。
+8. **入口文件事实标准是 AGENTS.md**：20–30+ 工具读取（Codex CLI / Cursor / Gemini CLI / Aider / Zed / Jules…），通行做法是以 AGENTS.md 为源、各工具入口同步或 symlink。Claude Code 已原生支持 AGENTS.md（2026-09 确认）——根位直接生效；`@import` 引用仍可用（团队仓库分流/用户级聚合）。
 9. **记忆安全成为独立威胁类别**（memory poisoning：MINJA / AgentPoison 等）：agent 写入的记忆正文本身可携带注入指令，沉淀后会被注入所有消费方。社区共识缓解：密钥守卫（pre-commit 正则拦截凭证）、写时矛盾检查（禁止静默裁决，显式 supersede）、注入内容标注为数据而非指令。Hub 的人审确认门是第一道也是最硬的防线，另在 render 产物标注与密钥扫描上补内容层防御（见设计 §10）。
 10. **配套技能（skills）是行为层标配**：Accenture agent-memory 以 `agent-skills/<name>/SKILL.md` 为 vendor-neutral 单一源、各工具目录只放生成的薄适配器（gitignore，永不手维护副本）；Claude Code / ZCode / OpenCode 均已支持 SKILL.md 格式。协议（MCP/CLI）定义 agent 能做什么，技能定义该怎么表现——dex 的面试、收割、周回顾等行为以技能形态分发（见 §七）。
 
@@ -58,7 +58,7 @@ flowchart LR
 
     subgraph CH["访问通道（无守护进程；文件是稳定契约）"]
         direction TB
-        FILE["文件投影<br/>入口文件 / CLAUDE.md @import"]
+        FILE["文件投影<br/>入口文件 / AGENTS.md @import"]
         CLI["CLI<br/>search · read · propose · render · stale"]
         MCP["MCP stdio<br/>按需拉起"]
     end
@@ -101,7 +101,7 @@ flowchart LR
 │   ├── coding/                     #   示例：开发模式域——技术栈、开发偏好（升降级高频去向，需求 §3.7）
 │   └── people/李四.md              #   人物页：关系、背景、沟通偏好（第一人称，只存「我与某人的关系」）
 ├── apps/<app>/                     # 应用层：某应用专属的记忆（如待办判定模式）
-├── projects/<project>/             # 项目层：个人的项目记忆（我的视角/例外/踩坑；团队指令归 repo 的 CLAUDE.md，dex 只收编散落的个人性内容）
+├── projects/<project>/             # 项目层：个人的项目记忆（我的视角/例外/踩坑；团队指令归 repo 的 AGENTS.md，dex 只收编散落的个人性内容）
 ├── journal/2026-09-20.md           # 情景层：每日一页，各应用摘要 + 手写日志汇流
 ├── inbox/                          # 提案区：agent 提案写入面（经 dex propose，带来源与证据）；journal 供稿小节为第二写入面（FR-5.4）
 ├── archive/                        # 归档：保留原文，不再注入
@@ -130,9 +130,9 @@ flowchart LR
 
 ```markdown
 # 偏好
+<!-- src: choose-you 固化 2026-09 · 证据×6 -->   ← 文件级溯源注释（紧随 H1；条目级紧随条目行——两级作用域见需求 FR-2.2）
 - 周报类任务多在周四下午被提到，标题习惯「写周报-MM/DD」
 - 中文写作避免「进行」「予以」一类冗词
-<!-- src: choose-you 固化 2026-09 · 证据×6 -->
 ```
 
 被新结论推翻的旧条目由人标注 `<!-- superseded-by: <新条目位置> -->`，不再参与注入——矛盾显式化，禁止静默裁决（见需求 FR-2.5）。
@@ -184,15 +184,15 @@ stateDiagram-v2
 
 | 通道 | 定位 | 接入方式 |
 |---|---|---|
-| 文件投影 | 零依赖底线 | `dex render <agent>` 把「该消费方 scope 的合并视图」渲染成入口文件（默认名 `AGENTS.md`，跨工具事实标准）放进其工作区；Claude Code 仅在工作区无 CLAUDE.md 时才读 AGENTS.md，故其消费方优先 `@import`——`~/.claude/CLAUDE.md` 里 `@~/dex/person/profile.md` 等引用即全局生效，项目级 `.claude/CLAUDE.md` 引 `projects/<proj>/`。注意：仓库外路径首次 import 会弹一次确认框；import 启动即全量加载、不省 context，条目变多后注入预算改由 `dex render` 承担 |
+| 文件投影 | 零依赖底线 | `dex render <agent>` 把「该消费方 scope 的合并视图」渲染成入口文件（默认名 `AGENTS.md`，跨工具事实标准）放进其工作区；Claude Code 已原生支持 AGENTS.md（repo 根与用户级 `~/.claude/AGENTS.md`）——根位直接生效（三工具统一默认位），`@import` 引用仍可用：用户级入口里 `@~/dex/person/profile.md` 等引用即全局生效，个人项目仓库根 `AGENTS.md` 引 `projects/<proj>/`。注意：仓库外路径首次 import 会弹一次确认框；import 启动即全量加载、不省 context，条目变多后注入预算改由 `dex render` 承担 |
 | CLI | 应用与脚本集成 | `dex search <q> [--scope …]`（v1 用 ripgrep，v2 走派生索引）、`dex read`、`dex propose`（stdin 提案）、`dex render`、`dex stale`、`dex reindex`、`dex review`（生成周回顾清单） |
 | MCP stdio | 通用 agent 生态 | 工具面只四类：`dex_search` / `dex_read` / `dex_propose` / `dex_journal`（journal 供稿，FR-5.4）——**没有直写 scope 的工具**；以 `dex mcp` 子命令随同一二进制分发，按需拉起，无常驻进程 |
 
-**配套技能（行为层，v0 起以纯 markdown 分发）**：协议定义 agent 能做什么，技能定义该怎么表现。本仓 `skills/` 为单一源（一技能一目录 + SKILL.md），v0 经 symlink 接入 Claude Code / ZCode / OpenCode；异构格式（Cursor rules 等）由 `dex render --skills` 生成薄适配器（FR-11.4，产物 gitignore）。最小技能集三个：
+**配套技能（行为层，v0 起以纯 markdown 分发）**：协议定义 agent 能做什么，技能定义该怎么表现。本仓 `skills/` 为单一源（一技能一目录 + SKILL.md），v0 经 symlink 接入 Claude Code / pi / ZCode（支持范围见需求 §7 约束；未纳入工具备查 TOOL_COMPATIBILITY.md §2.2）；异构格式（Cursor rules 等）由 `dex render --skills` 生成薄适配器（FR-11.4，产物 gitignore）。最小技能集三个：
 
 | 技能 | 职责 |
 |---|---|
-| `dex-bootstrap` | 零手写冷启动执行者：面试 5 核心问题 + 扫描既有 CLAUDE.md / AGENTS.md / auto memory，草稿全部落 `inbox/bootstrap/`，逐条标源，首批 ≤30 条、confidence 降序 |
+| `dex-bootstrap` | 零手写冷启动执行者：面试 5 核心问题 + 扫描既有 AGENTS.md / auto memory，草稿全部落 `inbox/bootstrap/`，逐条标源，首批 ≤30 条、confidence 降序 |
 | `dex-propose` | 日常提案纪律：入库判据「换一个应用还成立吗」、evidence 必填、scope 路由建议——防提案洪水的第一道软防线 |
 | `dex-review` | 周回顾执行者：七段清单走查 + 建议命令；v0 为纯 checklist，v1 起内嵌 `dex review` 调用 |
 
@@ -228,7 +228,7 @@ evidence: chat_feedback #1234 #1301 #1355
 
 ## 八、个人知识库的维护循环
 
-**冷启动（零手写）**：启动阶段只用写入主权分级的下两档——agent 起草、人裁决，制度性消灭「新建文件从零写」这个动作（手写降为可选的最高主权，随时可用）。两个内容源：① **挖掘**（用户成本 ≈ 0）：既有 CLAUDE.md / AGENTS.md / .cursorrules、auto memory 存量、历史会话转录 → 蒸馏候选进 inbox；② **面试**（成本 = 聊天）：首轮 5 个核心问题当天可用，其余由 agent 在后续会话渐进补问。行为由 `dex-bootstrap` 技能承载（见 §七），贴提示词仅为不支持技能工具的兜底（附录模板）。
+**冷启动（零手写）**：启动阶段只用写入主权分级的下两档——agent 起草、人裁决，制度性消灭「新建文件从零写」这个动作（手写降为可选的最高主权，随时可用）。两个内容源：① **挖掘**（用户成本 ≈ 0）：既有 AGENTS.md / .cursorrules、auto memory 存量、历史会话转录 → 蒸馏候选进 inbox；② **面试**（成本 = 聊天）：首轮 5 个核心问题当天可用，其余由 agent 在后续会话渐进补问。行为由 `dex-bootstrap` 技能承载（见 §七），贴提示词仅为不支持技能工具的兜底（附录模板）。
 
 ```mermaid
 flowchart LR
@@ -261,7 +261,7 @@ flowchart LR
 | 期 | 内容 | 量级 |
 |---|---|---|
 | v0 约定先行 | 建仓 + 目录结构 + 零手写冷启动（`dex-bootstrap` 技能：面试 + 收割既有资产）+ `journal/` + Claude Code `@import` 接入 + Obsidian 打开同一 vault | 半天，当天可用 |
-| v1 CLI | ripgrep 版 `search/read/propose/render/stale/review/lint` + `interview/harvest`（冷启动工具化）；1–2 个应用开始供稿 journal 与 inbox（摘要与提案） | 一个小工具 |
+| v1 CLI | ripgrep 版 `search/read/propose/journal/render/stale/review/lint` + `init/skills` + `interview/harvest`（冷启动工具化）；1–2 个应用开始供稿 journal 与 inbox（摘要与提案） | 一个小工具 |
 | v2 MCP + 索引 | MCP stdio server（`dex mcp`，search/read/propose）；FTS5 → sqlite-vec 派生索引；`dex render` 支持多 agent 入口 | Hub 侧服务化 |
 | v3 经营强化 | 周回顾 UI（独立页面或寄生在某个应用的复盘向导）；`index/` 生成式导览；Spoke 使用周报汇总协议 | 体验完善 |
 
@@ -307,7 +307,7 @@ flowchart LR
 一次一个，追问到能落成具体条目为止。第二步，把我的回答逐条整理成
 person/profile.md 与 person/preferences.md 草稿——每条必须来自我的原话，
 不得推断我没有说的内容，并在每条尾部加 <!-- src: bootstrap-interview 日期 -->。
-第三步，扫描我指定的既有 CLAUDE.md／AGENTS.md，把仍成立且属于我个人的条目
+第三步，扫描我指定的既有 AGENTS.md，把仍成立且属于我个人的条目
 （非团队指令）整理成对应 projects/<proj>/ 草稿，同样逐条标源。
 全部产出写入 ~/dex/inbox/bootstrap/，等我审——不要写任何 scope 目录。
 首批不超过 30 条，按你的置信度降序。
