@@ -2,8 +2,8 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）
-> 文档版本：v1.12 · 2026-09-25 · 状态：待评审（v1.12：安装路径工具化——FR-6.9 `dex init` 澄清含 `git init` 与首次提交（幂等补齐 / git 缺失降级 warning）、新增 FR-11.6 `dex skills install`（发行物内嵌技能 + symlink 管理，取代 clone 依赖）、FR-10.4 管理命令清单 / US-01 / US-14 措辞同步；此前 v1.11：debt 清偿（Medium 16 + Low 14 全量）——注入优先级字典序权威化（FR-3.2/US-05）、收割暂存区迁 `inbox/staging/`（FR-6.14/FR-2.8）、周回顾七段权威段序（FR-6.6/FR-11.2/US-04）、近义预筛 v1 运行时不落 index/、空目录约束收窄（FR-2.9）、人速记归 journal（FR-4.2/FR-5.1）、FR-2.3 期别 v0、evidence ≤2000 字符（FR-4.1）、scope 越权整单拒绝（FR-7.3）、NFR-3 量化 P95、NFR-5 明示 git 例外（FR-4.5）、config 两层存放（FR-10.2/US-07）、FR-1.6 `.dex-ignore` 回补、FR-6.15 `dex index`、FR-9.5 `--group`、US-01/US-13/v1 验收措辞与量化；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§7 约束、US-02/US-14、FR-11 组、工具矩阵 §2.1），其余移入 TOOL_COMPATIBILITY.md 未纳入备查；更早 v1.9：W3 收口——入口文件策略矩阵化（FR-6.4/FR-6.12）；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
-> 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）· [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md)（用户场景业务流程推演）· [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)（工具入口兼容矩阵）
+> 文档版本：v1.13 · 2026-09-25 · 状态：待评审（v1.13：安全补强——威胁模型单源化：新增 [SECURITY.md](./SECURITY.md)（NFR-8/§8 引用）；新增 FR-6.16 render 输出净化、FR-10.5 凭证生命周期、FR-10.6 守卫审计日志、FR-10.7 仓库层 config 变更提示、FR-11.7 发行物完整性与可信通道声明；§6 v1 验收补净化用例、§8 风险表补供应链/远端私仓两行；此前 v1.12：安装路径工具化——FR-6.9 `dex init` 澄清含 `git init` 与首次提交（幂等补齐 / git 缺失降级 warning）、新增 FR-11.6 `dex skills install`（发行物内嵌技能 + symlink 管理，取代 clone 依赖）、FR-10.4 管理命令清单 / US-01 / US-14 措辞同步；此前 v1.11：debt 清偿（Medium 16 + Low 14 全量）——注入优先级字典序权威化（FR-3.2/US-05）、收割暂存区迁 `inbox/staging/`（FR-6.14/FR-2.8）、周回顾七段权威段序（FR-6.6/FR-11.2/US-04）、近义预筛 v1 运行时不落 index/、空目录约束收窄（FR-2.9）、人速记归 journal（FR-4.2/FR-5.1）、FR-2.3 期别 v0、evidence ≤2000 字符（FR-4.1）、scope 越权整单拒绝（FR-7.3）、NFR-3 量化 P95、NFR-5 明示 git 例外（FR-4.5）、config 两层存放（FR-10.2/US-07）、FR-1.6 `.dex-ignore` 回补、FR-6.15 `dex index`、FR-9.5 `--group`、US-01/US-13/v1 验收措辞与量化；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§7 约束、US-02/US-14、FR-11 组、工具矩阵 §2.1），其余移入 TOOL_COMPATIBILITY.md 未纳入备查；更早 v1.9：W3 收口——入口文件策略矩阵化（FR-6.4/FR-6.12）；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
+> 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）· [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md)（用户场景业务流程推演）· [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)（工具入口兼容矩阵）· [SECURITY.md](./SECURITY.md)（威胁模型与缓解登记）
 
 ---
 
@@ -533,6 +533,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-6.13 | `dex journal`：journal 供稿追加的唯一合法通道（CLI 与 MCP 共用同一校验，见 FR-5.4） | P0 | v1 |
 | FR-6.14 | `dex harvest` / `dex interview` 为收割会话**便利封装**（不蒸馏）：harvest 加载指定连接器页与预算配置、管理收割暂存区（`inbox/staging/<source>/`——git 跟踪、随仓库多机同步；待审候选属数据非缓存，不可因删 `.cache/` 丢失，FR-8.4/NFR-4 语义不变；staging 豁免 inbox 滞留 lint（FR-2.8），转正时全量走守卫）、把收割技能产出的候选批量走 bootstrap 模式提案（FR-4.3）；interview 输出渐进式面试草稿提案——蒸馏由 `dex-bootstrap` 技能（agent 会话）完成，命令只提供载荷与门禁（FR-12.4 实现分流的 CLI 侧落点） | P1 | v1 |
 | FR-6.15 | `dex index [--rebuild]`：生成/刷新 `index/` 导览（MOC，人不手维护，FR-1.5；与 FR-6.6 段⑥近义预筛共用聚类思路、互不依赖） | P2 | v3 |
+| FR-6.16 | `dex render` 输出净化：注入正文经 HTML 转义（`<` `>` `&`）后写入入口文件；src/superseded-by/keep-until 注释不透传（来源信息以 render 重新生成的安全标注承载）；「数据非指令」头部声明不变——净化防渲染类消费方（Obsidian/网页视图）执行主动内容的纵深防御层，语义级注入仍以周回顾人审为主防线（SECURITY.md T1/T7/§8） | P1 | v1 |
 
 ### 4.7 MCP 工具面（FR-7）
 
@@ -570,6 +571,9 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-10.2 | 配置为纯文本（TOML）**两层存放**并文档化：仓库层 `~/dex/.dex/config.toml`（可选，git 跟踪）承载非凭证配置（[clients] 注册表、budget/stale/harvest 等，多机随 clone/pull 同步）＋ 本机层 `~/.config/dex/config.toml`（必选缺省）承载机器特有覆盖与凭据文件路径，**同键本机层覆盖仓库层**；客户端凭证存本机凭据文件（0600 权限，不入 git）——凭证永不进仓库层 | P1 | v1 |
 | FR-10.3 | 每个客户端持有独立凭证：非交互调用（脚本/Spoke/远程网关）必须显式 `--client <id>`，token 自动从本机凭据文件（0600，不入 git）解析、`DEX_TOKEN` 环境变量可覆盖——命令行不明文传 token；交互式终端默认解析为 human 客户端；未注册或无凭证 = 全拒 | P0 | v1 |
 | FR-10.4 | 管理类命令权限分档：render/review/stale/lint/reindex/init/skills 仅 human 客户端可执行；harvest/interview 允许 human 或**显式授权的收割客户端**（FR-12.5 映射）执行——agentic 收割会话由 agent 非交互发起，属合法路径；`dex render <target>` 要求调用方 scopes ⊇ 目标消费方 scopes；human 客户端全量可读（与直接编辑最高主权一致）、allowed_sources = {human} | P0 | v1 |
+| FR-10.5 | 凭证生命周期：token 为无状态随机串（≥256-bit 熵，生成示例与存储路径见设计 §10 / SECURITY.md §5），加载时校验 token 长度 ≥32 字符（熵的代理指标，防网关场景弱 token 被爆破），不满足 ⇒ 该客户端按无凭证处理（全拒）并提示重新生成；轮换 = 更新本机凭据文件中该客户端的值（无黑名单，配置即真相；单机操作，全网失效走吊销）；吊销 = 删除或注释掉 `[clients.<id>]` 条目（注释即禁用；仓库层注册表随 git 同步生效、本机层即时，FR-10.3 兜底）；凭据文件权限宽于 0600 ⇒ 加载时 warning W_CREDS_PERMS（防意外扩散，不阻断——防恶意归威胁模型边界外，SECURITY.md §4/§5） | P1 | v1 |
+| FR-10.6 | 守卫审计日志：协议通道的拒绝事件（越权/未注册/无凭证/source 不匹配/限流/密钥命中/路径非法）追加写 `.cache/audit.log`（尽力而为，随缓存可丢）；字段 = UTC 时间｜客户端 id｜命令或工具名｜申请 scope/路径｜结果码，**不记录**记忆内容、evidence 与 token 本体（防日志成为二次泄漏面）；单文件软上限、超限轮转（默认值实现时定）——写动作的审计仍由 git commit 承担（设计 §10），本日志只补 git 看不到的协议面（SECURITY.md §6） | P2 | v1 |
+| FR-10.7 | 仓库层 config 变更提示：加载仓库层 `~/dex/.dex/config.toml` 时计算内容 hash 与 `.cache/` 内上次记录比对，不一致 ⇒ warning W_CONFIG_CHANGED（提示 `git log -p -- .dex/config.toml` 核实授权变更）——防「远端被攻破/恶意机器 push 经 `[clients]` 自我扩权」的可见性缺失（SECURITY.md T6/§9）；`.cache/` 无基线时静默建立（盲区已声明） | P2 | v1 |
 
 ### 4.11 配套技能（FR-11）
 
@@ -581,6 +585,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-11.4 | 异构格式适配（rules 类格式等，当前支持范围内暂无需要——未纳入工具场景备查）由 `dex render --skills` 生成薄适配器，产物 gitignore、不手维护（与 FR-6.12 同机制） | P2 | v2 |
 | FR-11.5 | 入口文件（AGENTS.md / render 产物）仅含一行技能指针（如「记忆提案走 dex-propose 技能」），行为细节留在技能内渐进披露 | P1 | v1 |
 | FR-11.6 | `dex skills install [--tool <id>…] [--from <本仓工作副本>]`：技能安装命令化（FR-11.3 v0 手动 symlink 的工具化，手动路径保留为兜底）——安装源缺省为 dex 发行物**内嵌技能**（构建时自本仓 `skills/` 打包、与二进制同版本——技能行为与 CLI 契约不漂移；FR-11.1 单一源语义不变，本仓仍是编写源），`--from` 指定本仓工作副本（开发 / dogfood 快路径）；物化到 dex 管理目录（如 `~/.local/share/dex/skills/`，实现时定）后 symlink 到各工具技能目录（三目录同 FR-11.3；缺省探测全部支持工具，`--tool` 限定子集，id 同 §7 支持范围）；幂等（指向一致的既有 symlink 跳过）、死链自动重建、目标已有非本仓同名条目拒绝不覆盖（退出码 10）；`dex skills uninstall [--tool <id>…]` 对应移除；与 `dex render --skills`（FR-11.4 格式适配器生成）职责分离 | P2 | v1 |
+| FR-11.7 | 发行物完整性与可信通道声明：发行物附 `checksums.txt`（SHA-256，覆盖二进制与内嵌技能物），安装文档给校验命令——不引入签名体系（GPG/sigstore，过度工程，取舍登记于 SECURITY.md §7）；文档显式声明技能与连接器页属**可信通道**（用户自可信源安装、随发行物版本化；`--from` 不可信副本自担风险）；「数据非指令」约束记忆数据、不约束技能/连接器页（行为与数据分离，提案 §七；SECURITY.md §7） | P2 | v1 |
 
 ### 4.12 数据获取：连接器层（FR-12）
 
@@ -606,7 +611,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | NFR-5 | 分发 | 单二进制跨平台（macOS/Linux 优先，Windows 可选），无运行时依赖——**git 为唯一已声明的外部依赖**（§7 假设）：仅 propose/journal 自动提交与 stale/review 的 git log 口径用到；git 缺失时读取与落盘不受影响，自动提交降级为 warning（FR-4.5） |
 | NFR-6 | 寿命 | 数据为纯 markdown + git：10 年后无任何本工具也可完整读写；协议/工具全部可替换 |
 | NFR-7 | 同步 | 条目原子、纯文本、低频写入，git merge 友好；`.cache/` `.obsidian/` 不进 git |
-| NFR-8 | 安全 | 路径穿越防护（`..`、symlink 逃逸拒绝）；CLI 与 MCP 强制客户端凭证与 scope 白名单；source 与客户端身份绑定（FR-4.7）；提案限流防洪水；内容层防御——render 产物统一标注「数据非指令」、密钥模式扫描（FR-4.6）防记忆投毒与凭证入库。威胁模型边界（设计 §10）：凭证防误配置与跨客户端最小授权、为远程网关提供身份载体；**不防同用户恶意进程**（token 本地可读、文件树为明文，后者物理不可防） |
+| NFR-8 | 安全 | 路径穿越防护（`..`、symlink 逃逸拒绝）；CLI 与 MCP 强制客户端凭证与 scope 白名单；source 与客户端身份绑定（FR-4.7）；提案限流防洪水；内容层防御——render 产物统一标注「数据非指令」、密钥模式扫描（FR-4.6）防记忆投毒与凭证入库、render 输出 HTML 净化（FR-6.16）；凭证生命周期与授权配置可见性（FR-10.5/10.7）、协议面拒绝事件审计日志（FR-10.6）。威胁模型边界（设计 §10）：凭证防误配置与跨客户端最小授权、为远程网关提供身份载体；**不防同用户恶意进程**（token 本地可读、文件树为明文，后者物理不可防）；威胁登记与「明确不防」清单单源维护于 [SECURITY.md](./SECURITY.md) |
 | NFR-9 | 可维护 | 强制结构仅「目录即 scope」；frontmatter 仅限 inbox；工具行为可用 grep/git 手工复现（不锁死） |
 | NFR-10 | 容量 | 单仓库设计容量 10⁴ 条目级；超出依赖归档衰减而非扩容机制 |
 
@@ -617,7 +622,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | 期 | 范围 | 验收标准（可勾选） |
 |---|---|---|
 | **v0 约定先行** | 建仓 + 目录 + 零手写冷启动（bootstrap 技能）+ @import + Obsidian | ☐ git 私仓建立，八大目录就位 ☐ `person/` 经面试 + 收割人确认 ≥10 条且每条带溯源（零手写）☐ 三技能 symlink 安装且 `dex-bootstrap` 可完成一轮面试 + 收割 ☐ Claude Code 会话能引用到个人层内容 ☐ Obsidian 打开同一 vault 正常编辑 ☐ 全程零代码、无需手写即可达成全部验收项（手写为可选最高主权，US-05） |
-| **v1 CLI** | ripgrep 版 search/read/propose/render/stale/review/lint + interview/harvest（冷启动工具化） | ☐ 七命令（search/read/propose/render/stale/review/lint）全部可用且 `--json` 输出稳定 ☐ ≥1 个应用（choose-you）稳定供稿 journal 与 inbox（目标 2 个） ☐ 一次真实周回顾单批 ≤15 分钟、分批直至 inbox 清空 ☐ render 产物被至少一个 agent 实际消费 ☐ 注入预算与 scope 过滤生效（构造越权用例不泄露）☐ 冷启动完成线达成（US-13） |
+| **v1 CLI** | ripgrep 版 search/read/propose/render/stale/review/lint + interview/harvest（冷启动工具化） | ☐ 七命令（search/read/propose/render/stale/review/lint）全部可用且 `--json` 输出稳定 ☐ ≥1 个应用（choose-you）稳定供稿 journal 与 inbox（目标 2 个） ☐ 一次真实周回顾单批 ≤15 分钟、分批直至 inbox 清空 ☐ render 产物被至少一个 agent 实际消费 ☐ 注入预算与 scope 过滤生效（构造越权用例不泄露）☐ render 产物净化生效（构造含 HTML 标签条目的注入用例，产物中已转义、注释不透传，FR-6.16）☐ 冷启动完成线达成（US-13） |
 | **v2 MCP + 索引** | `dex mcp` + FTS5 → sqlite-vec + 多 agent render | ☐ ≥2 个 MCP 客户端经 `dex mcp` 完成 search/read/propose 全链路 ☐ MCP 无直写工具且白名单外不可读 ☐ FTS 索引使 search 进入毫秒级 ☐ 删除 `.cache/` 后功能不回退为零 |
 | **v3 经营强化** | 周回顾 UI + index/ 导览 + Spoke 周报协议 | ☐ 周回顾 UI 完成一轮真实回顾 ☐ `index/` 导览自动生成且人未手维护 ☐ ≥2 个 Spoke 按协议提交使用周报并进入衰减裁决 |
 
@@ -655,7 +660,9 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | 周回顾坚持不下来（人的纪律风险） | 中 | 15 分钟量级设计；dex review 清单化降低操作成本；inbox 周清空硬提示 |
 | 冷启动死亡谷（空库无消费价值 → 弃用） | 高 | 零手写冷启动：挖掘 + 面试两源、bootstrap 技能承载、首批 ≤30 条分批人审；冷启动完成线验收（US-13/§6） |
 | bootstrap 草稿幻觉 / 以泛充真 | 中 | 逐条标源纪律（面试指回原话、挖掘指回源文件）+ 人审对照 + evidence 必填（FR-4.1/4.2）；达不到溯源要求的条目不进草稿；v0 窗口草稿由技能直写 inbox（无命令守卫——密钥扫描/限流/幂等暂缺位，既定取舍），v1 起统一收敛 `dex propose` |
-| git 历史脱敏负担 | 中 | 文档约束敏感内容不入库；git-crypt 整仓加密为可选路径 |
+| git 历史脱敏负担 | 中 | 文档约束敏感内容不入库；git-crypt 整仓加密为可选路径（与 NFR-6 冲突的取舍及推荐序见 SECURITY.md §7） |
+| dex 发行物 / 技能被替换（供应链投毒） | 低 | checksums + 校验文档（FR-11.7）；可信源安装纪律；行为与数据通道分离（提案 §七，SECURITY.md T8/§7） |
+| 远端私仓被攻破（记忆泄漏 / 授权配置被篡改扩权 / scope 内容直写投毒——绕过周回顾人审门随 pull 扩散） | 低 | 私仓 ACL；[clients] 变更提示 + pull diff 审视（FR-10.7，SECURITY.md T6/T16——git 通道的内容变更无机械门禁，可见性靠人的 pull diff 审视）；敏感不入库纪律与反推荐清单（WORK_LIFE_SCENARIOS §5） |
 | MCP 协议演进 | 低 | 文件层稳定契约，适配器可替换（NFR-6） |
 
 ---
@@ -670,7 +677,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | 六、生命周期 | §3.2 提案—确认流程、US-03/04/06 |
 | 七、访问通道与写入协议 | FR-4、FR-6、FR-7、§3.6 |
 | 八、维护循环 | §3.4 周回顾流程、FR-9 |
-| 九、多机/隐私/信任 | US-07、US-08、NFR-1/7/8、FR-10.3 |
+| 九、多机/隐私/信任 | US-07、US-08、NFR-1/7/8、FR-10.3、SECURITY.md |
 | 十、分期落地 | §6 分期验收 |
 | 十一、风险与取舍 | §8 |
 | 二之10 / 七之（配套技能行为层） | FR-11、US-14 |
