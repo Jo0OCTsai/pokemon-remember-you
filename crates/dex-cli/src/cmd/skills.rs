@@ -4,7 +4,7 @@
 //! - 安装源：缺省 = 发行物内嵌技能（构建时自本仓 `skills/` 打包，include_dir）；
 //!   `--from <path>` = 本仓工作副本（开发/dogfood 快路径，可信自担，FR-11.7）
 //! - 物化目录（本实现冻结）：`~/.local/share/dex/skills/`（debt.md 待定参数，已定值回填）；
-//!   每次安装**重建**受管四项（dex-bootstrap/dex-propose/dex-review/connectors——版本漂移重物化），
+//!   每次安装**重建**受管五项（dex-bootstrap/dex-propose/dex-review/repo-knowledge/connectors——版本漂移重物化），
 //!   并清除 .DS_Store 等杂项
 //! - symlink 目标：`claude → ~/.claude/skills/`、`pi → ~/.pi/agent/skills/`、
 //!   `zcode → ~/.zcode/skills/`（缺省全部；`--tool` 限定子集；未知 id → E_BAD_ARGS · 2）
@@ -41,12 +41,23 @@ pub fn materialize_dir(home: &std::path::Path) -> std::path::PathBuf {
     home.join(".local").join("share").join("dex").join("skills")
 }
 
-/// 三个内管技能（symlink 单元）
-const SKILLS: [&str; 3] = ["dex-bootstrap", "dex-propose", "dex-review"];
+/// 四个内管技能（symlink 单元）
+const SKILLS: [&str; 4] = [
+    "dex-bootstrap",
+    "dex-propose",
+    "dex-review",
+    "repo-knowledge",
+];
 /// 支持工具（缺省全装；顺序即处理序）
 const TOOLS: [&str; 3] = ["claude", "pi", "zcode"];
-/// 物化目录中受重建管理的四项（三技能 + 连接器页目录）
-const MANAGED_ENTRIES: [&str; 4] = ["dex-bootstrap", "dex-propose", "dex-review", "connectors"];
+/// 物化目录中受重建管理的五项（四技能 + 连接器页目录）
+const MANAGED_ENTRIES: [&str; 5] = [
+    "dex-bootstrap",
+    "dex-propose",
+    "dex-review",
+    "repo-knowledge",
+    "connectors",
+];
 /// 物化时清除的杂项文件
 const JUNK_FILES: [&str; 3] = [".DS_Store", "Thumbs.db", "desktop.ini"];
 
@@ -87,7 +98,7 @@ pub fn run(args: &SkillsArgs) -> Result<i32, DexError> {
     }
 }
 
-/// `dex skills`（无子命令）→ 三工具 × 三技能 symlink 状态清单
+/// `dex skills`（无子命令）→ 三工具 × 四技能 symlink 状态清单
 fn status(json: bool, home: &Path, mat: &Path) -> i32 {
     let mut tools: Map<String, Value> = Map::new();
     let mut lines: Vec<String> = Vec::new();
@@ -142,7 +153,7 @@ fn install(
         }
     }
 
-    // 2. 物化：重建受管四项（版本漂移重物化）+ 清杂项
+    // 2. 物化：重建受管五项（版本漂移重物化）+ 清杂项
     rebuild_materialize(mat, src.as_deref())?;
     let from_label = src
         .as_ref()
@@ -356,7 +367,7 @@ fn has_dex_skill(src: &Path) -> bool {
     })
 }
 
-/// 物化重建：删旧受管四项 → 全量写入（内嵌 extract / 工作副本复制）→ 清杂项
+/// 物化重建：删旧受管五项 → 全量写入（内嵌 extract / 工作副本复制）→ 清杂项
 fn rebuild_materialize(mat: &Path, src: Option<&Path>) -> Result<(), DexError> {
     for name in MANAGED_ENTRIES {
         let p = mat.join(name);

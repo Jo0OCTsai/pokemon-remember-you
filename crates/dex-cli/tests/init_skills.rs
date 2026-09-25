@@ -18,7 +18,12 @@ use tempfile::TempDir;
 const SKELETON_DIRS: [&str; 8] = [
     "person", "domains", "apps", "projects", "journal", "inbox", "archive", "index",
 ];
-const SKILLS: [&str; 3] = ["dex-bootstrap", "dex-propose", "dex-review"];
+const SKILLS: [&str; 4] = [
+    "dex-bootstrap",
+    "dex-propose",
+    "dex-review",
+    "repo-knowledge",
+];
 
 fn tool_dir(home: &Path, tool: &str) -> PathBuf {
     match tool {
@@ -262,13 +267,14 @@ fn skills_install_embedded_all_tools() {
         serde_json::json!(mat.to_string_lossy().to_string())
     );
 
-    // 物化目录含四项 + SKILL.md
+    // 物化目录含五项 + SKILL.md
     assert!(mat.join("dex-bootstrap/SKILL.md").is_file());
     assert!(mat.join("dex-propose/SKILL.md").is_file());
     assert!(mat.join("dex-review/SKILL.md").is_file());
+    assert!(mat.join("repo-knowledge/SKILL.md").is_file());
     assert!(mat.join("connectors").is_dir());
 
-    // 三工具 × 三技能 symlink 指向物化路径
+    // 三工具 × 四技能 symlink 指向物化路径
     for tool in ["claude", "pi", "zcode"] {
         for skill in SKILLS {
             let link = tool_dir(&env.home, tool).join(skill);
@@ -286,8 +292,8 @@ fn skills_install_embedded_all_tools() {
         }
         assert_eq!(
             v["data"]["installed"][tool].as_array().map(Vec::len),
-            Some(3),
-            "{tool} 应装三技能：{v}"
+            Some(4),
+            "{tool} 应装四技能：{v}"
         );
     }
 }
@@ -313,7 +319,7 @@ fn skills_install_is_idempotent_skip() {
         );
         assert_eq!(
             v["data"]["skipped"][tool].as_array().map(Vec::len),
-            Some(3),
+            Some(4),
             "应全部 skip：{v}"
         );
     }
@@ -497,8 +503,8 @@ fn skills_uninstall_removes_only_ours() {
     for tool in ["claude", "pi"] {
         assert_eq!(
             v["data"]["removed"][tool].as_array().map(Vec::len),
-            Some(3),
-            "{tool} 应移除三技能：{v}"
+            Some(4),
+            "{tool} 应移除四技能：{v}"
         );
         for skill in SKILLS {
             assert!(

@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）
-> 文档版本：v1.16 · 2026-09-25 · 状态：待评审（v1.16：外源知识索引（external indexing，v2）——新增 FR-8.5–8.8（只索引不收编／`[index.sources]` 外源注册／逐源新鲜度与失效／授权标签并入既有白名单判定）与 US-15 跨仓检索；术语表补「外源／外源索引」；§1.3 非目标补「外部仓库知识内容不同步入 Hub」；§3.7 补「repo 知识在 Hub 侧 = 指针而非副本，提炼不复制」；FR-6.1 补外源命中混入口径；§6 v2 验收与 §8 风险表同步（安全登记 SECURITY.md T17/T18、安全 v1.2 同步）；隔离 sdd-reviewer 评审清偿——FR-8.4 补外源降级例外、FR-8.6 标签枚举域/缺省口径/symlink、FR-8.7 freshness 摊销与注销源清除、FR-8.8 并集与空命中/repo: 路径口径、FR-6.11 lint 增补、术语表 source 三义注记；v1.15：Claude Code AGENTS.md 统一——repo 根与用户级 `~/.claude/AGENTS.md` 均原生支持且为唯一入口，FR-6.4 去除 shim/回退口径（三工具统一根位）、FR-3.6/US-01 步骤 4/§3.7 个人记忆叠加位改 AGENTS.md，**全文档移除旧入口文件名引用**（Claude 侧仅认 AGENTS.md，含收割清单与团队文件描述）；v1.14：实施前评审修订——High：FR-2.8 顶层白名单补 `.dex/` 与系统杂项忽略策略、§3.3 流程图改检索/注入双分支（检索不做合并与预算，对齐 P5/US-02）；Medium：FR-3.1 person 恒在改白名单条件式＋journal 纳入恒排除并定义显式检索面、FR-6.1 缺省检索集=白名单∩四层（CLI/MCP 同口径）与内嵌 ripgrep 措辞、FR-6.5 stale 改单遍 git log 口径（复活即重置计时、git 缺失回退 mtime）、FR-2.2 src 注释两级作用域（条目级优先）、FR-3.2 补④终局稳定序、FR-6.4 手改检测拒绝覆盖＋--force/--dry-run 语义与 out 路径基准、FR-10.3 TTY human 免凭证、FR-4.1 幂等指针与 evidence 双件套适用范围（本地文件收割单件合法）、FR-2.8 inbox 滞留检查递归与 bootstrap 落盘统一顶层、FR-5.4/FR-4.3 journal 日限流与限流日界、FR-10.2 键级深合并指针、FR-6.11 lint --json 信封特例、FR-11.5/US-14 技能指针措辞、US-01/US-06/US-07/US-10/§6 验收与措辞修订、FR-1.4 v0 例外注记、NFR-5 git 使用面措辞、FR-2.10 两级并存优先级；v1.13：安全补强——威胁模型单源化：新增 [SECURITY.md](./SECURITY.md)（NFR-8/§8 引用）；新增 FR-6.16 render 输出净化、FR-10.5 凭证生命周期、FR-10.6 守卫审计日志、FR-10.7 仓库层 config 变更提示、FR-11.7 发行物完整性与可信通道声明；§6 v1 验收补净化用例、§8 风险表补供应链/远端私仓两行；此前 v1.12：安装路径工具化——FR-6.9 `dex init` 澄清含 `git init` 与首次提交（幂等补齐 / git 缺失降级 warning）、新增 FR-11.6 `dex skills install`（发行物内嵌技能 + symlink 管理，取代 clone 依赖）、FR-10.4 管理命令清单 / US-01 / US-14 措辞同步；此前 v1.11：debt 清偿（Medium 16 + Low 14 全量）——注入优先级字典序权威化（FR-3.2/US-05）、收割暂存区迁 `inbox/staging/`（FR-6.14/FR-2.8）、周回顾七段权威段序（FR-6.6/FR-11.2/US-04）、近义预筛 v1 运行时不落 index/、空目录约束收窄（FR-2.9）、人速记归 journal（FR-4.2/FR-5.1）、FR-2.3 期别 v0、evidence ≤2000 字符（FR-4.1）、scope 越权整单拒绝（FR-7.3）、NFR-3 量化 P95、NFR-5 明示 git 例外（FR-4.5）、config 两层存放（FR-10.2/US-07）、FR-1.6 `.dex-ignore` 回补、FR-6.15 `dex index`、FR-9.5 `--group`、US-01/US-13/v1 验收措辞与量化；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§7 约束、US-02/US-14、FR-11 组、工具矩阵 §2.1），其余移入 TOOL_COMPATIBILITY.md 未纳入备查；更早 v1.9：W3 收口——入口文件策略矩阵化（FR-6.4/FR-6.12）；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
+> 文档版本：v1.17 · 2026-09-25 · 状态：待评审（v1.17：新增 repo 侧知识库维护技能——FR-11.2 最小技能集三个→四个（`repo-knowledge`：知识路由〔子目录 AGENTS.md／ARCHITECTURE／ADR／debt／Hub〕、制度化写入时机、防漂移机检、修剪；承载 §3.7「repo 知识留 repo」的行为层，个人结论仍走 dex-propose；`dex skills install` 受管面与 render 技能指针行〔金样本〕同步扩展）；术语表「配套技能」与 US-14（背景／过程指针／验收四技能）同步；v1.16：外源知识索引（external indexing，v2）——新增 FR-8.5–8.8（只索引不收编／`[index.sources]` 外源注册／逐源新鲜度与失效／授权标签并入既有白名单判定）与 US-15 跨仓检索；术语表补「外源／外源索引」；§1.3 非目标补「外部仓库知识内容不同步入 Hub」；§3.7 补「repo 知识在 Hub 侧 = 指针而非副本，提炼不复制」；FR-6.1 补外源命中混入口径；§6 v2 验收与 §8 风险表同步（安全登记 SECURITY.md T17/T18、安全 v1.2 同步）；隔离 sdd-reviewer 评审清偿——FR-8.4 补外源降级例外、FR-8.6 标签枚举域/缺省口径/symlink、FR-8.7 freshness 摊销与注销源清除、FR-8.8 并集与空命中/repo: 路径口径、FR-6.11 lint 增补、术语表 source 三义注记；v1.15：Claude Code AGENTS.md 统一——repo 根与用户级 `~/.claude/AGENTS.md` 均原生支持且为唯一入口，FR-6.4 去除 shim/回退口径（三工具统一根位）、FR-3.6/US-01 步骤 4/§3.7 个人记忆叠加位改 AGENTS.md，**全文档移除旧入口文件名引用**（Claude 侧仅认 AGENTS.md，含收割清单与团队文件描述）；v1.14：实施前评审修订——High：FR-2.8 顶层白名单补 `.dex/` 与系统杂项忽略策略、§3.3 流程图改检索/注入双分支（检索不做合并与预算，对齐 P5/US-02）；Medium：FR-3.1 person 恒在改白名单条件式＋journal 纳入恒排除并定义显式检索面、FR-6.1 缺省检索集=白名单∩四层（CLI/MCP 同口径）与内嵌 ripgrep 措辞、FR-6.5 stale 改单遍 git log 口径（复活即重置计时、git 缺失回退 mtime）、FR-2.2 src 注释两级作用域（条目级优先）、FR-3.2 补④终局稳定序、FR-6.4 手改检测拒绝覆盖＋--force/--dry-run 语义与 out 路径基准、FR-10.3 TTY human 免凭证、FR-4.1 幂等指针与 evidence 双件套适用范围（本地文件收割单件合法）、FR-2.8 inbox 滞留检查递归与 bootstrap 落盘统一顶层、FR-5.4/FR-4.3 journal 日限流与限流日界、FR-10.2 键级深合并指针、FR-6.11 lint --json 信封特例、FR-11.5/US-14 技能指针措辞、US-01/US-06/US-07/US-10/§6 验收与措辞修订、FR-1.4 v0 例外注记、NFR-5 git 使用面措辞、FR-2.10 两级并存优先级；v1.13：安全补强——威胁模型单源化：新增 [SECURITY.md](./SECURITY.md)（NFR-8/§8 引用）；新增 FR-6.16 render 输出净化、FR-10.5 凭证生命周期、FR-10.6 守卫审计日志、FR-10.7 仓库层 config 变更提示、FR-11.7 发行物完整性与可信通道声明；§6 v1 验收补净化用例、§8 风险表补供应链/远端私仓两行；此前 v1.12：安装路径工具化——FR-6.9 `dex init` 澄清含 `git init` 与首次提交（幂等补齐 / git 缺失降级 warning）、新增 FR-11.6 `dex skills install`（发行物内嵌技能 + symlink 管理，取代 clone 依赖）、FR-10.4 管理命令清单 / US-01 / US-14 措辞同步；此前 v1.11：debt 清偿（Medium 16 + Low 14 全量）——注入优先级字典序权威化（FR-3.2/US-05）、收割暂存区迁 `inbox/staging/`（FR-6.14/FR-2.8）、周回顾七段权威段序（FR-6.6/FR-11.2/US-04）、近义预筛 v1 运行时不落 index/、空目录约束收窄（FR-2.9）、人速记归 journal（FR-4.2/FR-5.1）、FR-2.3 期别 v0、evidence ≤2000 字符（FR-4.1）、scope 越权整单拒绝（FR-7.3）、NFR-3 量化 P95、NFR-5 明示 git 例外（FR-4.5）、config 两层存放（FR-10.2/US-07）、FR-1.6 `.dex-ignore` 回补、FR-6.15 `dex index`、FR-9.5 `--group`、US-01/US-13/v1 验收措辞与量化；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§7 约束、US-02/US-14、FR-11 组、工具矩阵 §2.1），其余移入 TOOL_COMPATIBILITY.md 未纳入备查；更早 v1.9：W3 收口——入口文件策略矩阵化（FR-6.4/FR-6.12）；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
 > 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）· [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md)（用户场景业务流程推演）· [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)（工具入口兼容矩阵）· [SECURITY.md](./SECURITY.md)（威胁模型与缓解登记）
 
 ---
@@ -48,7 +48,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 | 固化 | Spoke 内部把反复出现的模式沉淀为结论的管道（其内部另有确认门） |
 | 周回顾 | 每周一次的人工经营动作，是系统唯一的知识写入口（确认归位 / 改写 / 否决 / 归档 / scope 升降级） |
 | 入口文件 | 渲染给某消费方 scope 合并视图的文件（默认名 `AGENTS.md`，跨工具事实标准），或 Claude Code 的 `@import` 引用 |
-| 配套技能（skills） | 本仓 `skills/` 分发的 agent 行为包（SKILL.md 单一源：`dex-bootstrap` / `dex-propose` / `dex-review`）；行为来自用户安装的技能（可信通道），与记忆数据（不可信通道）分离 |
+| 配套技能（skills） | 本仓 `skills/` 分发的 agent 行为包（SKILL.md 单一源：`dex-bootstrap` / `dex-propose` / `dex-review` / `repo-knowledge`）；行为来自用户安装的技能（可信通道），与记忆数据（不可信通道）分离 |
 | 连接器页（connector） | 每数据源一页的获取知识（`skills/connectors/<source>.md`，六要素：数据清单/locator 格式/摘录抓取/高发区提示/隐私红线特化/烟测命令）；行为知识而非代码（FR-12） |
 | 注入预算 | 消费方单次获得的记忆上限（默认 ≤10 条 / ≤2000 字） |
 | 衰减 | 条目 90 天未实质变更且未被引用 → 进入归档候选 |
@@ -232,14 +232,14 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 ### US-14 配套技能安装与使用（v0 起）
 
 **角色**：训练家 + 各编码 agent
-**背景**：协议（CLI/MCP）定义 agent 能做什么，技能定义该怎么表现；冷启动、提案纪律、周回顾的行为由技能承载，入口文件的技能提示只留一行指针（渐进披露，不占常驻上下文；注入正文另计，FR-6.4）。
+**背景**：协议（CLI/MCP）定义 agent 能做什么，技能定义该怎么表现；冷启动、提案纪律、周回顾、repo 知识维护的行为由技能承载，入口文件的技能提示只留一行指针（渐进披露，不占常驻上下文；注入正文另计，FR-6.4）。
 
 **过程**：
 1. 一次性安装：v0——symlink 本仓 `skills/dex-*` 到 `~/.claude/skills/`、`~/.pi/agent/skills/`、`~/.zcode/skills/`（三工具技能目录，文档给安装命令，FR-11.3）；v1 起——`dex skills install` 一键探测装齐（发行物内嵌技能物化 + symlink，幂等 / 死链重建 / 冲突退出码 10，FR-11.6；clone 本仓不再是分发前置）；不支持技能的工具退化为附录引导词；
-2. agent 经入口文件的一行指针知道「记忆提案走 dex-propose 技能」，触发时按需加载；
+2. agent 经入口文件的一行指针知道「记忆提案走 dex-propose · 周回顾走 dex-review · repo 知识维护走 repo-knowledge 技能」，触发时按需加载；
 3. 技能随本仓 git 演进；异构工具格式由 `dex render --skills` 生成薄适配器（FR-11.4），产物 gitignore、不手维护。
 
-**验收**：三个技能在 ≥2 个工具中可触发并正确执行（bootstrap 产草稿落 `inbox/bootstrap/`、propose 带齐元数据、review 输出七段清单）；行为来自用户安装的技能（可信通道），记忆内容仍受「数据非指令」约束——行为与数据分离。
+**验收**：四个技能在 ≥2 个工具中可触发并正确执行（bootstrap 产草稿落 `inbox/bootstrap/`、propose 带齐元数据、review 输出七段清单、repo-knowledge 按路由表落位并给出同步结果）；行为来自用户安装的技能（可信通道），记忆内容仍受「数据非指令」约束——行为与数据分离。
 
 ### US-15 跨仓知识检索（v2）
 
@@ -602,7 +602,7 @@ repo 的 AGENTS.md             → 团队指令层：build/test/规范（不动�
 | 编号 | 需求 | 优先级 | 期别 |
 |---|---|---|---|
 | FR-11.1 | 本仓 `skills/` 为技能单一源（一技能一目录 + SKILL.md，含 name/description/触发词 frontmatter）；技能属工具仓库、不进 `~/dex` 数据仓——数据与行为分离 | P0 | v0 |
-| FR-11.2 | 最小技能集三个：`dex-bootstrap`（零手写冷启动，见 US-01/US-13）、`dex-propose`（日常提案纪律与 scope 路由，入库判据「换一个应用还成立吗」）、`dex-review`（周回顾七段走查——段序同 FR-6.6（①lint ②inbox ③journal ④衰减 ⑤升降级 ⑥近义与矛盾组 ⑦结构整理）+ 建议命令） | P0 | v0 |
+| FR-11.2 | 最小技能集四个（v0 三项先行、v1 增补第四项）：`dex-bootstrap`（零手写冷启动，见 US-01/US-13）、`dex-propose`（日常提案纪律与 scope 路由，入库判据「换一个应用还成立吗」）、`dex-review`（周回顾七段走查——段序同 FR-6.6（①lint ②inbox ③journal ④衰减 ⑤升降级 ⑥近义与矛盾组 ⑦结构整理）+ 建议命令）、`repo-knowledge`（**仓库侧**知识库维护纪律——知识路由〔模块约定→子目录 AGENTS.md、跨模块→docs/ARCHITECTURE.md、不可逆决策→ADR、债务→docs/debt.md、个人结论→dex propose〕、制度化写入时机〔结构变更同步／决策即写 ADR／任务收尾自查／周期修剪〕、防漂移机检与红线；§3.7「repo 知识留 repo」的行为层承载，Hub 侧技能不重复此面） | P0/P1 | v0/v1 |
 | FR-11.3 | v0 分发：symlink 到三工具技能目录（`~/.claude/skills/`、`~/.pi/agent/skills/`、`~/.zcode/skills/`），文档提供安装命令；贴提示词为不支持技能工具的兜底（提案附录模板） | P1 | v0 |
 | FR-11.4 | 异构格式适配（rules 类格式等，当前支持范围内暂无需要——未纳入工具场景备查）由 `dex render --skills` 生成薄适配器，产物 gitignore、不手维护（与 FR-6.12 同机制） | P2 | v2 |
 | FR-11.5 | 入口文件（AGENTS.md / render 产物）中**技能相关内容**仅一行指针（如「记忆提案走 dex-propose 技能」；注入正文另计，FR-6.4），行为细节留在技能内渐进披露 | P1 | v1 |

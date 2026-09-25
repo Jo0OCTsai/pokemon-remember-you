@@ -1,7 +1,7 @@
 # dex 实施计划（v0 + v1）
 
 > 项目：pokemon-remember-you（就记得是你）——个人记忆中枢 dex
-> 文档版本：v1.0 · 2026-09-25 · 状态：**已实施**（2026-09-25 实施会话完成 v0+v1；验收见 [reports/acceptance-report.md](./reports/acceptance-report.md)——机械项全过，人工 dogfood 项已标注）
+> 文档版本：v1.1 · 2026-09-25 · 状态：**已实施**（2026-09-25 实施会话完成 v0+v1；验收见 [reports/acceptance-report.md](./reports/acceptance-report.md)——机械项全过，人工 dogfood 项已标注。v1.1 增补：A5 `repo-knowledge` 技能，对应需求 v1.17／FR-11.2 四技能）
 > 关卡：已过「需求+设计+架构通过」（2026-09-25；需求/设计 v1.14、安全 v1.1 实施前最终评审清偿完毕）
 > 背景文档（实施会话必读，本计划按 FR/§ 编号引用、不复制正文）：
 > [REQUIREMENTS.md](./REQUIREMENTS.md)（SDD·v1.14）· [DESIGN.md](./DESIGN.md)（AD·v1.14）· [SECURITY.md](./SECURITY.md)（威胁模型·v1.1）· [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)（工具矩阵·v1.2）· [debt.md](./debt.md)（实施期待定参数）
@@ -26,7 +26,7 @@ pokemon-remember-you/
 │   │   └── src/{fs, git}.rs + src/search/{mod, rg}.rs   # sqlite/fts 留 v2
 │   └── dex-cli/             # CLI 前端（clap）
 │       └── src/main.rs + src/{config, guard_runtime, audit}.rs + src/cmd/{search,read,propose,journal,render,stale,review,lint,reindex_stub,init,skills,harvest,interview}.rs
-├── skills/                  # v0 交付：dex-bootstrap / dex-propose / dex-review + connectors/（DESIGN §5.7 六要素）
+├── skills/                  # v0 交付：dex-bootstrap / dex-propose / dex-review + connectors/（DESIGN §5.7 六要素）；v1 增补 repo-knowledge（FR-11.2）
 ├── scripts/                 # gen_fixture.py（10⁴ 条目合成仓库）等
 ├── docs/                    # 既有文档 + 本计划 + reports/（验收产物）
 └── Cargo.toml               # workspace
@@ -66,6 +66,7 @@ pokemon-remember-you/
 | A2 | `dex-propose` 技能（入库判据「换一个应用还成立吗」、evidence 必填、scope 路由建议） | `skills/dex-propose/SKILL.md` | 同上；FR-11.2 |
 | A3 | `dex-review` 技能（七段段序＝FR-6.6 权威序 + 每项建议命令） | `skills/dex-review/SKILL.md` | 段序与 FR-6.6 逐段一致 |
 | A4 | 连接器层脚手架（`skills/connectors/README.md` + 六要素空模板 + 「新源五步清单」） | `skills/connectors/*` | 对照 DESIGN §5.7 |
+| A5 | `repo-knowledge` 技能（**v1.17 增补**，FR-11.2：仓库侧知识库维护纪律——知识路由〔子目录 AGENTS.md／ARCHITECTURE／ADR／debt／Hub〕、制度化写入时机、防漂移机检、修剪；`dex skills install` 受管面同步扩为四技能 + connectors） | `skills/repo-knowledge/SKILL.md` | frontmatter 合规；对照 FR-11.2／§3.7 分流判据 |
 
 ### 并行组 B：dex-core 领域层（TDD——先写失败测试再实现，判据：错了会以同样方式再现）
 

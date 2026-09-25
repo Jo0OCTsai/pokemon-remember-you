@@ -6,7 +6,7 @@ scope 接入，读取与提案记忆，换工具不失忆。
 - 需求 / 设计 / 安全：[docs/](./docs)（REQUIREMENTS · DESIGN · SECURITY 为权威源）
 - 实施计划：[docs/PLAN.md](./docs/PLAN.md)（v0 + v1）
 - 代码：`crates/`（dex-core 领域层 → dex-store 基础设施 → dex-cli 命令面）
-- 配套技能单一源：`skills/`（dex-bootstrap / dex-propose / dex-review + connectors）
+- 配套技能单一源：`skills/`（dex-bootstrap / dex-propose / dex-review / repo-knowledge + connectors）
 - 工程化：`scripts/check.sh`（fmt + clippy + test）；验收报告 `docs/reports/`
 
 快速开始（开发者）：

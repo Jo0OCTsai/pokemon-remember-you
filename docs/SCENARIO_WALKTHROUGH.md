@@ -1,7 +1,7 @@
 # 用户场景业务流程推演（Scenario Walkthrough）
 
 > 项目：pokemon-remember-you（就记得是你）
-> 文档版本：v1.9 · 2026-09-25 · 状态：待评审（v1.9：Claude Code 原生支持 AGENTS.md 同步——US-01 时序的 import 落点改 AGENTS.md 口径；v1.8：实施前评审修订同步——上游版本钉更 v1.13、US-10 journal 命令签名对齐 FR-5.4（正文为位置参数）、US-06/stale 口径对齐单遍 git log（复活动作即重置计时，FR-6.5）；v1.7：安全补强同步——US-02 render 流程/时序补 HTML 净化步骤（FR-6.16）、US-08 威胁模型边界注补 SECURITY.md 指针；此前 v1.6：安装路径同步（需求 v1.12 修订）——US-14/US-01 的流程、前置与时序图补 v1 `dex skills install`（FR-11.6）与 `dex init`（FR-6.9 澄清含 git init 与首次提交）注记；此前 v1.5：全部 14 个场景补充 Mermaid 时序图——参与者即各工具/平台/系统，直观展示用户跨端操作步骤；此前 v1.4：debt 清偿同步——七段权威段序落定（FR-6.6）、空目录豁免已裁决（FR-2.9）、收割暂存区迁 inbox/staging（FR-6.14）、config 两层存放（FR-10.2）、悬空 debt 引用清理；v1.3：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode；v1.2：W3 关闭——工具兼容矩阵产出（TOOL_COMPATIBILITY.md），render 默认位置修正为 repo 根 + 团队仓库分流；v1.1：W1/W2/W4 已随 v1.8 修复）
+> 文档版本：v1.10 · 2026-09-25 · 状态：待评审（v1.10：技能集四个同步（需求 v1.17：FR-11.2 增补 `repo-knowledge`）——US-14 安装命令、软链与断言改四技能口径；v1.9：Claude Code 原生支持 AGENTS.md 同步——US-01 时序的 import 落点改 AGENTS.md 口径；v1.8：实施前评审修订同步——上游版本钉更 v1.13、US-10 journal 命令签名对齐 FR-5.4（正文为位置参数）、US-06/stale 口径对齐单遍 git log（复活动作即重置计时，FR-6.5）；v1.7：安全补强同步——US-02 render 流程/时序补 HTML 净化步骤（FR-6.16）、US-08 威胁模型边界注补 SECURITY.md 指针；此前 v1.6：安装路径同步（需求 v1.12 修订）——US-14/US-01 的流程、前置与时序图补 v1 `dex skills install`（FR-11.6）与 `dex init`（FR-6.9 澄清含 git init 与首次提交）注记；此前 v1.5：全部 14 个场景补充 Mermaid 时序图——参与者即各工具/平台/系统，直观展示用户跨端操作步骤；此前 v1.4：debt 清偿同步——七段权威段序落定（FR-6.6）、空目录豁免已裁决（FR-2.9）、收割暂存区迁 inbox/staging（FR-6.14）、config 两层存放（FR-10.2）、悬空 debt 引用清理；v1.3：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode；v1.2：W3 关闭——工具兼容矩阵产出（TOOL_COMPATIBILITY.md），render 默认位置修正为 repo 根 + 团队仓库分流；v1.1：W1/W2/W4 已随 v1.8 修复）
 > 上游文档：[REQUIREMENTS.md](./REQUIREMENTS.md) v1.15（US-01～US-14）· [DESIGN.md](./DESIGN.md) v1.15（本文随上游演进持续同步，版本号对齐当前上游）
 > 定位：以 v1.7 机制对全部用户场景做**端到端业务流程推演**（dry-run）——每场景给出前置条件、逐步流程（含实际命令、git 动作、状态落点）与断言；推演暴露的衔接缺口记入「推演发现」（§6）并同步 [debt.md](./debt.md)。**本文不新增需求**，是需求/设计的验证性衍生文档。
 
@@ -45,9 +45,9 @@ sequenceDiagram
     and ZCode
         H->>ZC: ln -s dex-* 软链
     end
-    Note over CC,ZC: 技能本体经软链即时生效<br/>（bootstrap / propose / review 三技能）
+    Note over CC,ZC: 技能本体经软链即时生效<br/>（bootstrap / propose / review / repo-knowledge 四技能）
     H->>CC: 会话中触发 dex-bootstrap 技能
-    CC-->>H: 正确执行（断言：三技能在 ≥2 个工具可触发并正确执行）
+    CC-->>H: 正确执行（断言：四技能在 ≥2 个工具可触发并正确执行）
     Note over H,ZC: 状态落点：宿主工具技能目录出现 symlink；~/dex 无任何变更
     opt v1 起 · 命令安装（FR-11.6）
         H->>H: dex skills install（内嵌技能物化 → symlink 三工具目录，幂等）
@@ -61,14 +61,14 @@ sequenceDiagram
 **前置**：v0——本仓 clone 到位（技能单一源，FR-11.1）；v1 起——dex 发行物内嵌技能，`dex skills install` 直接安装、无需 clone（FR-11.6）。目标工具（Claude Code / pi / ZCode——支持范围见需求 §7）支持 skills 目录。
 
 **流程**：
-1. `ln -s <本仓>/skills/dex-* ~/.claude/skills/`（pi：`~/.pi/agent/skills/`；ZCode：`~/.zcode/skills/`——各自技能目录）；
+1. `ln -s <本仓>/skills/{dex-*,repo-knowledge} ~/.claude/skills/`（pi：`~/.pi/agent/skills/`；ZCode：`~/.zcode/skills/`——各自技能目录）；
 2. 技能本体即生效（一技能一目录 + SKILL.md，本仓 `skills/` 为单一源）；
 3. v2 起异构格式：`dex render --skills` 生成薄适配器（gitignore，不手维护）；
 4. **v1 起命令安装**：`dex skills install [--tool …]`——发行物内嵌技能物化到 dex 管理目录后 symlink 三工具技能目录（幂等、死链重建、非本仓同名冲突退出码 10；`--from` 走本仓工作副本，FR-11.6）；手动 symlink 保留为兜底。
 
 **状态落点**：宿主工具技能目录出现 symlink；`~/dex` 无任何变更。
 
-**断言**：三个技能（bootstrap/propose/review）在 ≥2 个工具中可触发并正确执行。
+**断言**：四个技能（bootstrap/propose/review/repo-knowledge）在 ≥2 个工具中可触发并正确执行。
 
 ### 1.2 US-01 零工具冷启动（v0 · 零手写）
 
