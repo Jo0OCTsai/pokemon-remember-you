@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）· [REQUIREMENTS.md](./REQUIREMENTS.md)（需求文档）
-> 文档版本：v1.11 · 2026-09-25 · 状态：待评审（v1.11：debt 清偿——P5 注入/检索语义修正（§1.1/§1.2）、两层 config（§2.5）、提交信息模板与幂等 hash 域（§2.3）、Superseded 状态（§3.3）、entries 代理键（§4.1）、延迟重建与并发写锁（§4.2）、截断语义与字典序注（§5.2）、keep-until 两级作用域（§5.4）、evidence 上限与并发 propose（§5.5）、lint 白名单/staging 豁免/superseded 悬空（§5.6）、staging 迁 inbox/staging（§5.7）、import 声明承载（§6.2/§13）、七段段序（§6.3）、CLI 面 --skills/--group/dex index/--json 拼写（§8.1）、scope fail-closed 整单拒绝（§8.2/§10）、退出码 7 收窄（§8.3）、新增 §8.4 JSON 信封与 E_*/W_* 枚举；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§2.5 示例与 FR-6.4 分流口径同步，其余备查 TOOL_COMPATIBILITY.md §2.2）；更早 v1.9：W3 收口；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层、v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
+> 文档版本：v1.12 · 2026-09-25 · 状态：待评审（v1.12：安装路径工具化同步（对应需求 FR-6.9/FR-11.6 修订）——§8.1 `dex init` 行澄清含 `git init` 与首次提交、新增 `dex skills` 行、管理命令权限分档补 skills，§7.1 主流程 init/skills 分支，§8.3 退出码 10 口径泛化；此前 v1.11：debt 清偿——P5 注入/检索语义修正（§1.1/§1.2）、两层 config（§2.5）、提交信息模板与幂等 hash 域（§2.3）、Superseded 状态（§3.3）、entries 代理键（§4.1）、延迟重建与并发写锁（§4.2）、截断语义与字典序注（§5.2）、keep-until 两级作用域（§5.4）、evidence 上限与并发 propose（§5.5）、lint 白名单/staging 豁免/superseded 悬空（§5.6）、staging 迁 inbox/staging（§5.7）、import 声明承载（§6.2/§13）、七段段序（§6.3）、CLI 面 --skills/--group/dex index/--json 拼写（§8.1）、scope fail-closed 整单拒绝（§8.2/§10）、退出码 7 收窄（§8.3）、新增 §8.4 JSON 信封与 E_*/W_* 枚举；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§2.5 示例与 FR-6.4 分流口径同步，其余备查 TOOL_COMPATIBILITY.md §2.2）；更早 v1.9：W3 收口；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层、v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
 
 ---
 
@@ -838,9 +838,10 @@ flowchart TD
     CMD -->|review| RV["回顾编排：七段清单生成"]
     CMD -->|lint| LT["结构体检：FR-6.11 检查集"]
     CMD -->|reindex| IX["索引同步器：增量/全量"]
-    CMD -->|init| IT["脚手架：目录骨架 + .gitignore"]
+    CMD -->|init| IT["脚手架：目录骨架 + .gitignore<br/>+ git init 与首次提交"]
+    CMD -->|skills| SK["技能安装：内嵌技能物化 →<br/>symlink 工具技能目录（FR-11.6）"]
     CMD -->|mcp| MC["进入 stdio JSON-RPC 循环（§6.1）"]
-    Q & RD & PP & JN & RR & SD & RV & LT & HR & IV & IX & IT --> OUT{"--json ?"}
+    Q & RD & PP & JN & RR & SD & RV & LT & HR & IV & IX & IT & SK --> OUT{"--json ?"}
     OUT -->|"是"| J["结构化输出 + 稳定退出码"]
     OUT -->|"否"| T["人读输出 + 稳定退出码"]
     MC --> LOOP(["按需运行 · 会话结束即退出"])
@@ -902,11 +903,12 @@ flowchart TD
 | `dex reindex` | `dex reindex [--force]` | 重建统计 | 0/7 缓存写失败 |
 | `dex harvest` | `dex harvest --from <connector> [--limit 30] [--dry-run]` | 收割会话便利封装（**不蒸馏**，FR-6.14）：加载 `skills/connectors/<source>` 连接器页与 `[harvest].budget` 配置、管理 `inbox/staging/` 暂存区、把收割技能（dex-bootstrap 会话）产出的候选批量走 bootstrap 模式提案——获取与蒸馏均在 agent 侧技能完成，命令只提供载荷与门禁（FR-12/US-13） | 0/2 参数错/5 超出首批上限/9 密钥命中 |
 | `dex interview` | `dex interview [--round core\|follow-up]` | 渐进式面试 → person/ 草稿提案（首轮 5 核心问） | 0 |
-| `dex init` | `dex init [--path ~/dex]` | 目录骨架 + .gitignore | 0/8 已存在 |
+| `dex init` | `dex init [--path ~/dex]` | 八大目录骨架 + .gitignore；非 git 目录时 `git init` + 首次提交；幂等补齐缺失骨架；git 缺失降级 warning（FR-6.9/FR-4.5） | 0/8 已完整初始化 |
+| `dex skills` | `dex skills install [--tool <id>…] [--from PATH]`；`dex skills uninstall [--tool <id>…]` | 内嵌技能物化到 dex 管理目录 → symlink 各工具技能目录（幂等 / 死链重建 / 版本漂移重物化，`--from` 走本仓工作副本；FR-11.6） | 0/2 未知工具/10 拒绝覆盖（目标非本仓产物） |
 | `dex index` | `dex index [--rebuild]` | 生成/刷新 `index/` 导览（MOC，人不手维护，FR-1.5/FR-6.15；v3） | 0/2 参数错 |
 | `dex mcp` | `dex mcp --client <id>`（凭证经参数/环境变量） | stdio JSON-RPC 循环 | — |
 
-> 全局：非交互调用需显式 `--client <id>`，token 自动从本机凭据文件（0600，不入 git）解析、`DEX_TOKEN` 环境变量可覆盖——命令行不明文传 token（FR-10.3，推演 W4）；交互式终端默认解析为 human 客户端；管理类命令权限分档（FR-10.4）：render/review/stale/lint/reindex/init 仅 human，harvest/interview 另允许显式授权的收割客户端（FR-12.5 映射，如 `dex harvest --from im-x --client harvest-im-x`）。`--format text|json` 与全局 `--json` 为同一开关的两种拼写（`--json` ≡ `--format json`，同给冲突时以 `--format` 为准）；JSON 输出统一信封与 `E_*/W_*` 枚举见 §8.4；降级成功不改变退出码（§8.3-7）。
+> 全局：非交互调用需显式 `--client <id>`，token 自动从本机凭据文件（0600，不入 git）解析、`DEX_TOKEN` 环境变量可覆盖——命令行不明文传 token（FR-10.3，推演 W4）；交互式终端默认解析为 human 客户端；管理类命令权限分档（FR-10.4）：render/review/stale/lint/reindex/init/skills 仅 human，harvest/interview 另允许显式授权的收割客户端（FR-12.5 映射，如 `dex harvest --from im-x --client harvest-im-x`）。`--format text|json` 与全局 `--json` 为同一开关的两种拼写（`--json` ≡ `--format json`，同给冲突时以 `--format` 为准）；JSON 输出统一信封与 `E_*/W_*` 枚举见 §8.4；降级成功不改变退出码（§8.3-7）。
 
 ### 8.2 MCP 工具 JSON Schema
 
@@ -984,7 +986,7 @@ flowchart TD
 | 7 | 缓存写失败**且操作未完成**（如 reindex 写库失败）；降级成功（search 转 ripgrep 仍返回结果、git 缺失跳过自动提交）不算失败——退出码 0，提示进 `--json` warnings（W_INDEX_DEGRADED / W_GIT_UNAVAILABLE，§8.4） |
 | 8 | 仓库状态错误（已存在、未初始化） |
 | 9 | 提案含疑似密钥（密钥守卫触发；advisory 模式下警告但成功） |
-| 10 | render 拒绝覆盖（目标文件已存在且无 dex 生成标记，FR-6.4） |
+| 10 | 拒绝覆盖（目标已存在且非 dex 产物：render 入口文件无生成标记，FR-6.4；skills install 目标技能目录非本仓条目，FR-11.6） |
 
 ### 8.4 `--json` 输出契约与错误枚举（E_\* / W_\*）
 

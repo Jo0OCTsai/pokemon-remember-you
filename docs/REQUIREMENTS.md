@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）
-> 文档版本：v1.11 · 2026-09-25 · 状态：待评审（v1.11：debt 清偿（Medium 16 + Low 14 全量）——注入优先级字典序权威化（FR-3.2/US-05）、收割暂存区迁 `inbox/staging/`（FR-6.14/FR-2.8）、周回顾七段权威段序（FR-6.6/FR-11.2/US-04）、近义预筛 v1 运行时不落 index/、空目录约束收窄（FR-2.9）、人速记归 journal（FR-4.2/FR-5.1）、FR-2.3 期别 v0、evidence ≤2000 字符（FR-4.1）、scope 越权整单拒绝（FR-7.3）、NFR-3 量化 P95、NFR-5 明示 git 例外（FR-4.5）、config 两层存放（FR-10.2/US-07）、FR-1.6 `.dex-ignore` 回补、FR-6.15 `dex index`、FR-9.5 `--group`、US-01/US-13/v1 验收措辞与量化；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§7 约束、US-02/US-14、FR-11 组、工具矩阵 §2.1），其余移入 TOOL_COMPATIBILITY.md 未纳入备查；更早 v1.9：W3 收口——入口文件策略矩阵化（FR-6.4/FR-6.12）；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
+> 文档版本：v1.12 · 2026-09-25 · 状态：待评审（v1.12：安装路径工具化——FR-6.9 `dex init` 澄清含 `git init` 与首次提交（幂等补齐 / git 缺失降级 warning）、新增 FR-11.6 `dex skills install`（发行物内嵌技能 + symlink 管理，取代 clone 依赖）、FR-10.4 管理命令清单 / US-01 / US-14 措辞同步；此前 v1.11：debt 清偿（Medium 16 + Low 14 全量）——注入优先级字典序权威化（FR-3.2/US-05）、收割暂存区迁 `inbox/staging/`（FR-6.14/FR-2.8）、周回顾七段权威段序（FR-6.6/FR-11.2/US-04）、近义预筛 v1 运行时不落 index/、空目录约束收窄（FR-2.9）、人速记归 journal（FR-4.2/FR-5.1）、FR-2.3 期别 v0、evidence ≤2000 字符（FR-4.1）、scope 越权整单拒绝（FR-7.3）、NFR-3 量化 P95、NFR-5 明示 git 例外（FR-4.5）、config 两层存放（FR-10.2/US-07）、FR-1.6 `.dex-ignore` 回补、FR-6.15 `dex index`、FR-9.5 `--group`、US-01/US-13/v1 验收措辞与量化；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§7 约束、US-02/US-14、FR-11 组、工具矩阵 §2.1），其余移入 TOOL_COMPATIBILITY.md 未纳入备查；更早 v1.9：W3 收口——入口文件策略矩阵化（FR-6.4/FR-6.12）；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
 > 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）· [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md)（用户场景业务流程推演）· [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)（工具入口兼容矩阵）
 
 ---
@@ -76,7 +76,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 **背景**：Alice 刚决定建仓，还没有安装任何 dex 工具，希望当天就让编码 agent「认识自己」——且不想面对空白页手写。
 
 **过程**：
-1. Alice 创建 git 私仓 `~/dex`，建立 `person/`、`domains/`、`apps/`、`projects/`、`journal/`、`inbox/`、`archive/`、`index/` 目录；
+1. Alice 创建 git 私仓 `~/dex`，建立 `person/`、`domains/`、`apps/`、`projects/`、`journal/`、`inbox/`、`archive/`、`index/` 目录（v1 起 `dex init` 一键完成——含 `git init` 与首次提交、幂等补齐，FR-6.9；手动建仓等价合法）；
 2. 安装 `dex-bootstrap` 技能（symlink 本仓 `skills/`，见 FR-11；不支持技能的工具用附录引导词兜底），对任一编码 agent 发起冷启动：技能先采访 5 个核心问题（角色与主业／主力栈与工具／语言与沟通偏好／硬性禁区／常用输出格式），再扫描既有 CLAUDE.md / AGENTS.md / auto memory，产出 `person/profile.md`、`person/preferences.md` 与对应 `projects/<proj>/` 草稿——每条标源（面试条目指回原话、挖掘条目指回源文件，FR-2.7），全部落 `inbox/bootstrap/`，首批 ≤30 条（FR-4.3）；
 3. Alice 首次回顾：逐条对照来源裁决（编辑 / 确认 / 否决）后 `git mv` 归位——只有裁决，没有从零手写（手写可选，直接编辑的最高主权随时可用）；
 4. 在 `~/.claude/CLAUDE.md` 追加 `@~/dex/person/profile.md`、`@~/dex/person/preferences.md` 引用；项目仓库的 `.claude/CLAUDE.md` 追加 `@~/dex/projects/foo/`（仓库外路径首次 import 会弹一次确认框，同意即可；import 启动即全量加载、不省 context，条目变多后注入预算改由 `dex render` 承担）；
@@ -232,7 +232,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 **背景**：协议（CLI/MCP）定义 agent 能做什么，技能定义该怎么表现；冷启动、提案纪律、周回顾的行为由技能承载，入口文件只留一行指针（渐进披露，不占常驻上下文）。
 
 **过程**：
-1. 一次性安装：symlink 本仓 `skills/dex-*` 到 `~/.claude/skills/`、`~/.pi/agent/skills/`、`~/.zcode/skills/`（三工具技能目录，文档给安装命令，FR-11.3）；不支持技能的工具退化为附录引导词；
+1. 一次性安装：v0——symlink 本仓 `skills/dex-*` 到 `~/.claude/skills/`、`~/.pi/agent/skills/`、`~/.zcode/skills/`（三工具技能目录，文档给安装命令，FR-11.3）；v1 起——`dex skills install` 一键探测装齐（发行物内嵌技能物化 + symlink，幂等 / 死链重建 / 冲突退出码 10，FR-11.6；clone 本仓不再是分发前置）；不支持技能的工具退化为附录引导词；
 2. agent 经入口文件的一行指针知道「记忆提案走 dex-propose 技能」，触发时按需加载；
 3. 技能随本仓 git 演进；异构工具格式由 `dex render --skills` 生成薄适配器（FR-11.4），产物 gitignore、不手维护。
 
@@ -526,7 +526,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-6.6 | `dex review [--week] [--group <一级域前缀>]`：汇总周回顾清单，**权威七段段序**（本条为段数与段序的唯一口径）：① lint 体检（FR-6.11）② inbox 待裁决提案 ③ journal 提升候选 ④ 衰减清单＋Spoke 使用周报粘贴区 ⑤ scope 升降级候选 ⑥ 近义预筛与矛盾组（运行时字符串相似度聚类，仅聚类不裁决、不落不依赖 `index/`——`index/` 为 v3 导览，FR-1.5）⑦ 结构整理候选（FR-2.8/2.9 结构面）；清单按一级域/scope 前缀分组输出（FR-9.5），`--group` 仅输出单组 | P1 | v1 |
 | FR-6.7 | `dex reindex [--force]`：重建 `.cache/` 派生索引 | P1 | v2 |
 | FR-6.8 | `dex mcp`：以子命令启动 MCP stdio server | P0 | v2 |
-| FR-6.9 | `dex init [--path]`：生成 v0 目录骨架与 gitignore（脚手架，非必需） | P2 | v1 |
+| FR-6.9 | `dex init [--path]`：生成八大目录骨架与 `.gitignore`（脚手架，非必需——手动建仓等价合法，US-01；空目录豁免见 FR-2.9）；目标目录尚非 git 仓库时执行 `git init` 并创建首次提交（空骨架 commit——git log 从初始提交起全程留痕，与 US-01 手动路径同口径）；已在 git 仓库内运行则幂等补齐缺失骨架（不覆盖已有文件），已完整初始化 → 退出码 8；git 缺失时骨架照建、版本控制初始化降级为 warning 不阻断（FR-4.5 同口径） | P2 | v1 |
 | FR-6.10 | 所有命令支持 `--json` 机器可读输出与稳定退出码；`--json` ≡ `--format json`（同一开关的两种拼写，同给冲突时 `--format` 优先）；JSON 输出统一信封与 `E_*/W_*` 错误/警告枚举见设计 §8.4 | P1 | v1 |
 | FR-6.11 | `dex lint`：结构体检——scope 内 frontmatter 残留、inbox 命名与必填字段、archive 镜像路径一致性、src/superseded-by/keep-until 注释格式（含 keep-until 过期残留与两级作用域位置校验，FR-2.10）、superseded-by 目标存在性（目标被归档/删除后悬空提示，FR-2.5）、可疑密钥模式；结构不变量与目录准入检查（FR-2.8/2.9：顶层白名单、命名/深度、目录软预算、空目录、inbox 滞留 >7 天、大文件提示、悬空 scope 引用）；输出问题清单（结果并入 `dex review` 首段） | P1 | v1 |
 | FR-6.12 | `dex render` 以 AGENTS.md 为源支持生成各工具适配格式（如 `.claude/rules/`、`.cursor/rules/*.mdc` 路径作用域规则——团队仓库分流用，见 TOOL_COMPATIBILITY.md §3）；适配产物为生成物，人不手维护 | P2 | v2 |
@@ -569,7 +569,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-10.1 | 消费方统一注册为客户端（`[clients.<id>]`，人也是客户端）：凭证（token）、scopes（读授权）、propose（提案权）、allowed_sources（FR-4.7）、budget（FR-3.3）、rate_limit、render 输出定义（out/format）；CLI 与 MCP 共用同一注册表——换通道不换身份与语义 | P0 | v1（CLI）/v2（MCP） |
 | FR-10.2 | 配置为纯文本（TOML）**两层存放**并文档化：仓库层 `~/dex/.dex/config.toml`（可选，git 跟踪）承载非凭证配置（[clients] 注册表、budget/stale/harvest 等，多机随 clone/pull 同步）＋ 本机层 `~/.config/dex/config.toml`（必选缺省）承载机器特有覆盖与凭据文件路径，**同键本机层覆盖仓库层**；客户端凭证存本机凭据文件（0600 权限，不入 git）——凭证永不进仓库层 | P1 | v1 |
 | FR-10.3 | 每个客户端持有独立凭证：非交互调用（脚本/Spoke/远程网关）必须显式 `--client <id>`，token 自动从本机凭据文件（0600，不入 git）解析、`DEX_TOKEN` 环境变量可覆盖——命令行不明文传 token；交互式终端默认解析为 human 客户端；未注册或无凭证 = 全拒 | P0 | v1 |
-| FR-10.4 | 管理类命令权限分档：render/review/stale/lint/reindex/init 仅 human 客户端可执行；harvest/interview 允许 human 或**显式授权的收割客户端**（FR-12.5 映射）执行——agentic 收割会话由 agent 非交互发起，属合法路径；`dex render <target>` 要求调用方 scopes ⊇ 目标消费方 scopes；human 客户端全量可读（与直接编辑最高主权一致）、allowed_sources = {human} | P0 | v1 |
+| FR-10.4 | 管理类命令权限分档：render/review/stale/lint/reindex/init/skills 仅 human 客户端可执行；harvest/interview 允许 human 或**显式授权的收割客户端**（FR-12.5 映射）执行——agentic 收割会话由 agent 非交互发起，属合法路径；`dex render <target>` 要求调用方 scopes ⊇ 目标消费方 scopes；human 客户端全量可读（与直接编辑最高主权一致）、allowed_sources = {human} | P0 | v1 |
 
 ### 4.11 配套技能（FR-11）
 
@@ -580,6 +580,7 @@ repo 的 CLAUDE.md/AGENTS.md   → 团队指令层：build/test/规范（不动�
 | FR-11.3 | v0 分发：symlink 到三工具技能目录（`~/.claude/skills/`、`~/.pi/agent/skills/`、`~/.zcode/skills/`），文档提供安装命令；贴提示词为不支持技能工具的兜底（提案附录模板） | P1 | v0 |
 | FR-11.4 | 异构格式适配（rules 类格式等，当前支持范围内暂无需要——未纳入工具场景备查）由 `dex render --skills` 生成薄适配器，产物 gitignore、不手维护（与 FR-6.12 同机制） | P2 | v2 |
 | FR-11.5 | 入口文件（AGENTS.md / render 产物）仅含一行技能指针（如「记忆提案走 dex-propose 技能」），行为细节留在技能内渐进披露 | P1 | v1 |
+| FR-11.6 | `dex skills install [--tool <id>…] [--from <本仓工作副本>]`：技能安装命令化（FR-11.3 v0 手动 symlink 的工具化，手动路径保留为兜底）——安装源缺省为 dex 发行物**内嵌技能**（构建时自本仓 `skills/` 打包、与二进制同版本——技能行为与 CLI 契约不漂移；FR-11.1 单一源语义不变，本仓仍是编写源），`--from` 指定本仓工作副本（开发 / dogfood 快路径）；物化到 dex 管理目录（如 `~/.local/share/dex/skills/`，实现时定）后 symlink 到各工具技能目录（三目录同 FR-11.3；缺省探测全部支持工具，`--tool` 限定子集，id 同 §7 支持范围）；幂等（指向一致的既有 symlink 跳过）、死链自动重建、目标已有非本仓同名条目拒绝不覆盖（退出码 10）；`dex skills uninstall [--tool <id>…]` 对应移除；与 `dex render --skills`（FR-11.4 格式适配器生成）职责分离 | P2 | v1 |
 
 ### 4.12 数据获取：连接器层（FR-12）
 
