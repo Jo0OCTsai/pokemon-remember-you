@@ -1,0 +1,18 @@
+[package]
+name = "dex-store"
+description = "dex 基础设施层：文件树遍历 / git 适配 / ripgrep 检索 / inbox 与审计（DESIGN §9）"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+dex-core.workspace = true
+thiserror.workspace = true
+chrono.workspace = true
+ignore.workspace = true
+grep-searcher.workspace = true
+grep-regex.workspace = true
+regex.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

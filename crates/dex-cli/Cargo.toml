@@ -1,0 +1,28 @@
+[package]
+name = "dex-cli"
+description = "dex CLI 前端（DESIGN §8.1 全命令面）"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "dex"
+path = "src/main.rs"
+
+[dependencies]
+dex-core.workspace = true
+dex-store.workspace = true
+clap.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+toml.workspace = true
+thiserror.workspace = true
+regex.workspace = true
+sha2.workspace = true
+chrono.workspace = true
+include_dir.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+assert_cmd.workspace = true
+predicates.workspace = true

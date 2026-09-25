@@ -1,0 +1,54 @@
+# dex 配置示例（DESIGN §2.5）——本文件为仓库层 `.dex/config.toml` / 本机层 `~/.config/dex/config.toml` 的合并视图示例
+# 两层键级深合并：同叶键本机层覆盖仓库层；[auth] 仅本机层有效；凭证只存本机凭据文件（0600，不入 git）
+
+root = "~/dex"                       # 仓库根；环境变量 DEX_ROOT 优先
+
+[auth]                               # 仅本机层（出现在仓库层 ⇒ warning 并忽略）
+credentials_file = "~/.config/dex/credentials.toml"
+
+[budget]                             # 注入预算默认值（FR-3.3）
+entries = 10
+chars  = 2000
+
+[clients.human]                        # 训练家本人：TTY 默认身份、免凭证、全量可读
+interactive_default = true
+read = "full"
+allowed_sources = ["human"]
+
+[clients."work-laptop-zcode"]          # 工作侧消费方：最小授权 scope 子集
+scopes = ["person", "domains/work", "projects/current"]
+render = { out = "AGENTS.md", format = "merged" }
+
+[clients.claude]                       # Claude Code 走 @import，不复制正文
+scopes = ["person", "domains/coding"]
+render = { format = "import" }
+
+[clients."choose-you"]                 # 首个 Spoke：非交互调用须 --client + 凭证
+scopes = ["person", "apps/todo"]
+propose = true
+rate_limit = { proposals_per_day = 20, journal_per_day = 60 }
+allowed_sources = ["choose-you"]
+
+[clients."harvest-im-x"]               # 收割客户端（FR-12.5）：生产者非读者
+scopes = []
+propose = true
+allowed_sources = ["im-x"]
+
+[stale]
+days = 90
+
+[stale.scopes."domains/people"]        # per-scope 分档：键 = scope 前缀
+days = 180
+
+[git]
+auto_commit = true
+
+[harvest]
+budget = { pulls = 50, tokens = 500000, minutes = 60 }
+
+[harvest.sources."im-x"]
+type = "page"
+first_batch = 30
+
+[aliases."foo"]                        # 项目别名 → git remote 仓库名（FR-3.6）
+remote = "pokemon-foo"
