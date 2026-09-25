@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）· [REQUIREMENTS.md](./REQUIREMENTS.md)（需求文档）
-> 文档版本：v1.15 · 2026-09-25 · 状态：待评审（v1.15：Claude Code AGENTS.md 统一——§6.2 注记去除回退/shim 口径（三工具统一根位），全文档移除旧入口文件名引用；v1.14：实施前评审修订——§5.6 白名单补 `.dex/` 与 inbox 递归口径、§5.1 person 恒在改白名单条件式＋显式检索放行、§5.3 CLI/MCP 缺省检索集同口径、§5.4/§5.2-c 单遍 git log 口径与复活重置、§5.2 补④终局稳定序与 omitted 口径、§2.2 src 两级作用域与示例、§2.3 evidence 双件套适用范围、§2.5 配置键表＋键级深合并＋凭据文件格式＋journal 限流/时长/busy_timeout/别名键、§6.2 render 路径基准/手改检测/技能指针行、§6.1 凭证注入措辞、§7.3 守卫步骤 0/8 补全、§8.1 journal 退出码 5/--limit 上限/--force/TTY 免凭证、§8.2 person 条件式与缺省交集、§8.3/§8.4 lint 信封特例、§9 git 子进程注记与守卫端口、§10 T1–T16、§11 gantt 补 v1 条目、§12 容量口径含 freshness；v1.13：安全补强同步——§10 新增凭证生命周期/授权配置完整性/渲染层净化/供应链四行并收敛审计行、§8.4 补 W_CREDS_PERMS/W_CONFIG_CHANGED、§12 安全用例扩充；威胁登记与「明确不防」清单单源于 [SECURITY.md](./SECURITY.md)（需求 v1.13 同步：FR-6.16/10.5/10.6/10.7/11.7）；此前 v1.12：安装路径工具化同步（对应需求 FR-6.9/FR-11.6 修订）——§8.1 `dex init` 行澄清含 `git init` 与首次提交、新增 `dex skills` 行、管理命令权限分档补 skills，§7.1 主流程 init/skills 分支，§8.3 退出码 10 口径泛化；此前 v1.11：debt 清偿——P5 注入/检索语义修正（§1.1/§1.2）、两层 config（§2.5）、提交信息模板与幂等 hash 域（§2.3）、Superseded 状态（§3.3）、entries 代理键（§4.1）、延迟重建与并发写锁（§4.2）、截断语义与字典序注（§5.2）、keep-until 两级作用域（§5.4）、evidence 上限与并发 propose（§5.5）、lint 白名单/staging 豁免/superseded 悬空（§5.6）、staging 迁 inbox/staging（§5.7）、import 声明承载（§6.2/§13）、七段段序（§6.3）、CLI 面 --skills/--group/dex index/--json 拼写（§8.1）、scope fail-closed 整单拒绝（§8.2/§10）、退出码 7 收窄（§8.3）、新增 §8.4 JSON 信封与 E_*/W_* 枚举；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§2.5 示例与 FR-6.4 分流口径同步，其余备查 TOOL_COMPATIBILITY.md §2.2）；更早 v1.9：W3 收口；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层、v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
+> 文档版本：v1.16 · 2026-09-25 · 状态：待评审（v1.16：外源知识索引同步（需求 v1.16：FR-8.5–8.8/US-15）——§2.5 补 `[index.sources]` 示例与键表三行、§4 新增 §4.3 外源索引（schema 增量/逐源同步/查询与授权边界）、§5.3 补外源命中混入与输出行格式、§8.1 search 补 `--no-external` 与外源行、§8.4 补 W_SOURCE_UNREACHABLE、§10 补外源索引行（SECURITY T17、安全 v1.2）、§11 gantt 补 v2d、§12 补外源用例行、§13 补「只索引不收编」取舍；隔离 sdd-reviewer 评审清偿——§4.3 唯一键改复合 `(source_id, path)`、注销源 prune、freshness 摊销至 reindex、降级外源缺席口径、symlink 不跟随、§2.5 键表与深合并枚举补 `[index.sources]`、§5.6/FR-6.11 lint 增补、§8.1 read 补 `repo:` 口径；SECURITY 补 T18（安全 v1.2 同步））；v1.15：Claude Code AGENTS.md 统一——§6.2 注记去除回退/shim 口径（三工具统一根位），全文档移除旧入口文件名引用；v1.14：实施前评审修订——§5.6 白名单补 `.dex/` 与 inbox 递归口径、§5.1 person 恒在改白名单条件式＋显式检索放行、§5.3 CLI/MCP 缺省检索集同口径、§5.4/§5.2-c 单遍 git log 口径与复活重置、§5.2 补④终局稳定序与 omitted 口径、§2.2 src 两级作用域与示例、§2.3 evidence 双件套适用范围、§2.5 配置键表＋键级深合并＋凭据文件格式＋journal 限流/时长/busy_timeout/别名键、§6.2 render 路径基准/手改检测/技能指针行、§6.1 凭证注入措辞、§7.3 守卫步骤 0/8 补全、§8.1 journal 退出码 5/--limit 上限/--force/TTY 免凭证、§8.2 person 条件式与缺省交集、§8.3/§8.4 lint 信封特例、§9 git 子进程注记与守卫端口、§10 T1–T16、§11 gantt 补 v1 条目、§12 容量口径含 freshness；v1.13：安全补强同步——§10 新增凭证生命周期/授权配置完整性/渲染层净化/供应链四行并收敛审计行、§8.4 补 W_CREDS_PERMS/W_CONFIG_CHANGED、§12 安全用例扩充；威胁登记与「明确不防」清单单源于 [SECURITY.md](./SECURITY.md)（需求 v1.13 同步：FR-6.16/10.5/10.6/10.7/11.7）；此前 v1.12：安装路径工具化同步（对应需求 FR-6.9/FR-11.6 修订）——§8.1 `dex init` 行澄清含 `git init` 与首次提交、新增 `dex skills` 行、管理命令权限分档补 skills，§7.1 主流程 init/skills 分支，§8.3 退出码 10 口径泛化；此前 v1.11：debt 清偿——P5 注入/检索语义修正（§1.1/§1.2）、两层 config（§2.5）、提交信息模板与幂等 hash 域（§2.3）、Superseded 状态（§3.3）、entries 代理键（§4.1）、延迟重建与并发写锁（§4.2）、截断语义与字典序注（§5.2）、keep-until 两级作用域（§5.4）、evidence 上限与并发 propose（§5.5）、lint 白名单/staging 豁免/superseded 悬空（§5.6）、staging 迁 inbox/staging（§5.7）、import 声明承载（§6.2/§13）、七段段序（§6.3）、CLI 面 --skills/--group/dex index/--json 拼写（§8.1）、scope fail-closed 整单拒绝（§8.2/§10）、退出码 7 收窄（§8.3）、新增 §8.4 JSON 信封与 E_*/W_* 枚举；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§2.5 示例与 FR-6.4 分流口径同步，其余备查 TOOL_COMPATIBILITY.md §2.2）；更早 v1.9：W3 收口；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层、v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
 
 ---
 
@@ -222,7 +222,7 @@ evidence: chat_feedback #1234 #1301 #1355   # 必填：非空，指向 Spoke 侧
 
 ### 2.5 配置文件（两层存放，FR-10.2）
 
-**仓库层** `~/dex/.dex/config.toml`（可选，git 跟踪）：非凭证配置——[clients] 注册表、budget/stale/harvest 等，多机随 clone/pull 同步。**本机层** `~/.config/dex/config.toml`（必选缺省）：机器特有覆盖与凭据文件路径；两层为**键级深合并**——同叶键本机层覆盖仓库层，`[clients.<id>]` / `[harvest.sources.<id>]` 按 id 键级合并，`[auth]` 仅本机层有效（出现在仓库层 ⇒ warning 并忽略）；凭证只存本机凭据文件（0600，不入 git）——凭证类键永不进仓库层。单机用户仅用本机层即可。配置键全集见下方键表。下例为本机层：
+**仓库层** `~/dex/.dex/config.toml`（可选，git 跟踪）：非凭证配置——[clients] 注册表、budget/stale/harvest 等，多机随 clone/pull 同步。**本机层** `~/.config/dex/config.toml`（必选缺省）：机器特有覆盖与凭据文件路径；两层为**键级深合并**——同叶键本机层覆盖仓库层，`[clients.<id>]` / `[harvest.sources.<id>]` / `[index.sources.<id>]` 按 id 键级合并，`[auth]` 仅本机层有效（出现在仓库层 ⇒ warning 并忽略）；凭证只存本机凭据文件（0600，不入 git）——凭证类键永不进仓库层。单机用户仅用本机层即可。配置键全集见下方键表。下例为本机层：
 
 ```toml
 root = "~/dex"                       # 仓库根；环境变量 DEX_ROOT 优先
@@ -302,6 +302,14 @@ fts = true                           # v2
 vectors = false                      # 默认关闭（NFR-1）
 busy_timeout_ms = 5000               # SQLite 并发写等待（§4.2）
 
+[index.sources.foo]                   # 外源索引注册（FR-8.5–8.8，v2）：只索引不收编——指针不复制正文
+path = "~/projects/foo"               # 仅本机层有效（出现在仓库层 ⇒ warning 并忽略——路径机器各异，同 [auth] 口径；
+                                     # 仓库层注册而本机层未配 path ⇒ 该源未启用、静默跳过，FR-8.6）
+# scope = "projects/foo"              # 授权标签，缺省 projects/<表键 id>；枚举域 = domains/apps/projects 三类四层段
+                                     # ——person 与 journal/inbox/archive/index 非法（lint 错误，FR-8.6）
+# include = ["**/*.md"]               # 缺省（任意深度 .md，含根级 AGENTS.md）；exclude 可选（glob）
+                                     # ——遍历尊重源仓 .gitignore 与隐藏目录、不跟随 symlink
+
 [aliases."foo"]                      # 项目别名映射（FR-3.6）：别名 → git remote 仓库名
 remote = "pokemon-foo"
 ```
@@ -329,6 +337,9 @@ remote = "pokemon-foo"
 | `[harvest.sources.<id>].first_batch` | int | 30 | 两层 | bootstrap 首批上限（FR-4.3；**限流单源于 `[clients].rate_limit`**，此处不设） |
 | `[aliases."<别名>"].remote` | string | — | 两层 | 项目别名 → remote 仓库名（FR-3.6） |
 | `[index].fts` / `.vectors` / `.busy_timeout_ms` | bool / bool / int | true / false / 5000 | 两层 | 索引后端与并发写等待（FR-8.2，§4.2） |
+| `[index.sources.<id>].path` | string | — | **仅本机层** | 外源本地路径（FR-8.6；出现在仓库层 ⇒ warning 并忽略，同 `[auth]` 口径；仓库层注册而本机未配 ⇒ 未启用） |
+| `[index.sources.<id>].scope` | scope id | `projects/<id>` | 两层 | 外源授权标签（FR-8.8；枚举域 = `domains/apps/projects` 段——`person` 与 `journal/inbox/archive/index` 非法，lint 错误，FR-8.6） |
+| `[index.sources.<id>].include` / `.exclude` | glob 数组 | `**/*.md` / — | 两层 | 知识文件圈定（FR-8.6；含根级 .md；尊重源仓 .gitignore、不跟随 symlink） |
 
 **凭据文件格式**（TOML，0600，路径经 `[auth].credentials_file` 指定，FR-10.5/SECURITY.md §5）：
 
@@ -537,6 +548,41 @@ flowchart TD
 - **无后台任务（P6）**：所谓「异步/后台重建」一律指**延迟到下一次命令在本进程内同步执行**——置脏标记（meta 表）只是状态，不产生任何后台进程/线程。
 - **并发写策略（v2）**：同机多 dex 进程（如两个 MCP 会话）并发写 `index.sqlite3`——写事务以 `BEGIN IMMEDIATE` + `busy_timeout`（默认 5s，可配）串行化；等待超时方降级：search → ripgrep（退出码 0 + W_INDEX_DEGRADED，§8.4）、reindex → E_CACHE · 7；脏标记与重建幂等（以 meta 水位为准），并发重复重建结果一致。
 
+### 4.3 外源索引（external sources，FR-8.5–8.8）
+
+**定位**：P1 的适用域从 Hub 仓推广到外部 git 仓库——repo 是项目绑定知识的事实源，dex 只持有**指针**；`.cache/` 仍是唯一派生物存放处，外源条目与 Hub 条目同库混存、同口径重建。
+
+**schema 增量**（§4.1 之上）：
+
+- `files` 增列 `source_id`（缺省 `hub`），**唯一键由 `path` 改为复合 `(source_id, path)`**——外源行 `path` 存「源内相对路径」（如 `docs/adr/0003.md`；两源同名文件、以及与 Hub 路径形态的撞名互不冲突），绝对路径 = 源注册表 `path` ＋ 相对路径，查询时解析；
+- `meta` 增键 `xhead_commit:<source_id>`（逐源同步水位，与 `head_commit` 同语义）；
+- `entries.scope_id` 对外源行 = 源注册表的授权标签；FTS 不区分来源，混检由查询层过滤——**过滤条件 = scope 标签 ∧ `source_id` ∈ 当前注册表**（已注销源的存量行不返回），孤儿行由下次 reindex 物理清除（prune）。
+
+**逐源同步**（§4.2 三态的同构复制，逐源独立执行、互不传染）：
+
+```text
+对每个已注册且本机已配 path 的源 s（仓库层注册、本机层未配 path ⇒ 未启用，静默跳过——与
+「path 已配置但不可达 ⇒ W_SOURCE_UNREACHABLE」区分，FR-8.6/8.7）：
+  path 可达 ∧ 是 git 仓库？
+    否 → 标记 s 不可达：该源条目从检索剔除 + W_SOURCE_UNREACHABLE（退出码 0，降级成功口径）
+    是 → meta.xhead_commit<s> == git HEAD(s) ∧ worktree(s) 干净？
+           是   → 该源索引可用
+           否   → 增量（git log xhead..HEAD）/ 脏工作区调和（mtime）/ 全量——与 §4.2 完全同构
+freshness 摊销（FR-8.7）：逐源 freshness 检查在 reindex 时执行；search 侧信任缓存水位——
+指针自带 commit 供调用方校验，NFR-3 不背「每源一次 git 前置调用 × 源数」的成本；
+单源失败互不传染、不阻断 Hub 索引同步与命令主流程
+```
+
+**查询与授权边界**：
+
+- 请求 scope 的合法域 = Hub 目录 scope ∪ 已注册外源标签——`--scope projects/foo` 在 Hub 无对应目录但 `foo` 为已注册源标签时合法（返回其外源命中）；其余 §5.1 规则不变（恒排除集与白名单判定对外源同样生效）；合法四层形态但既无 Hub 目录又非注册标签的 scope（如 `projects/bar`）＝ 空命中（退出码 1）——scope 拒绝（3）仍仅限非法标识与白名单越权；**多源共用同一标签合法**（检索为并集）。
+- `dex search --scope projects/foo` = Hub `projects/foo` 条目 ∪ 标签为 `projects/foo` 的外源条目——同一 FTS 查询、同一 limit 截断、同一 fail-closed 白名单判定（FR-8.8）；`--no-external` 限定 Hub。
+- **降级口径（FR-8.4）**：FTS miss/损坏降级 ripgrep 时**只扫 Hub**、外源命中缺席，W_INDEX_DEGRADED 文案明示「外源命中缺席」——外源索引依赖 FTS 层，`dex reindex` 即恢复；降级路径不遍历外源（成本不可控）。
+- 外源命中输出行：`repo:<id>/<relpath>:line:<scope>:content`（与 Hub 行 `path:line:scope:content` 以 `repo:` 前缀区分）；`--json` 增 `source` / `repo_root` / `commit` 结构化字段（脏调和期间 commit 为索引时 HEAD，附 dirty 标记）。
+- **不进注入管线**（P5）：render / @import 恒只消费 Hub 条目；**`dex read` 不放行外部路径**——读面仍限 DEX_ROOT 内（`repo:` 前缀路径 ⇒ 路径非法·退出码 6，附「按指针自行回读」提示），外部文件回读由调用方按指针用自带工具完成（dex 不搬运外部正文）。
+- 遍历纪律（FR-8.6）：尊重源仓 .gitignore 与隐藏目录、**不跟随 symlink**——防仓外本机文件被索进检索面（SECURITY.md T18）。
+- 与收割的关系（§5.7/需求 §3.7）：外源索引是**读取聚合面**；值得入库的「我的结论」走收割 → propose（evidence/src 指回 repo 文件）→ 周回顾——**提炼不复制**，两通道正交。
+
 ---
 
 ## 5. 关键算法设计
@@ -587,6 +633,8 @@ dex search q [--scope D]：
        命中 → 返回（毫秒级）
        miss/损坏 → 降级 ripgrep 并置脏标记（下次命令触发重建）
   3. 输出行：path:lineNo:scope_id:content，--json 时结构化
+  4. 外源索引命中（v2，FR-8.5–8.8）：按 scope 标签并入同一过滤与 limit——Hub 条目与外源指针同通道返回；
+     外源行 = repo:<id>/<relpath>:line:scope:content；--no-external 限定 Hub（§4.3）
 ```
 
 ### 5.4 衰减扫描（`dex stale`）
@@ -652,6 +700,8 @@ keep-until 已过期的条目 → 重新列入（强制复审）
         （keep-until 两级作用域位置校验 + 过期残留提示清理，FR-2.10）；
         superseded-by 目标存在性（目标被归档/删除后悬空 → 提示，FR-2.5）；
         可疑密钥模式（§5.5-8）；配置中引用不存在 scope 的悬空引用
+        （存在域 = Hub scope 目录 ∪ 已注册外源标签，FR-8.6）；
+        外源注册检查（标签为 person 或枚举外标识 → 错误、注册源数 >32 → 提示，FR-8.6）
 
 scope 改名协议：git mv + 同步 config/render/MCP 白名单/@import 引用，
 提交信息记录变更前后路径；lint 检出悬空引用时输出受影响配置项
@@ -951,8 +1001,8 @@ flowchart TD
 
 | 命令 | 形式 | 输出 | 主要退出码 |
 |---|---|---|---|
-| `dex search` | `dex search <query> [--scope a,b] [--limit N（上限 20，与 MCP §8.2 一致）] [--format text\|json] [--no-index]` | 行：`path:line:scope:content` | 0 命中/1 无结果/2 参数错/3 scope 拒绝 |
-| `dex read` | `dex read <relpath> [--section H2标题]` | 文件或小节内容，头部附 scope 标注 | 0/1 不存在/3 scope 超出客户端白名单/6 路径非法（含 `..`、symlink 逃逸） |
+| `dex search` | `dex search <query> [--scope a,b] [--limit N（上限 20，与 MCP §8.2 一致）] [--format text\|json] [--no-index] [--no-external（v2：限定 Hub，FR-8.5–8.8）]` | 行：`path:line:scope:content`；外源命中行 `repo:<id>/<relpath>:line:scope:content`（§4.3） | 0 命中/1 无结果/2 参数错/3 scope 拒绝 |
+| `dex read` | `dex read <relpath> [--section H2标题]` | 文件或小节内容，头部附 scope 标注 | 0/1 不存在/3 scope 超出客户端白名单/6 路径非法（含 `..`、symlink 逃逸、`repo:` 外源前缀——外部回读走自带工具，FR-8.8） |
 | `dex propose` | `dex propose --source S --kind K [--confidence N] --evidence E [msg \| - ]` | 创建的文件路径 | 0/2 元数据或 source 绑定错/4 无证据/5 超限或限流/9 密钥命中 |
 | `dex journal` | `dex journal --source S [--date D] [msg \| - ]` | 追加的 journal 小节位置 | 0/2 元数据或 source 绑定错/5 正文超限/9 密钥命中 |
 | `dex render` | `dex render <agent> [--out PATH] [--dry-run] [--force] [--format merged\|import] [--skills]` | 写入路径 + 条数/字数/omitted（merged 产物正文经 HTML 净化，FR-6.16；import 零复制不适用净化，残留风险见 §13）；`--dry-run` 计算产物预览到 stdout 不写盘；目标含生成标记但偏离上次生成基线（人手改，基线 `.cache/render/<client>`）⇒ 拒绝覆盖、`--force` 越过，无基线静默覆盖为声明盲区（FR-6.4）；`--skills` 生成技能薄适配器（FR-11.4，v2，产物 gitignore） | 0/2 未知 agent/3 scope 拒绝/10 拒绝覆盖（非 dex 产物或人手改未 --force） |
@@ -1029,7 +1079,7 @@ flowchart TD
 }
 ```
 
-> 服务端行为：客户端身份来自 spawn 参数（`--client` + 凭证，不自报 clientInfo）；**scope 授权为 fail-closed 整单判定**：申请的 scope 列表必须全部 ⊆ `config.toml [clients.<id>].scopes` 白名单，任一越权即整单拒绝 E_SCOPE_DENIED · 3（不静默剔除越权项后继续——调用方必须感知申请被拒；「交集」只发生在授权通过后的目录并集展开，不用于授权判定）；`dex_search` 的 `scope` 参数缺省 = 该客户端白名单全集 **∩ 可检索缺省集**（四层 scope 目录，与 CLI 同口径，§5.3；省略即按已授权范围检索）；`person` 恒在仅当 person ∈ 该客户端白名单（FR-3.1 条件式——未授权 person 的客户端不被强制并入，fail-closed）；`dex_read` 请求路径解析出的 scope 必须落在该客户端白名单内（journal/inbox 等路径同规则——显式授权面：白名单含该 scope 或 human 全量可读才放行，FR-3.1），否则 E_SCOPE_DENIED；source 必须属于该客户端 allowed_sources（FR-4.7）；**不存在任何写 scope 的工具**（P4）。
+> 服务端行为：客户端身份来自 spawn 参数（`--client` + 凭证，不自报 clientInfo）；**scope 授权为 fail-closed 整单判定**：申请的 scope 列表必须全部 ⊆ `config.toml [clients.<id>].scopes` 白名单，任一越权即整单拒绝 E_SCOPE_DENIED · 3（不静默剔除越权项后继续——调用方必须感知申请被拒；「交集」只发生在授权通过后的目录并集展开，不用于授权判定）；`dex_search` 的 `scope` 参数缺省 = 该客户端白名单全集 **∩ 可检索缺省集**（四层 scope 目录，与 CLI 同口径，§5.3；省略即按已授权范围检索）；`person` 恒在仅当 person ∈ 该客户端白名单（FR-3.1 条件式——未授权 person 的客户端不被强制并入，fail-closed）；`dex_read` 请求路径解析出的 scope 必须落在该客户端白名单内（journal/inbox 等路径同规则——显式授权面：白名单含该 scope 或 human 全量可读才放行，FR-3.1），否则 E_SCOPE_DENIED；source 必须属于该客户端 allowed_sources（FR-4.7）；**不存在任何写 scope 的工具**（P4）；外源索引命中按 scope 标签并入同一检索口径（FR-8.5–8.8，§4.3——MCP 无独立开关，等价 CLI 缺省形态：Hub 条目 ∪ 已授权标签的外源条目）。
 
 ### 8.3 退出码表
 
@@ -1080,7 +1130,7 @@ flowchart TD
 | E_SECRET | 疑似密钥命中 | 9 | 密钥守卫（advisory 模式 → W_SECRET + 0） |
 | E_RENDER_REFUSE | render 拒绝覆盖 | 10 | 目标非 dex 产物（FR-6.4） |
 
-警告码（`W_*`，进 `warnings[]`，**永不改变退出码**）：W_INDEX_DEGRADED（索引降级）、W_GIT_UNAVAILABLE（git 缺失、跳过自动提交）、W_SECRET（advisory 密钥命中）、W_OVER_BUDGET（预算截断首条即越界、输出为空，§5.2-4）、W_CREDS_PERMS（凭据文件权限宽于 0600，FR-10.5/SECURITY.md §5）、W_CONFIG_CHANGED（仓库层 config 变更、提示核实授权 diff，FR-10.7/SECURITY.md §9）。
+警告码（`W_*`，进 `warnings[]`，**永不改变退出码**）：W_INDEX_DEGRADED（索引降级）、W_GIT_UNAVAILABLE（git 缺失、跳过自动提交）、W_SECRET（advisory 密钥命中）、W_OVER_BUDGET（预算截断首条即越界、输出为空，§5.2-4）、W_CREDS_PERMS（凭据文件权限宽于 0600，FR-10.5/SECURITY.md §5）、W_CONFIG_CHANGED（仓库层 config 变更、提示核实授权 diff，FR-10.7/SECURITY.md §9）、W_SOURCE_UNREACHABLE（外源不可达：该源条目已从检索剔除，FR-8.7）。
 
 > `dex lint` 信封特例：发现问题时退出码 1，但信封为 `ok=true`、问题清单走 `data.findings`（warning 级问题同时进 `warnings[]`）——lint 的语义是「产出体检报告」而非「操作失败」，与 §8.1 lint 行口径一致。
 
@@ -1129,6 +1179,7 @@ dex/
 | 审计 | 一切写动作 = git commit（propose、journal 供稿、归位、否决、归档、改写），`git log` 即完整审计流；协议面拒绝事件（越权/未注册/无凭证/source 不匹配/限流/密钥/路径非法）追加 `.cache/audit.log`：UTC 时间｜客户端 id｜命令或工具名｜申请 scope/路径｜结果码——不记录记忆内容、evidence 与 token（防二次泄漏）；单文件软上限轮转；尽力而为、可随缓存丢失（FR-10.6，SECURITY.md §6） |
 | 凭证生命周期 | token 无状态随机串 ≥256-bit（如 `openssl rand -base64 32` 产出，建议 `dex_` 前缀便于 secret 扫描器识别），默认存本机凭据文件 `~/.config/dex/credentials.toml`（路径经本机层 config 指定）；加载时校验长度 ≥32 字符，不满足 ⇒ 按无凭证处理（全拒）；轮换 = 改凭据文件值（无黑名单，配置即真相；单机操作，全网失效走吊销）；吊销 = 删除或注释掉 `[clients.<id>]` 条目（注释即禁用；未注册全拒兜底）；凭据文件权限宽于 0600 ⇒ W_CREDS_PERMS 警告（防意外不防恶意）；token 比较恒定时间（代码审查保证）——FR-10.5，展开见 SECURITY.md §5 |
 | 授权配置完整性 | 仓库层 config 内容 SHA-256 与 `.cache/` 基线比对，变更 ⇒ W_CONFIG_CHANGED（提示 `git log -p -- .dex/config.toml` 核实）——防「远端被攻破/恶意机器 push 经 `[clients]` 扩权」的可见性缺失；`.cache/` 无基线时静默建立（盲区声明）——FR-10.7，SECURITY.md §9 |
+| 外源索引 | 外部仓知识只以指针入派生索引（不复制、不进注入、不进 `dex read`——`repo:` 前缀路径 ⇒ 路径非法·6）；命中按 scope 标签走同一 fail-closed 白名单（FR-8.8）；标签缺省 `projects/<id>` 且枚举域排除 `person` 与恒排除目录（FR-8.6，lint 错误）；遍历不跟随 symlink、尊重源仓 .gitignore；源不可达降级剔除（W_SOURCE_UNREACHABLE，FR-8.7）——标签错配越权见 SECURITY.md T17、外源内容注入见 T18 |
 | 渲染层净化 | render 注入正文 HTML 转义（`<` `>` `&`），src/superseded-by/keep-until 注释不透传（来源以 render 重新生成的安全标注承载）——与「数据非指令」声明叠加的纵深防御（防渲染类消费方执行主动内容）；语义注入不在此层，人审仍是主防线（§13）——FR-6.16，SECURITY.md §8 |
 | 供应链 | 发行物附 SHA-256 `checksums.txt`（覆盖二进制与内嵌技能物）+ 安装校验文档（FR-11.7）；技能/连接器页属**可信通道**（用户可信源安装、随发行物版本化）；签名体系不引入（取舍登记，SECURITY.md §7） |
 | 威胁模型边界 | 凭证防误配置、跨客户端最小授权、为远程网关提供身份载体；**不防同用户恶意进程**（token 本地可读、文件树为明文，后者物理不可防）与物理访问（交 OS 磁盘加密）；scope 白名单约束协议通道，不约束磁盘文件——「公司机不持有生活域」属 clone 内容问题而非授权配置问题（WORK_LIFE §8）。威胁登记表（T1–T16）与「明确不防」清单完整版见 [SECURITY.md](./SECURITY.md)——安全侧单一权威源，本表为设计面摘要 |
@@ -1155,6 +1206,7 @@ gantt
     section v2 MCP+索引
     dex-mcp 四工具 + 守卫 :v2a, after v1e, 10d
     sqlite FTS5 + 同步器  :v2b, after v2a, 10d
+    外源知识索引          :v2d, after v2b, 5d
     sqlite-vec 可选后端   :v2c, after v2b, 7d
     section v3 经营强化
     周回顾 UI             :v3a, after v2c, 14d
@@ -1162,7 +1214,7 @@ gantt
     Spoke 周报汇总协议    :v3c, after v3b, 7d
 ```
 
-里程碑对齐需求 §6 验收：v1e 完成 = 「≥1 个应用（choose-you）稳定供稿（目标 2 个）」；v2a 完成 = MCP 全链路；v3c 完成 = 周报协议。
+里程碑对齐需求 §6 验收：v1e 完成 = 「≥1 个应用（choose-you）稳定供稿（目标 2 个）」；v2a 完成 = MCP 全链路；v2d 完成 = 外源索引跨仓检索（US-15）；v3c 完成 = 周报协议。
 
 ---
 
@@ -1176,6 +1228,7 @@ gantt
 | 安全用例 | 越权 scope、`..` 路径、symlink 逃逸、无证据提案、限流触发、幂等重放、密钥守卫命中拒绝与 advisory 模式、未注册/无凭证客户端全拒、source 与客户端不匹配（E_SOURCE_MISMATCH）、superseded-by 条目不注入、render 产物含「数据非指令」声明；净化与可见性（FR-6.16/10.5/10.6/10.7）：render 注入含 HTML 标签条目 ⇒ 产物已转义且注释不透传、凭据文件权限 0644 ⇒ W_CREDS_PERMS、token 长度 <32 字符 ⇒ 该客户端全拒、吊销（删除/注释 [clients] 条目）后旧 token 全拒（FR-10.3 兜底）、仓库层 config 变更 ⇒ W_CONFIG_CHANGED、audit.log 含拒绝事件字段且不含内容/token（恒定时间比较与 token 熵由代码审查保证、不入黑盒用例；checksums 属发布物流、入 release 检查单 FR-11.7） |
 | 混沌 | 删除/截断 `.cache/index.sqlite3` → search 降级成功（0 + W_INDEX_DEGRADED）且下次命令完成进程内重建；两进程并发 reindex → busy_timeout 串行化或超时降级（§4.2）；git shallow 环境走全量索引路径；脏工作区（编辑未 commit）下 search/render 命中新内容（FR-8.3 调和路径）；render 目标已存在非 dex 产物 → 拒绝覆盖（退出码 10）；git 不可用时 propose 落盘成功 + W_GIT_UNAVAILABLE |
 | 容量 | 10⁴ 条目合成仓库：v1 search P95 ≤1s、v2 FTS P95 ≤50ms、render P95 ≤1s（NFR-3/10）——口径为端到端：含 freshness 前置检查（`git status` + mtime 比对，§4.2）与 `last_substantive` 单遍 git log 计算（§5.4）的成本 |
+| 外源索引（v2） | 标签为 `person` 或枚举外标识 ⇒ lint 报错（FR-8.6）；未授权客户端（白名单不含标签）检索不到外源命中（构造越权用例不泄露，FR-8.8）；源不可达 ⇒ 该源剔除 + W_SOURCE_UNREACHABLE 且退出码 0（FR-8.7）；FTS miss 降级 ⇒ 外源命中缺席且 W_INDEX_DEGRADED 文案明示、`dex reindex` 后恢复（FR-8.4）；注销源后其存量行不再返回、reindex 物理清除；`--no-external` 限定 Hub；repo 命中行可按指针在源仓回读（行号对齐）；删 `.cache/` 后跨仓完整重建；含外源命中的 search 仍达 NFR-3 容量口径（freshness 已摊销至 reindex，FR-8.7） |
 
 ---
 
@@ -1200,3 +1253,4 @@ gantt
 | `dex harvest` 定位为便利封装（连接器页/预算/暂存/批量提案），不内嵌蒸馏模型（FR-6.14） | 蒸馏质量依赖技能纪律；命令面与技能面职责需文档区分 | 备选「二进制内嵌 LLM 蒸馏」被否——与 NFR-1（不托管模型）、无守护进程及「采集也是适配器」原则冲突；收割技能统一为 `dex-bootstrap`（FR-11.2，US-13 措辞对齐） |
 | import 片段的「数据非指令」声明承载在片段首行（宿主层文本防御，FR-6.4/§6.2） | 引用的原文件零复制，其内条目无法逐条强制标注 | 与 merged 头部声明同级（均为上下文文本）；备选「复制正文进宿主」被否——破坏零复制与单一事实源；净化（FR-6.16）同样不适用 import 模式（零复制引用原文件），该残留风险一并归入；残留风险接受，周回顾人审确认门仍是第一道防线 |
 | 索引重建为「置脏标记 + 下次命令进程内同步执行」（延迟重建），无后台任务（P6） | 触发重建的那次命令慢一次 | 备选后台守护/常驻线程被否（无守护进程原则）；并发写以 BEGIN IMMEDIATE + busy_timeout 串行化、超时降级（§4.2） |
+| 外源索引「只索引不收编」，不做内容同步（FR-8.5） | 同步 = 第二事实源必漂移（repo 演进后 Hub 副本失真，agent 检索到自信的旧知识——比没有更糟）；索引引入逐源 freshness 维护成本 | 提炼通道已存在：收割 → propose 带 src/evidence 指回 repo（结论+指针，非副本，US-12/FR-12）；指针失效降级剔除（FR-8.7），repo 退役则移除注册 |
