@@ -40,7 +40,7 @@ agent 时代，每个人的上下文散落在互不可见的孤岛里：
 2. **文件是稳定契约，协议是适配器**：事实源是 git 管理的 markdown 文件树；MCP / CLI / 入口渲染都只是访问通道，可替换。协议生态年轻，文件不会过时。
 3. **目录即 scope**：不建路由表、不做本体论。`person/ ⊃ domains/ ⊃ apps/ projects/` 的目录层级承担全部路由语义。
 4. **写入主权分级**：人直接编辑（最高）＞ 周回顾确认的固化归位 ＞ agent 写 `inbox/` 提案（唯一机器可写位置）。一切变更经 git 留痕。
-5. **消费有预算**：任何注入都过 scope 过滤 + 条数/字数预算 + 优先级合并（具体＞泛化、手写＞固化、新证据＞旧证据）。
+5. **消费有预算**：注入类输出（入口文件渲染）都过 scope 过滤 + 条数/字数预算 + 优先级合并（字典序：具体＞泛化、同级手写＞固化、新证据＞旧证据）；检索（search）只共享 scope 过滤，按 limit 截断——预算约束注入、不约束检索（设计 P5）。
 6. **无守护进程**：v0/v1 靠文件与 CLI；MCP 用 stdio 按需拉起。派生索引（FTS/向量）存 `.cache/`，每机可重建，不进 git。
 
 ## 四、总体架构
@@ -113,15 +113,17 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    REQ["检索/注入请求<br/>声明消费方 scope：<br/>person + domains/coding + apps/todo + projects/foo"]
-    REQ --> UNION["按 scope 取目录并集"]
-    UNION --> MERGE{"优先级合并<br/>具体 ＞ 泛化 · 手写 ＞ 固化 · 新证据 ＞ 旧证据"}
+    REQ["消费请求<br/>声明消费方 scope：<br/>person + domains/coding + apps/todo + projects/foo"]
+    REQ --> UNION["按 scope 取目录并集<br/>（scope 过滤——检索与注入共用）"]
+    UNION --> SEARCH["检索（search）：<br/>全文命中 + limit 截断<br/>（无合并与预算，设计 P5）"]
+    UNION --> MERGE{"注入（render 入口文件）优先级合并<br/>具体 ＞ 泛化 · 同级手写 ＞ 固化 · 新证据 ＞ 旧证据"}
     MERGE --> BUDGET["预算截断<br/>注入 ≤10 条 / ≤2000 字"]
-    BUDGET --> OUT["入口文件 / 检索结果"]
+    SEARCH --> OUT1["检索结果"]
+    BUDGET --> OUT2["入口文件"]
 ```
 
 - 消费方声明自己是谁（哪类应用、哪个项目），据此决定 `domains/`、`apps/`、`projects/` 哪些目录进入并集；`person/` 恒在。
-- 具体压过泛化：项目级事实与个人层冲突时，注入项目级并注明来源；手写内容压过一切固化内容。
+- 具体压过泛化：项目级事实与个人层冲突时，注入项目级并注明来源；**同级 scope 内**手写内容压过固化内容（跨层以具体性优先——字典序比较器，需求 FR-3.2）。
 - 同一事实多处出现是**允许的冗余**（方便局部阅读），以 git 最近改写为准，周回顾时合并。
 
 **条目格式（刻意克制）**：scope 内文件按主题一文件、一条一个要点，不加 frontmatter；来源追溯用 HTML 注释，人读不干扰：
@@ -147,6 +149,7 @@ flowchart LR
 ```mermaid
 stateDiagram-v2
     state "原始事件（Spoke 内）" as RAW
+    state "journal 每日一页（情景层）" as JRNL
     state "提案 inbox/" as PROP
     state "活性 scope/" as ACTIVE
     state "改写" as UPD
@@ -154,8 +157,9 @@ stateDiagram-v2
     state "否决（git 留痕）" as REJ
 
     [*] --> RAW : 应用内裁决 / 修正 / 操作 / 对话
-    [*] --> PROP : 人直接捕获（速记 / 剪藏）
+    [*] --> JRNL : 人速记 / 剪藏 / 手写（人捕获默认路径，不经 inbox）
     RAW --> PROP : Spoke 固化管道挖掘，带来源与证据
+    JRNL --> ACTIVE : 周回顾提升（值得长期保留的事实）
     PROP --> ACTIVE : 周回顾确认，归位 scope 目录
     PROP --> REJ : 证据不足 / 重复 → 删除
     ACTIVE --> ACTIVE : 被检索注入引用<br/>（使用记录留在 Spoke 侧）
@@ -170,6 +174,7 @@ stateDiagram-v2
 要点：
 
 - **提案即文件**：Spoke 的固化管道（或 agent 本人）产出提案文件落 `inbox/`，轻 frontmatter（source / kind / confidence / evidence）；确认时人编辑内容、剥掉元数据、移动到目标 scope——`git mv` 即确认动作，历史即审计。
+- **人速记/剪藏默认落 journal 手写小节**（周回顾再提升），不写 inbox——inbox 提案协议（证据必填）面向 agent；人显式自提案走 `dex propose --source human` 并自拟证据（需求 FR-4.2/FR-5.1）。
 - **使用记录不写回 Hub**：注入命中计数留在各 Spoke（它们本来就有过程数据），避免 Hub 文件被高频改写；衰减信号由两部分组成——`dex stale` 按 git log 扫「最后实质变更 ≥90 天」的条目 + 各 Spoke 周报汇总的引用情况，周回顾人审裁决。
 - **遗忘不删除历史**：否决、归档、改写旧版全部活在 git 历史里，`archive/` 只是「不再注入」的显式标记。
 
@@ -239,7 +244,7 @@ flowchart LR
 2. **提 journal**：从本周每日页提取值得长期保留的事实；
 3. **处理衰减清单**：`dex stale` 输出 + Spoke 使用周报 → 归档 / 改写 / 保留；
 4. **scope 升降级**：某条应用记忆发现跨应用成立 → 上提 `domains/` 或 `person/`；反之下降；
-5. **合并冗余与矛盾**：`index/` 工具预筛的近义条目（字符串相似度预筛，人裁决）；确认被推翻的旧条目加 `superseded-by` 注释而非静默删除，不再注入。
+5. **合并冗余与矛盾**：近义条目预筛（字符串相似度，`dex review` 运行时聚类、仅聚类不裁决、人裁决——不依赖 `index/` 导览，其为 v3 生成物）；确认被推翻的旧条目加 `superseded-by` 注释而非静默删除，不再注入。
 6. **结构整理**：lint 结构体检驱动（目录软预算 / 待拆分大文件 / 孤儿目录 / 悬空 scope 引用）——目录增删改名（走 scope 改名协议）、文件拆并。
 
 ## 九、多机同步、隐私与信任边界

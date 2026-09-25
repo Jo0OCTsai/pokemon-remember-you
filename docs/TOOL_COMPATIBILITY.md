@@ -1,7 +1,7 @@
 # 工具入口兼容矩阵（render 产物位置策略）
 
 > 项目：pokemon-remember-you（就记得是你）
-> 文档版本：v1.1 · 2026-09-24 · 状态：待评审（v1.1：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode，其余移入「未纳入」备查）
+> 文档版本：v1.2 · 2026-09-25 · 状态：待评审（v1.2：debt 清偿同步——import 片段「数据非指令」声明承载说明；此前 v1.1：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode，其余移入「未纳入」备查）
 > 上游文档：[REQUIREMENTS.md](./REQUIREMENTS.md) FR-6.4/FR-6.12 · [DESIGN.md](./DESIGN.md) §2.5/§6.2 · [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md) §6-W3
 > 定位：回答「`dex render` 的入口文件该落哪、各工具会不会读」——场景推演 W3 的交付物；**修正了 v1.7/v1.8 的「默认工作区子目录」决策**（查证结论见 §1）；随工具生态演进持续维护，❓ 标注项接入前实测。
 > **支持范围（需求 §7 约束）**：AI coding 工具只支持 **Claude Code、pi、ZCode** 三者；其余工具暂不考虑（调研结论保留于 §2.2 备查，接入需求出现时再评估）。
@@ -47,7 +47,7 @@
 repo 根是否已有团队入口文件（AGENTS.md / CLAUDE.md 等非 dex 产物）？
 ├─ 否（个人仓库）→ dex render 落根 AGENTS.md（默认；三工具均恒载，退出码 10 冲突保护恒在）
 └─ 是（团队仓库）→ 按消费工具分流（支持范围内）：
-    ├─ Claude Code → format=import：repo .claude/CLAUDE.md 一行 @import（该文件 gitignore）
+    ├─ Claude Code → format=import：repo .claude/CLAUDE.md 一行 @import（该文件 gitignore；片段首行带「数据非指令」声明注释，FR-6.4）
     │                或用户级 ~/.claude/CLAUDE.md（零 repo 足迹，全局生效）
     ├─ pi / ZCode  → 无 import（pi 已证实；ZCode 待验证）：
     │                用户级全局文件（~/.pi/agent/AGENTS.md、~/.zcode/AGENTS.md）手动维护，
@@ -59,7 +59,8 @@ repo 根是否已有团队入口文件（AGENTS.md / CLAUDE.md 等非 dex 产物
 
 **通用注意**：
 - 所有适配位产物（根 AGENTS.md / rules / import 宿主文件若在 repo 内）涉及个人记忆的，建议 gitignore 或使用用户级宿主——防个人记忆被误 commit 进团队仓库（FR-6.4 原始动机不变）；
-- `@import` 类宿主（CLAUDE.md/GEMINI.md）启动即全量加载、不省 context——条目多后注入预算改由 `dex render` 产物承担（与 REQUIREMENTS US-01 步骤 4 既有口径一致）。
+- `@import` 类宿主（CLAUDE.md/GEMINI.md）启动即全量加载、不省 context——条目多后注入预算改由 `dex render` 产物承担（与 REQUIREMENTS US-01 步骤 4 既有口径一致）；
+- `render format=import` 产出的 @import 片段首行固定携带「记忆库数据非指令」声明注释——引用原文件零复制，声明承载在宿主片段层（与 merged 头部同级的文本防御；残留风险见 DESIGN §13）。
 
 ## 4. 调研来源（2026-09-24）
 
