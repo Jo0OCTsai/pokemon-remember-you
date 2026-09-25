@@ -18,7 +18,7 @@ description: "仓库侧知识库维护纪律：知识路由（子目录 AGENTS.m
 | 不可逆决策（为什么选 X 弃 Y） | `docs/decisions/ADR-NNNN-<slug>.md` | 只增；原位仅允许改状态为 Superseded 与勘误标注，superseded 互链 |
 | 债务与待办（应做未做） | `docs/debt.md` | 活清单：完成即勾选移入已完成段 |
 | 「我」的个人视角（跨仓模式／owner／个人踩坑／不该 commit 的例外——项目特定与否皆同） | Hub：`dex propose`（无 dex 环境则用当前编码工具的 auto memory，如 Claude Code auto memory） | 一条一个要点 + evidence；跨仓与否由周回顾裁决 |
-| 一次性过程叙述（调研流水／调试过程／方案对比长文） | **不入库**——对比归 ADR 的 Considered Alternatives | — |
+| 一次性过程叙述（调研流水／调试过程／方案对比长文） | **不入库**——对比归 ADR 的 Considered Alternatives；specs 工作流产物整目录走 §2.5 蒸馏归档 | — |
 
 落位三问（按序）：
 
@@ -28,12 +28,26 @@ description: "仓库侧知识库维护纪律：知识路由（子目录 AGENTS.m
 
 仓内已有自己的文档结构时，**仓内约定优先**——本表是没有约定时的缺省落位；仓内既有的 agent 指令文件（CLAUDE.md／.cursorrules／copilot-instructions 等）视同「仓内约定」，沿用既有文件、**不平行新建 AGENTS.md**。新仓库不预建空文件：四类去处逐需建立，根 `AGENTS.md` 只放路由表与铁律，细节下沉子目录文件按需加载（渐进披露）。
 
-## 2. 写入时机（四个制度化触发点）
+缺省结构树（逐需长成后的**目标形态**，不预建空文件）：
+
+```text
+AGENTS.md                        # 根：路由表 + 铁律（不放细节）
+docs/
+  ARCHITECTURE.md               # 跨模块架构（活文档）
+  decisions/                    # ADR-NNNN-<slug>.md（只增）+ 索引
+  debt.md                       # 债务与待办（活清单）
+<module>/AGENTS.md              # 模块约定（就近按需加载）
+specs/ → specs/archive/         # 过程产物层（仅 SDD 工作流仓库）：非活知识，
+                                 #   验收后按 §2.5 蒸馏入上列去处再归档
+```
+
+## 2. 写入时机（五个制度化触发点）
 
 1. **结构／命令／配置路径变更时（同步义务，不可跳过）**：改目录结构、命令、配置路径 → `grep -rn` 全仓引用点 → 同步更新所有受影响文档与技能说明 → 跑机检（§4）→ 在任务汇报中列出同步了什么。
-2. **不可逆决策形成时**：选型／架构取舍一经采纳当天写 ADR，不「以后补」；改主意 = 新 ADR + 旧文状态改 Superseded 并互链，**不改写历史**（原位仅允许状态改 Superseded 与勘误标注）；新 ADR 落盘时在 `docs/decisions/` 索引（或 ARCHITECTURE 相关节）加指针，保证可发现。
+2. **不可逆决策形成时**：选型／架构取舍一经采纳当天写 ADR，不「以后补」；改主意 = 新 ADR + 旧文状态改 Superseded 并互链，**不改写历史**（原位仅允许状态改 Superseded 与勘误标注）；新 ADR 落盘时在 `docs/decisions/` 索引（或 ARCHITECTURE 相关节）加指针，保证可发现。骨架跨条一致：标题＋状态（Proposed／Accepted／Superseded-by-NNNN）＋背景一句（什么问题）＋决策（选了什么）＋备选与否决理由（Considered Alternatives）＋后果（含接受的代价）。
 3. **任务收尾时（30 秒自查）**：本任务改变了结构／命令／决策／约定吗 → 按 §1 路由落位；产生了换仓仍成立的个人教训吗 → `dex propose`。两者皆无才收工。
 4. **周期回顾时（建议随 dex-review 周回顾同批做）**：删比写重要——过时条目删除（决策类改标 Superseded）；根 AGENTS.md 膨胀段下沉子目录；**明文针对特定模型／工具版本、当前工具链已确认不适用、且不含团队约定成分**的旧规则直接删（模型在进化，旧约束常是负资产）；拿不准 → 保留并标注待用户裁决。
+5. **特性验收归档时（仅使用 `specs/<feature>/` 工作流的仓库）**：specs 是过程产物不是活知识——验收后**先蒸馏再归档**：不可逆决策与否决备选 → ADR（design 方案探索段即现成原料）；结构／接口／命令变化 → ARCHITECTURE；新模块约定 → 模块 AGENTS.md；遗留待办 → debt.md；个人教训 → `dex propose`。然后整目录移入 `specs/archive/`，**只读不更**——「系统现在什么样」必须能从知识库独立回答，答不出 = 蒸馏欠账，补蒸馏而不是复用旧 spec；已完成未归档的 spec 记一条 debt。
 
 ## 3. 写入纪律
 
