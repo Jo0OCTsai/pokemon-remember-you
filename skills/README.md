@@ -3,7 +3,7 @@
 本目录是配套技能的唯一编写源（一技能一目录 + SKILL.md）；发行物经 `dex skills install`
 内嵌物化 + symlink 分发（FR-11.6），本仓 clone 不是使用前置。
 
-- `dex-bootstrap/`：零手写冷启动（面试 5 问 + 收割循环，US-01/US-13）
+- `dex-bootstrap/`：零手写冷启动（5 问画像：资产收集整合优先、面试兜底 + 收割循环，US-01/US-13）
 - `dex-propose/`：日常提案纪律（入库判据「换一个应用还成立吗」，FR-11.2）
 - `dex-review/`：周回顾七段走查（段序 = FR-6.6 权威序）
 - `repo-knowledge/`：仓库侧知识库维护纪律（知识路由／写入时机／防漂移机检／修剪，FR-11.2；repo 知识留 repo 的行为层）
