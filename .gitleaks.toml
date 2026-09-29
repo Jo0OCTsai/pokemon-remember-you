@@ -1,0 +1,15 @@
+# gitleaks 配置（quality module: gitleaks；CI gitleaks job 与本地 protect --staged 消费）
+# 豁免原则：只对具体假凭证串做 regex 豁免（不按文件排除——文件级豁免会漏掉该文件未来的真实泄漏）。
+[extend]
+useDefault = true
+
+# dex-core 秘密扫描守卫的正例测试夹具（scan_secrets 单测）：手写假凭证形态，公开无风险。
+# AKIAIOSFODNN7EXAMPLE（AWS 文档官方示例）gitleaks 默认已放行；EXAMPLF 是去重测试的变体形态。
+[allowlist]
+description = "crates/dex-core/src/guard.rs 测试夹具：scan_secrets 正例假凭证"
+regexTarget = "match"
+regexes = [
+  '''xoxb-1234567890-abcdef''',
+  '''a1B2c3D4e5F6g7H8i9J0k1L2''',
+  '''AKIAIOSFODNN7EXAMPLF''',
+]

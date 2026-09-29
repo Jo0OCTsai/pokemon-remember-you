@@ -23,8 +23,8 @@ clap = { version = "4", features = ["derive"] }
 tempfile = "3"
 assert_cmd = "2"
 predicates = "3"
-dex-core = { path = "crates/dex-core" }
-dex-store = { path = "crates/dex-store" }
+dex-core = { path = "crates/dex-core", version = "0.1.0" }
+dex-store = { path = "crates/dex-store", version = "0.1.0" }
 
 [profile.release]
 lto = "thin"

@@ -17,6 +17,12 @@
 
 - [ ] **repo-knowledge 机械兜底层**：技能主动调用是概率行为——使用 1–2 周后回看触发率（任务收尾自查／结构变更同步是否稳定发生）；若经常漏触发，复制 lint-gate.sh 模式落 Stop hook（收尾提醒 §2.3 自查／涉结构变更的提交阻断）＋ CI 机检模板（doc_reference_check 同类）。触发良好则直接勾选关闭本项。落点在消费仓／infra 工具链层（lint-gate.sh 所在层），**非 dex 产品功能、不进 SDD**（技能管判断、hook 管不遗忘的第三层）。
 
+## 已完成（2026-09-30 · 工程化平台侧配置，经 gh API）
+
+- [x] **squash-only 合并策略**：merge / rebase 合并已关、仅留 squash；squash 主题 = PR 标题（受 commit-lint CI 校验间接约束入主线历史）、正文 = 逐提交信息（`squash_merge_commit_title=PR_TITLE` + `message=COMMIT_MESSAGES`）。
+- [x] **main 分支保护**（仓库转 public 后配置——private 免费版两条 API 均被 403 拒）：Require PR before merging + Require status checks（strict，contexts = `check (ubuntu-latest)` / `check (macos-latest)` / `gitleaks` / `deny` / `coverage` / `commit-lint`）+ Require linear history + 禁 force push / 删分支。两项刻意取舍：approving count 0 且未开 code owner 硬审——GitHub 禁止 PR 作者自批，单人仓开了会死锁（CODEOWNERS 的 review 自动请求仍生效，团队化后开 `require_code_owner_reviews`）；`enforce_admins=false` 保留 owner 直推 main 通道（现有直推工作流不变，要收紧随时可开）。
+- [x] **Codecov 接线**：仓库已转 public，tokenless 直用（无需 `CODECOV_TOKEN`）；README 已加覆盖率徽章（首次 coverage job 上传后出数值）。
+
 ## 实施期收口记录（2026-09-25 · v1 实施会话）
 
 - [x] skills 物化目录定值：`~/.local/share/dex/skills/`（FR-11.6；实现 `dex skills install` 物化 + symlink 三工具目录）

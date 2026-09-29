@@ -1,0 +1,5 @@
+{
+  "$comment": "质量棘轮基线（.devcontainer/scripts/quality_ratchet_check.py 消费，勿手改数值）：complexity.<service> 键 = 文件:规则，值 = 违规计数——新增键或计数回涨即红；改善后 --prune 回写收缩。coverage_floor.<service> = 覆盖率阈值地板（0 = 未启用）——声明值下调或地板悬空即红，上调 --prune 抬升（只紧不松）。首跑流程：接入覆盖率门禁（test_cmd --cov-fail-under / pyproject fail_under / vite thresholds 任一）→ 跑一次扫描确认无回退 → --prune 物化地板。hygiene = ③ 代码卫生计数（todo 全仓 / rust_unsafe 仅 rust 源码 / missing_docs rust 服务 pub API 文档缺失）——可选接入：加空段 \"hygiene\": {} 后跑 --bootstrap 存量建账（超基线即红，下降 --prune 收缩）。键名 = stack.json services[].name。",
+  "complexity": {},
+  "coverage_floor": {}
+}

@@ -1,0 +1,24 @@
+{
+  "carrier": "macos",
+  "$comment": "载体与栈单源声明（scaffold.sh 生成骨架，按项目实况可改）：顶层 carrier 由 carrier.sh declare 写入（devcontainer|wsl|native|macos 互斥四选一，迁移走 apply --carrier <新载体> --migrate-carrier）。services[] 每服务一条，支持 0..N（CLI/库项目为空数组，接入服务后按下述字段补条目）；dir 为服务所在目录，\".\" 表示服务在仓库根（消费方须做归一化——前缀匹配时根级服务语义上拥有全仓）。lint_fix / lint_check 中 {file} 占位符替换为目标文件绝对路径；test_cmd 供验收 runner；dev_cmd 供 dev server；port 供 forwardPorts 交叉核对。栈 defaults 单源 = apply-dev-env 技能 templates/stacks/<stack>.md。顶层 quality_modules[] = 质量模块声明（可选，scaffold --quality / sync-template.sh adopt-module 写入，gen-ci.sh 读同一声明渲染 CI 块；注册表 = templates/quality/）；顶层 conventions[] = 规范模块声明（可选，scaffold --conventions / adopt-module 写入，commit-lint 的 CI job 由 gen-ci.sh 渲染；注册表 = templates/conventions/——与 quality_modules 语义分离：门禁工具 vs 协作约定）。改本文件后无需重启，读点每次现读。",
+  "services": [
+    {
+      "name": "pokemon-remember-you",
+      "dir": ".",
+      "stack": "rust",
+      "lint_fix": "rustfmt --edition 2021 '{file}'",
+      "lint_check": "cargo fmt --check && cargo clippy -- -D warnings",
+      "test_cmd": "cargo test",
+      "dev_cmd": "cargo run"
+    }
+  ],
+  "quality_modules": [
+    "cargo-deny",
+    "codecov",
+    "gitleaks"
+  ],
+  "conventions": [
+    "collab-templates",
+    "commit-lint"
+  ]
+}

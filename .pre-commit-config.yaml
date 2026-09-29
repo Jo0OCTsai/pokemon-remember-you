@@ -1,0 +1,33 @@
+# 根级 pre-commit 片段（apply-dev-env templates/carrier/ 分发；wsl / native 载体项目用）。
+# 启用：项目根 `pre-commit install`。手动全量跑：`pre-commit run --all-files`。
+# 说明：本文件是骨架——只锚定跨栈的机械质量门禁（经 .claude/hooks/lint-gate.sh 按
+#      .devcontainer/stack.json services[] 路由）；服务级钩子（ruff / eslint / dotnet format）
+#      已由 lint_check 命令覆盖，不必重复挂。CLAUDE_PROJECT_DIR 在 pre-commit 环境不存在，
+#      entry 里显式取 git 顶层注入（与 lint-gate.sh 的回退逻辑双保险）。
+repos:
+  - repo: local
+    hooks:
+      - id: lint-gate
+        name: 机械质量门禁（按 .devcontainer/stack.json 路由）
+        entry: bash -c 'CLAUDE_PROJECT_DIR="$(git rev-parse --show-toplevel)" bash .claude/hooks/lint-gate.sh'
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+  - repo: local
+    hooks:
+      - id: commit-lint
+        name: commitlint（Conventional Commits 主题；与 CI 同一校验脚本）
+        entry: bash .github/scripts/commit-lint.sh
+        language: system
+        pass_filenames: true
+        stages: [commit-msg]
+  - repo: local
+    hooks:
+      - id: gitleaks
+        name: 秘密扫描（暂存区；CI 全历史 detect 兜底）
+        entry: gitleaks protect --staged --redact
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
