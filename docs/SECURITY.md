@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 文档版本：v1.3 · 2026-09-25 · 状态：待评审（v1.3：可信通道声明技能清单补 `repo-knowledge`（需求 v1.17：FR-11.2 四技能同步）；v1.2：外源索引威胁登记——新增 T17（scope 标签错配越权可见）与 T18（外源内容注入——不可信数据通道延伸至检索/回读面），映射需求 FR-8.5–8.8/§8 风险表、设计 §4.3/§10（需求/设计 v1.16 同步，含隔离 sdd-reviewer 评审清偿）；v1.1：实施前评审修订——§2 边界⑤补 TTY human 免凭证对齐（FR-10.3 同口径）、§6 审计日志轮转默认定 1 MiB、§8 补 import 片段模式净化豁免登记；v1.0：初版——安全专项补充：§1–§4 将散落于需求 NFR-8/FR-4.6/4.7/FR-10 组、设计 §5.5/§8/§10、提案 §九/§十一 的安全条目收编为统一威胁登记；§5–§9 补五处缺口——凭证生命周期（FR-10.5）、守卫审计日志（FR-10.6）、授权配置变更提示（FR-10.7）、render 输出净化（FR-6.16）、发行物完整性（FR-11.7）；需求/设计同步 v1.13）
-> 上游文档：[REQUIREMENTS.md](./REQUIREMENTS.md)（NFR-8、FR-10 组）· [DESIGN.md](./DESIGN.md)（§5.5 校验序、§8.3/8.4 退出码与枚举、§10）· [PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（§九、§十一）
+> 上游文档：[REQUIREMENTS.md](./REQUIREMENTS.md)（NFR-8、FR-10 组）· [DESIGN.md](./DESIGN.md)（§5.5 校验序、§8.3/8.4 退出码与枚举、§10）· [PERSONAL_MEMORY_HUB_PROPOSAL.md](./proposals/PERSONAL_MEMORY_HUB_PROPOSAL.md)（§九、§十一）
 > 定位：**安全侧单一权威源**——威胁枚举、缓解映射、「明确不防」与剩余风险登记以本文为准；需求 NFR-8 与设计 §10 引用本文。机制类条目（FR/设计节）以对应文档为权威，本文做展开与论证。发现新威胁随时登记，缓解落地后更新状态列。
 
 ---

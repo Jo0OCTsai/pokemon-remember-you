@@ -1,10 +1,10 @@
 # dex 实施计划（v0 + v1）
 
 > 项目：pokemon-remember-you（就记得是你）——个人记忆中枢 dex
-> 文档版本：v1.1 · 2026-09-25 · 状态：**已实施**（2026-09-25 实施会话完成 v0+v1；验收见 [reports/acceptance-report.md](./reports/acceptance-report.md)——机械项全过，人工 dogfood 项已标注。v1.1 增补：A5 `repo-knowledge` 技能，对应需求 v1.17／FR-11.2 四技能）
+> 文档版本：v1.1 · 2026-09-25 · 状态：**已实施**（2026-09-25 实施会话完成 v0+v1；验收机械项全过、人工 dogfood 项已标注——报告属一次性过程产物，已随 `docs/reports/` 清理出仓，结论以本行为准。v1.1 增补：A5 `repo-knowledge` 技能，对应需求 v1.17／FR-11.2 四技能）
 > 关卡：已过「需求+设计+架构通过」（2026-09-25；需求/设计 v1.14、安全 v1.1 实施前最终评审清偿完毕）
 > 背景文档（实施会话必读，本计划按 FR/§ 编号引用、不复制正文）：
-> [REQUIREMENTS.md](./REQUIREMENTS.md)（SDD·v1.14）· [DESIGN.md](./DESIGN.md)（AD·v1.14）· [SECURITY.md](./SECURITY.md)（威胁模型·v1.1）· [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)（工具矩阵·v1.2）· [debt.md](./debt.md)（实施期待定参数）
+> [REQUIREMENTS.md](./REQUIREMENTS.md)（SDD·v1.14）· [DESIGN.md](./DESIGN.md)（AD·v1.14）· [SECURITY.md](./SECURITY.md)（威胁模型·v1.1）· [TOOL_COMPATIBILITY.md](./proposals/TOOL_COMPATIBILITY.md)（工具矩阵·v1.2）· [debt.md](./debt.md)（实施期待定参数）
 > 本计划自包含：实施会话不依赖任何会话讨论记忆，冲突时以 REQUIREMENTS/DESIGN 为权威。
 
 ---
@@ -28,7 +28,7 @@ pokemon-remember-you/
 │       └── src/main.rs + src/{config, guard_runtime, audit}.rs + src/cmd/{search,read,propose,journal,render,stale,review,lint,reindex_stub,init,skills,harvest,interview}.rs
 ├── skills/                  # v0 交付：dex-bootstrap / dex-propose / dex-review + connectors/（DESIGN §5.7 六要素）；v1 增补 repo-knowledge（FR-11.2）
 ├── scripts/                 # gen_fixture.py（10⁴ 条目合成仓库）等
-├── docs/                    # 既有文档 + 本计划 + reports/（验收产物）
+├── docs/                    # 权威文档 + 本计划 + proposals/（方案与调研归档）
 └── Cargo.toml               # workspace
 ```
 
@@ -126,6 +126,8 @@ docs/reports/
   acceptance-report.md       # 对照 REQUIREMENTS §6 v1 行逐项：机械项（脚本可证）+ 人工项（真实周回顾 ≤15 分钟、render 产物被真实 agent 消费、冷启动完成线——需训练家 dogfood，报告中标注执行人与日期）
   screenshots/               # 人工验收截图（render 产物在工具中生效等）
 ```
+
+> 2026-09-30 注：上表为实施期约定。验收产物属一次性过程产物，已清理出仓不再 commit——机械证据链改为 CI 工作区生成（`scripts/junit_export.py` → `docs/reports/raw/junit-cli.xml`，以 artifact 上传）；过程产物「验收后蒸馏再归档」纪律见 REQUIREMENTS v1.18 FR-11.2。
 
 ## 6. 实施期已知事项（新会话须知）
 

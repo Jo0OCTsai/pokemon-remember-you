@@ -1,9 +1,9 @@
 # 个人记忆中枢（dex）需求文档
 
 > 项目：pokemon-remember-you（就记得是你）
-> 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）
+> 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./proposals/PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）
 > 文档版本：v1.18 · 2026-09-25 · 状态：待评审（v1.18：repo-knowledge 技能增补——FR-11.2 写入时机补第五项「特性归档蒸馏」（`specs/<feature>/` 属过程产物非活知识：验收后蒸馏〔决策→ADR／结构→ARCHITECTURE／约定→模块 AGENTS.md／遗留→debt／个人教训→dex propose〕再归档 `specs/archive/` 只读不更，已完成未归档记 debt）；技能内补缺省结构树与 ADR 骨架（技能层细化，设计无结构变化不升版）；v1.17：新增 repo 侧知识库维护技能——FR-11.2 最小技能集三个→四个（`repo-knowledge`：知识路由〔子目录 AGENTS.md／ARCHITECTURE／ADR／debt／Hub〕、制度化写入时机、防漂移机检、修剪；承载 §3.7「repo 知识留 repo」的行为层，个人结论仍走 dex-propose；`dex skills install` 受管面与 render 技能指针行〔金样本〕同步扩展）；术语表「配套技能」与 US-14（背景／过程指针／验收四技能）同步；v1.16：外源知识索引（external indexing，v2）——新增 FR-8.5–8.8（只索引不收编／`[index.sources]` 外源注册／逐源新鲜度与失效／授权标签并入既有白名单判定）与 US-15 跨仓检索；术语表补「外源／外源索引」；§1.3 非目标补「外部仓库知识内容不同步入 Hub」；§3.7 补「repo 知识在 Hub 侧 = 指针而非副本，提炼不复制」；FR-6.1 补外源命中混入口径；§6 v2 验收与 §8 风险表同步（安全登记 SECURITY.md T17/T18、安全 v1.2 同步）；隔离 sdd-reviewer 评审清偿——FR-8.4 补外源降级例外、FR-8.6 标签枚举域/缺省口径/symlink、FR-8.7 freshness 摊销与注销源清除、FR-8.8 并集与空命中/repo: 路径口径、FR-6.11 lint 增补、术语表 source 三义注记；v1.15：Claude Code AGENTS.md 统一——repo 根与用户级 `~/.claude/AGENTS.md` 均原生支持且为唯一入口，FR-6.4 去除 shim/回退口径（三工具统一根位）、FR-3.6/US-01 步骤 4/§3.7 个人记忆叠加位改 AGENTS.md，**全文档移除旧入口文件名引用**（Claude 侧仅认 AGENTS.md，含收割清单与团队文件描述）；v1.14：实施前评审修订——High：FR-2.8 顶层白名单补 `.dex/` 与系统杂项忽略策略、§3.3 流程图改检索/注入双分支（检索不做合并与预算，对齐 P5/US-02）；Medium：FR-3.1 person 恒在改白名单条件式＋journal 纳入恒排除并定义显式检索面、FR-6.1 缺省检索集=白名单∩四层（CLI/MCP 同口径）与内嵌 ripgrep 措辞、FR-6.5 stale 改单遍 git log 口径（复活即重置计时、git 缺失回退 mtime）、FR-2.2 src 注释两级作用域（条目级优先）、FR-3.2 补④终局稳定序、FR-6.4 手改检测拒绝覆盖＋--force/--dry-run 语义与 out 路径基准、FR-10.3 TTY human 免凭证、FR-4.1 幂等指针与 evidence 双件套适用范围（本地文件收割单件合法）、FR-2.8 inbox 滞留检查递归与 bootstrap 落盘统一顶层、FR-5.4/FR-4.3 journal 日限流与限流日界、FR-10.2 键级深合并指针、FR-6.11 lint --json 信封特例、FR-11.5/US-14 技能指针措辞、US-01/US-06/US-07/US-10/§6 验收与措辞修订、FR-1.4 v0 例外注记、NFR-5 git 使用面措辞、FR-2.10 两级并存优先级；v1.13：安全补强——威胁模型单源化：新增 [SECURITY.md](./SECURITY.md)（NFR-8/§8 引用）；新增 FR-6.16 render 输出净化、FR-10.5 凭证生命周期、FR-10.6 守卫审计日志、FR-10.7 仓库层 config 变更提示、FR-11.7 发行物完整性与可信通道声明；§6 v1 验收补净化用例、§8 风险表补供应链/远端私仓两行；此前 v1.12：安装路径工具化——FR-6.9 `dex init` 澄清含 `git init` 与首次提交（幂等补齐 / git 缺失降级 warning）、新增 FR-11.6 `dex skills install`（发行物内嵌技能 + symlink 管理，取代 clone 依赖）、FR-10.4 管理命令清单 / US-01 / US-14 措辞同步；此前 v1.11：debt 清偿（Medium 16 + Low 14 全量）——注入优先级字典序权威化（FR-3.2/US-05）、收割暂存区迁 `inbox/staging/`（FR-6.14/FR-2.8）、周回顾七段权威段序（FR-6.6/FR-11.2/US-04）、近义预筛 v1 运行时不落 index/、空目录约束收窄（FR-2.9）、人速记归 journal（FR-4.2/FR-5.1）、FR-2.3 期别 v0、evidence ≤2000 字符（FR-4.1）、scope 越权整单拒绝（FR-7.3）、NFR-3 量化 P95、NFR-5 明示 git 例外（FR-4.5）、config 两层存放（FR-10.2/US-07）、FR-1.6 `.dex-ignore` 回补、FR-6.15 `dex index`、FR-9.5 `--group`、US-01/US-13/v1 验收措辞与量化；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§7 约束、US-02/US-14、FR-11 组、工具矩阵 §2.1），其余移入 TOOL_COMPATIBILITY.md 未纳入备查；更早 v1.9：W3 收口——入口文件策略矩阵化（FR-6.4/FR-6.12）；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层架构、v1.5 场景语义回调、v1.3 结构治理、v1.2 零手写冷启动与配套技能、v1.1 AGENTS.md 与内容层安全）
-> 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）· [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md)（用户场景业务流程推演）· [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)（工具入口兼容矩阵）· [SECURITY.md](./SECURITY.md)（威胁模型与缓解登记）
+> 配套文档：[DESIGN.md](./DESIGN.md)（详细设计）· [WORK_LIFE_SCENARIOS.md](./proposals/WORK_LIFE_SCENARIOS.md)（使用场景调研·指南层）· [SCENARIO_WALKTHROUGH.md](./proposals/SCENARIO_WALKTHROUGH.md)（用户场景业务流程推演）· [TOOL_COMPATIBILITY.md](./proposals/TOOL_COMPATIBILITY.md)（工具入口兼容矩阵）· [SECURITY.md](./SECURITY.md)（威胁模型与缓解登记）
 
 ---
 
@@ -94,7 +94,7 @@ agent 时代，个人的上下文散落在互不可见的孤岛：编码 agent �
 
 **过程**：
 1. agent（或其配置）声明消费 scope：`person + domains/coding + projects/foo`；
-2. 通道 A（文件投影）：`dex render zcode` 把该 scope 的合并视图渲染为 repo 根入口文件 `AGENTS.md`（个人仓库默认位；若根已有团队入口文件则拒绝覆盖（退出码 10），团队仓库改走 @import / rules 适配——工具兼容矩阵见 [TOOL_COMPATIBILITY.md](./TOOL_COMPATIBILITY.md)，FR-6.4）；
+2. 通道 A（文件投影）：`dex render zcode` 把该 scope 的合并视图渲染为 repo 根入口文件 `AGENTS.md`（个人仓库默认位；若根已有团队入口文件则拒绝覆盖（退出码 10），团队仓库改走 @import / rules 适配——工具兼容矩阵见 [TOOL_COMPATIBILITY.md](./proposals/TOOL_COMPATIBILITY.md)，FR-6.4）；
 3. 通道 B（检索）：agent 调 `dex search "部署流程" --scope projects/foo`，v1 走 ripgrep，v2 命中 FTS 派生索引，毫秒级返回；
 4. 通道 C（MCP）：agent 通过 `dex mcp` 的 `dex_search` / `dex_read` 工具按需检索；
 5. 通道 A 的注入内容经过：scope 过滤 → 优先级合并（字典序：① 项目级压过个人层 ② 同级手写压过固化 ③ 新证据压过旧证据，FR-3.2）→ 预算截断（≤10 条 / ≤2000 字）；通道 B/C 检索为 scope 过滤 + limit 截断，不做合并与预算（P5 口径：预算约束注入、不约束检索，设计 §1.1）。
@@ -453,7 +453,7 @@ repo 的 AGENTS.md             → 团队指令层：build/test/规范（不动�
 
 ### 3.8 scope 划分模式（语义中立，示例见场景调研文档）
 
-分域方式是用户约定，工具不内置任何分域本体（设计原则 P3「目录即 scope」/ FR-3.7）——分域粒度与使用场合正交；「工作 / 生活」是场景调研的场景轴（调研各场合下对接哪些类型的应用），不是推荐分域。完整的场景调研（应用接入地图、分域粒度讨论、消费方组合、节奏建议）见 [WORK_LIFE_SCENARIOS.md](./WORK_LIFE_SCENARIOS.md)。
+分域方式是用户约定，工具不内置任何分域本体（设计原则 P3「目录即 scope」/ FR-3.7）——分域粒度与使用场合正交；「工作 / 生活」是场景调研的场景轴（调研各场合下对接哪些类型的应用），不是推荐分域。完整的场景调研（应用接入地图、分域粒度讨论、消费方组合、节奏建议）见 [WORK_LIFE_SCENARIOS.md](./proposals/WORK_LIFE_SCENARIOS.md)。
 
 分流判据的语义中立版（两级决策树）：
 

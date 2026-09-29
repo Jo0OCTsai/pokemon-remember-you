@@ -7,7 +7,7 @@
 ## 知识路由
 
 - 权威源三文档：`docs/REQUIREMENTS.md` / `docs/DESIGN.md` / `docs/SECURITY.md`——行为语义与代码或本文冲突时以它们为准；特性变更随文档版本号升版回写，不静默漂移
-- 实施计划 `docs/PLAN.md`；验收报告 `docs/reports/`；场景与工具矩阵备查：`docs/WORK_LIFE_SCENARIOS.md` / `docs/SCENARIO_WALKTHROUGH.md` / `docs/TOOL_COMPATIBILITY.md`
+- 实施计划 `docs/PLAN.md`；方案与调研归档 `docs/proposals/`（README 索引——方案提案 / 场景调研 / 场景推演 / 工具矩阵备查）；验收报告属一次性过程产物不入仓——CI 经 `scripts/junit_export.py` 导出 junit 并以 artifact 上传
 - 债务与待办单源：`docs/debt.md`（活清单，不散落别处）
 - 配置示例：`dex.toml.example`（仓库层 / 本机层键级深合并语义见 DESIGN §2.5）
 - 「我」的个人视角（owner 例外、个人踩坑、偏好）：不入本仓——`dex propose` 入 Hub（`~/dex`，经 dex-propose 技能）

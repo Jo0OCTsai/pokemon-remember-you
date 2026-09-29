@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 文档版本：v1.3 · 2026-09-25 · 状态：待评审（v1.3：Claude Code AGENTS.md 统一——repo 根与用户级（`~/.claude/AGENTS.md`）均原生支持且为唯一入口，恒载入口/用户级全局/推荐策略/决策树统一为 AGENTS.md 根位（三工具同策），**全文档移除旧入口文件名引用**（含收割清单与兼容注记）；此前 v1.2：debt 清偿同步——import 片段「数据非指令」声明承载说明；此前 v1.1：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode，其余移入「未纳入」备查）
-> 上游文档：[REQUIREMENTS.md](./REQUIREMENTS.md) FR-6.4/FR-6.12 · [DESIGN.md](./DESIGN.md) §2.5/§6.2 · [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md) §6-W3
+> 上游文档：[REQUIREMENTS.md](../REQUIREMENTS.md) FR-6.4/FR-6.12 · [DESIGN.md](../DESIGN.md) §2.5/§6.2 · [SCENARIO_WALKTHROUGH.md](./SCENARIO_WALKTHROUGH.md) §6-W3
 > 定位：回答「`dex render` 的入口文件该落哪、各工具会不会读」——场景推演 W3 的交付物；**修正了 v1.7/v1.8 的「默认工作区子目录」决策**（查证结论见 §1）；随工具生态演进持续维护，❓ 标注项接入前实测。
 > **支持范围（需求 §7 约束）**：AI coding 工具只支持 **Claude Code、pi、ZCode** 三者；其余工具暂不考虑（调研结论保留于 §2.2 备查，接入需求出现时再评估）。
 
