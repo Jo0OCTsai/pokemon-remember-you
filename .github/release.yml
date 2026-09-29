@@ -1,0 +1,20 @@
+# Release notes 自动分类（gh release create --generate-notes 消费）：
+# PR label → 小节；PR 标题受 commit-lint 约束为 Conventional Commits，未打 label 归「工程与依赖」
+changelog:
+  exclude:
+    labels:
+      - dependencies
+  categories:
+    - title: 🎉 新功能
+      labels:
+        - enhancement
+      collapse_after: 10
+    - title: 🐛 修复
+      labels:
+        - bug
+    - title: 📝 文档
+      labels:
+        - documentation
+    - title: 🔧 工程与依赖
+      labels:
+        - "*"

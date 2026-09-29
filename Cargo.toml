@@ -6,6 +6,7 @@ members = ["crates/dex-core", "crates/dex-store", "crates/dex-cli"]
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
+repository = "https://github.com/Jo0OCTsai/pokemon-remember-you"
 
 [workspace.dependencies]
 thiserror = "2"
