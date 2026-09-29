@@ -1,0 +1,48 @@
+# cargo-deny 配置（quality module: cargo-deny；CI audit job 的 rust 步骤与本地 `cargo deny check` 同口径）
+# license 白名单建账方式：`cargo deny list` 列依赖树全部 SPDX → 只收宽松许可证入 allow；
+# 本模板缺省清单为宽松集（无 GPL/AGPL 强传染项），按项目依赖树实况增删。
+# 传递依赖专有 crate 的例外走 [[licenses.exceptions]]（按 crate 精准豁免并注明理由，见下方示例）。
+
+[advisories]
+version = 2
+yanked = "deny"
+# workspace = 仅直接依赖失维护才报错（GUI 框架系（tao/wry/servo 等）的传递依赖 unmaintained
+# 上游迁移前无解；传递依赖的 unmaintained 仅提示不阻断）
+unmaintained = "workspace"
+
+[licenses]
+version = 2
+allow = [
+  "MIT",
+  "MIT-0",
+  "Apache-2.0",
+  "Apache-2.0 WITH LLVM-exception",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "0BSD",
+  "BSL-1.0",
+  "CC0-1.0",
+  "CDLA-Permissive-2.0",
+  "ISC",
+  "MPL-2.0",
+  "Unicode-3.0",
+  "Unlicense",
+  "Zlib",
+]
+
+# 示例：UEFI 专用 crate（getrandom 可选依赖），LGPL 仅 UEFI target 编译路径、
+# 桌面/移动构建不链接、传染义务不触发——按需保留或删除
+[[licenses.exceptions]]
+crate = "r-efi"
+allow = ["LGPL-2.1-or-later"]
+
+[bans]
+# 多版本重复只警告（GUI 框架系 windows-sys 等多版本普遍，deny 会常年红）
+multiple-versions = "warn"
+wildcards = "deny"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []

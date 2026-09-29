@@ -1,0 +1,17 @@
+# CODEOWNERS —— 按路径指定默认 review 人（GitHub PR 自动请求；配合分支保护 Require review from Code Owners 生效）
+# owner：Jo0OCTsai（单人项目；团队化时按节替换团队句柄）。
+# 生效位置优先级：.github/CODEOWNERS > 根 CODEOWNERS。
+
+# 全局兜底
+* @Jo0OCTsai
+
+# 基建层（改动影响全局，重点 review；按项目目录实况增删）
+/.devcontainer/ @Jo0OCTsai
+/.github/ @Jo0OCTsai
+/.claude/ @Jo0OCTsai
+
+# 声明与门禁（stack.json 改动牵动 CI matrix 与 lint 路由）
+/.devcontainer/stack.json @Jo0OCTsai
+/.pre-commit-config.yaml @Jo0OCTsai
+
+# 服务代码（services[].dir = "."：仓库根即服务，全局兜底已覆盖，无需分节）

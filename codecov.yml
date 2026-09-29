@@ -1,0 +1,23 @@
+# Codecov 配置（quality module: codecov；CI test job 上传各服务覆盖率）
+# 定位：硬门禁在 CI（覆盖率阈值）+ 质量棘轮地板；Codecov 侧 status 设 informational——
+# 提供 PR 覆盖率 comment 与趋势，不重复挡 PR。
+coverage:
+  status:
+    project:
+      default:
+        informational: true
+    patch:
+      default:
+        informational: true
+
+# flags 按服务名对齐（本仓单一 rust 服务覆盖全仓，flag 名取栈轴）：
+flags:
+  rust:
+    paths:
+      - crates/
+    carryforward: false
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false

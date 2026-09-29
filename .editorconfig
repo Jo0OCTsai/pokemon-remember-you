@@ -1,0 +1,31 @@
+# EditorConfig —— 跨编辑器统一基线（apply-dev-env templates/carrier/ 分发，四载体同源）
+# 编辑器装 EditorConfig 插件后生效（VSCode：EditorConfig.EditorConfig 扩展）。
+# 缩进值按栈对齐各 lint 惯例（与 .devcontainer/stack.json services[] 各栈指南一致）：
+# Python 4（PEP8/ruff）；前端 2（eslint/prettier）；Go 用 tab（gofmt）。
+# https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+
+[*.py]
+indent_size = 4
+
+[*.{ts,tsx,js,mjs,cjs,vue,json,yaml,yml,toml,css,scss,html}]
+indent_size = 2
+
+[*.go]
+indent_style = tab
+
+# 行尾双空格是 Markdown 硬换行语法，不裁剪
+[*.md]
+trim_trailing_whitespace = false
+
+# Makefile 的 recipe 缩进必须是 tab
+[{Makefile,*.mk}]
+indent_style = tab

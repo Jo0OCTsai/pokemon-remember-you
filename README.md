@@ -1,5 +1,7 @@
 # pokemon-remember-you（就记得是你）
 
+[![coverage](https://codecov.io/gh/Jo0OCTsai/pokemon-remember-you/branch/main/graph/badge.svg)](https://codecov.io/gh/Jo0OCTsai/pokemon-remember-you)
+
 个人记忆中枢（Hub）：一棵 git 管理的 markdown 文件树 + `dex` CLI——任何 agent / 应用按
 scope 接入，读取与提案记忆，换工具不失忆。
 
@@ -7,9 +9,9 @@ scope 接入，读取与提案记忆，换工具不失忆。
 - 实施计划：[docs/PLAN.md](./docs/PLAN.md)（v0 + v1）
 - 代码：`crates/`（dex-core 领域层 → dex-store 基础设施 → dex-cli 命令面）
 - 配套技能单一源：`skills/`（dex-bootstrap / dex-propose / dex-review / repo-knowledge + connectors）
-- 工程化：`scripts/check.sh`（fmt + clippy + test）；验收报告 `docs/reports/`
+- 工程化：`scripts/check.sh`（fmt + clippy + test）；CI 另含 gitleaks 秘密扫描 / cargo-deny 供应链 / 覆盖率上传 / commit-lint 门禁；验收报告 `docs/reports/`
 
-快速开始（开发者）：
+快速开始（开发者，mac 宿主直跑）：
 
 ```bash
 cargo build            # 构建 dex
