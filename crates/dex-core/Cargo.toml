@@ -4,6 +4,7 @@ description = "dex 领域层：纯逻辑、无 I/O（DESIGN §9）"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+repository.workspace = true
 
 [dependencies]
 thiserror.workspace = true

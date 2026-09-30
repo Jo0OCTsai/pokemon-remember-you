@@ -10,15 +10,16 @@ env:
 jobs:
   check:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 25 # 挂死快速失败（GitHub 默认 6h）
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87 # stable
         with:
           components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
       - name: 机械质量门（fmt + clippy -D warnings + test）
         run: scripts/check.sh
       - name: JUnit 导出
@@ -26,7 +27,7 @@ jobs:
         run: python3 scripts/junit_export.py
       - name: 上传测试报告
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: junit-${{ matrix.os }}
           path: docs/reports/raw/junit-cli.xml
@@ -35,8 +36,9 @@ jobs:
 
   gitleaks:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
       - name: 安装 gitleaks v8.30.1（pinned）
@@ -49,10 +51,11 @@ jobs:
 
   deny:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: taiki-e/install-action@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87 # stable
+      - uses: taiki-e/install-action@7623a79cdfecb99d681017af368ca353d9f49bb5 # v2
         with:
           tool: cargo-deny
       - name: rust 供应链门禁（漏洞 / license / bans / 来源）
@@ -60,32 +63,56 @@ jobs:
 
   coverage:
     runs-on: ubuntu-latest
+    timeout-minutes: 30 # llvm-cov 插桩独立 target 全量编译余量
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87 # stable
         with:
           components: llvm-tools-preview
-      - uses: Swatinem/rust-cache@v2
-      - uses: taiki-e/install-action@v2
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+      - uses: taiki-e/install-action@7623a79cdfecb99d681017af368ca353d9f49bb5 # v2
         with:
           tool: cargo-llvm-cov
-      - name: 覆盖率（lcov；status informational，趋势用）
+      - name: 覆盖率门禁（fail-under-lines 85，声明与 stack.json test_cmd 一致；棘轮地板兜底下调）
         run: |
           mkdir -p coverage
-          cargo llvm-cov --lcov --output-path coverage/lcov.info
-      - uses: codecov/codecov-action@v5
+          CARGO_TARGET_DIR=target/llvm-cov cargo llvm-cov --fail-under-lines 85 \
+            --lcov --output-path coverage/lcov.info
+      - name: 覆盖率摘要写 job summary（复用 profdata，秒级）
+        run: |
+          {
+            echo "## Rust 覆盖率（cargo-llvm-cov；lines 阈值 85）"
+            echo ""
+            echo '```'
+            cd . && CARGO_TARGET_DIR=target/llvm-cov cargo llvm-cov report --summary-only 2>/dev/null | grep -E "^(Filename|TOTAL)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: codecov/codecov-action@0b35c9ecc4f0529d0eb674914510c22f85b196b4 # v7.1.1
         with:
           files: coverage/lcov.info
           flags: rust
           fail_ci_if_error: false
+
+  ratchet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87 # stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+      - name: 质量棘轮（复杂度基线只准收缩 + 覆盖率地板 + 代码卫生）
+        run: python3 .devcontainer/scripts/quality_ratchet_check.py --service pokemon-remember-you
 
   # ===== 规范模块 job（声明单源 .devcontainer/stack.json conventions[]）=====
 
   commit-lint:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
       - name: PR 标题校验

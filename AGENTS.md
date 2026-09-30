@@ -7,7 +7,7 @@
 ## 知识路由
 
 - 权威源三文档：`docs/REQUIREMENTS.md` / `docs/DESIGN.md` / `docs/SECURITY.md`——行为语义与代码或本文冲突时以它们为准；特性变更随文档版本号升版回写，不静默漂移
-- 实施计划 `docs/PLAN.md`；验收报告 `docs/reports/`；场景与工具矩阵备查：`docs/WORK_LIFE_SCENARIOS.md` / `docs/SCENARIO_WALKTHROUGH.md` / `docs/TOOL_COMPATIBILITY.md`
+- 实施计划 `docs/PLAN.md`；方案与调研归档 `docs/proposals/`（README 索引——方案提案 / 场景调研 / 场景推演 / 工具矩阵备查）；验收报告属一次性过程产物不入仓——CI 经 `scripts/junit_export.py` 导出 junit 并以 artifact 上传
 - 债务与待办单源：`docs/debt.md`（活清单，不散落别处）
 - 配置示例：`dex.toml.example`（仓库层 / 本机层键级深合并语义见 DESIGN §2.5）
 - 「我」的个人视角（owner 例外、个人踩坑、偏好）：不入本仓——`dex propose` 入 Hub（`~/dex`，经 dex-propose 技能）
@@ -21,7 +21,8 @@
 
 ## 分支与 Worktree 约定
 
-- 分支模型：短生命周期 feature 分支（GitHub Flow，type 前缀命名如 `build/xxx` / `feat/xxx`）；squash 合并保线性历史——平台侧已配 squash-only（主题 = PR 标题）+ main 分支保护（require PR + 六 status checks + linear history；enforce_admins=false 保留 owner 直推通道）
+- 分支模型：短生命周期 feature 分支（GitHub Flow，type 前缀命名如 `build/xxx` / `feat/xxx`）；squash 合并保线性历史——平台侧已配 squash-only（主题 = PR 标题）+ main 分支保护（require PR + 七 status checks + linear history；enforce_admins=false 保留 owner 直推通道）
+- 发布：tag 触发 `release.yml`（`v*` → 三目标二进制 + checksums.txt → GitHub Release，notes 自动分类 = `.github/release.yml`）——先 `python3 scripts/bump_version.py <version>` 抬版本再打 tag；变更日志以 Release notes 承载，不另维护 CHANGELOG.md
 - 提交信息：Conventional Commits——本地 commit-msg 钩子 + CI PR 标题/逐提交双校验（见命令速查「提交规范」）
 - 本仓无 submodule（无 .gitmodules）：主/子仓指针铁律暂不适用；未来引入时按全局铁律先子仓 push 再更新主仓指针
 - 功能开发隔离用 worktree：`create-repo-worktree` 技能（放置分流 / 运行时隔离 / 清理规范见该技能，此处不复制）；纯 CLI 无 dev server，无并行端口错开需求
@@ -34,9 +35,11 @@
 
 - `cargo build` / `cargo test --workspace`
 - `scripts/check.sh [--no-test]` —— 提交前一键质量门
-- `python3 .devcontainer/scripts/quality_ratchet_check.py` —— 质量棘轮（复杂度基线只准收缩；`--bootstrap` 首次建账仅限一次、已有基线自动拒绝；`--selftest` 自测）
+- `python3 .devcontainer/scripts/quality_ratchet_check.py` —— 质量棘轮（复杂度基线只准收缩；覆盖率地板 85 单源 = stack.json `test_cmd` 的 `--fail-under-lines`；hygiene 段 todo/unsafe/missing_docs 全零建账；CI ratchet job 同口径执行；`--bootstrap` 首次建账仅限一次、已有基线自动拒绝；`--selftest` 自测）
+- `python3 scripts/bump_version.py <version>` —— 发布版本抬升（Cargo.toml workspace 单源 + path 依赖版本钉 + Cargo.lock 本包条目），随后 `git tag v<version> && git push origin v<version>` 触发 `release.yml`
 - 秘密扫描：`gitleaks detect --source . --redact`（全历史；豁免 = `.gitleaks.toml` 只按具体假凭证 regex）；提交时 pre-commit 跑 `gitleaks protect --staged`，CI gitleaks job 兜底
 - rust 供应链：`cargo deny --log-level error check`（漏洞 / license 白名单 / bans / 来源；配置 = 根目录 `deny.toml`，license 建账 = `cargo deny list`；`--log-level` 须在子命令前），CI deny job 同口径
 - 覆盖率趋势：Codecov（`codecov.yml` status informational——硬门禁在 CI 阈值 + 棘轮地板；单一 rust 服务 flag = `rust`，private 仓配 `CODECOV_TOKEN`）
+- 依赖更新：Renovate（`renovate.json`——rust 依赖周一分组 PR，label `dependencies`，Release notes 排除该 label）
 - 提交规范：Conventional Commits `<type>(<scope>)?!?: <subject>`——本地 commit-msg 钩子 + CI PR 标题/逐提交双校验（同一脚本 `.github/scripts/commit-lint.sh`）
 - 安装与其余命令面见 README「快速开始」与 DESIGN §8.1

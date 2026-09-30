@@ -8,7 +8,7 @@
       "stack": "rust",
       "lint_fix": "rustfmt --edition 2021 '{file}'",
       "lint_check": "cargo fmt --check && cargo clippy -- -D warnings",
-      "test_cmd": "cargo test",
+      "test_cmd": "cargo llvm-cov --fail-under-lines 85",
       "dev_cmd": "cargo run"
     }
   ],

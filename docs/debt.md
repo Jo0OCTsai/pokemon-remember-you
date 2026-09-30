@@ -17,6 +17,22 @@
 
 - [ ] **repo-knowledge 机械兜底层**：技能主动调用是概率行为——使用 1–2 周后回看触发率（任务收尾自查／结构变更同步是否稳定发生）；若经常漏触发，复制 lint-gate.sh 模式落 Stop hook（收尾提醒 §2.3 自查／涉结构变更的提交阻断）＋ CI 机检模板（doc_reference_check 同类）。触发良好则直接勾选关闭本项。落点在消费仓／infra 工具链层（lint-gate.sh 所在层），**非 dex 产品功能、不进 SDD**（技能管判断、hook 管不遗忘的第三层）。
 
+## 待处理（分发渠道决策——2026-09-30 登记）
+
+- [ ] **crates.io 发布未接线**：当前唯一分发渠道 = GitHub Release 二进制（`release.yml`）。crate 元数据已备（license / repository / description 三 crate 齐全），但 `cargo publish` 流程未接——发布到 crates.io 属公开渠道决策，需要时再补（release-plz 或手动 publish，届时 path 依赖版本钉由 `bump_version.py` 维持一致）。
+
+## 已完成（2026-09-30 · 工程化基建第二批：发布与持续运营）
+
+> 对标 pokemon-choose-you 补齐缺口。刻意取舍：① 发布流选**手写 tag 触发 workflow**（复用既有 `checksums.sh` 语义与仓内一切手写惯例）而非 cargo-dist / release-plz——后者主要价值在 crates.io 发布 + CHANGELOG 自动化，而本仓 crates.io 未决（见上）且变更日志改由 Release notes 承载；② 不另维护 CHANGELOG.md——`.github/release.yml` 自动分类 notes + squash-only（一 PR 一条目）已覆盖追溯需求；③ 覆盖率阈值 85 = 当前水位 89.05 留 4 点余量，与 choose-you 同值。
+
+- [x] **CI 声明漂移修复**：coverage job 补 `--fail-under-lines 85` 硬门（此前 codecov.yml / AGENTS.md 声称有 CI 阈值门禁但 coverage job 纯 informational）；声明单源 = stack.json `test_cmd`（`cargo llvm-cov --fail-under-lines 85`），棘轮地板 85 同步建账。
+- [x] **质量棘轮上弦**：基线建账（复杂度存量 7 条锁定只准收缩；hygiene 段 todo/unsafe/missing_docs 全零建账）+ CI 新增 `ratchet` job——此前脚本在仓但基线为空且 CI 不跑（机制空转）。
+- [x] **发布流水线**：`release.yml`（tag `v*` 触发：macOS aarch64/x86_64 + Linux x86_64 三目标构建 → strip → `checksums.txt`（FR-11.7，`checksums.sh` 扩展多平台口径）→ `gh release create --generate-notes`）；`scripts/bump_version.py`（workspace 版本单源 + path 依赖版本钉 + Cargo.lock 本包条目同步）；`.github/release.yml`（notes 按 PR label 自动分类）。
+- [x] **依赖更新自动化**：`renovate.json`（rust 依赖周一分组、label `dependencies`、notes 排除该 label）。
+- [x] **CI 供应链加固**：全部第三方 action 钉 commit SHA（与 gitleaks / cargo-deny 立场对齐；SHA 取自 choose-you CI 实跑集合 + download-artifact v8.0.1）；全 job 加 `timeout-minutes` 防挂死占 runner。
+- [x] **发布元数据与协作文档**：LICENSE（MIT，与 choose-you 同持有人）；workspace `repository` + 三 crate `repository.workspace`；`.github/SECURITY.md`（平台侧入口，指针到权威源 docs/SECURITY.md）；CONTRIBUTING.md（载体/质量门/提交 PR/发布流程/架构速览）。
+- [x] **分支保护同步**：required contexts 增 `ratchet`（六 → 七 checks，经 gh API）。
+
 ## 已完成（2026-09-30 · 工程化平台侧配置，经 gh API）
 
 - [x] **squash-only 合并策略**：merge / rebase 合并已关、仅留 squash；squash 主题 = PR 标题（受 commit-lint CI 校验间接约束入主线历史）、正文 = 逐提交信息（`squash_merge_commit_title=PR_TITLE` + `message=COMMIT_MESSAGES`）。

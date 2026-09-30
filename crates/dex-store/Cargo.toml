@@ -4,6 +4,7 @@ description = "dex 基础设施层：文件树遍历 / git 适配 / ripgrep 检�
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+repository.workspace = true
 
 [dependencies]
 dex-core.workspace = true

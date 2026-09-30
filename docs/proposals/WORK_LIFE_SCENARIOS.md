@@ -3,7 +3,7 @@
 > 项目：pokemon-remember-you（就记得是你）
 > 定位：**使用指南层，非工具语义**。本文沿「工作场合 / 生活场合」这条**场景轴**调研 dex 的使用场景：各场合下对接哪些类型的应用、贡献什么记忆、以什么形态接入、优先级如何。**场景轴 ≠ 分域方案**——「工作 / 生活」是调研维度，不是推荐的一级分域；分域粒度是独立的用户治理决策（§6），工具不内置任何分域本体（P3：目录即 scope、不做本体论 / FR-3.7）。
 > 文档版本：v1.2 · 2026-09-24 · 状态：待评审（v1.2：场景轴与分域解耦——接入地图升为主体、按「场合 × 应用」组织、落点语义化；分域降为独立决策章节（§6）；节奏分档改按 scope 记忆节奏、不再按场合二分；此前 v1.1：评审修订——[clients] 统一注册示例、授权边界诚实化（scope 约束协议通道不约束磁盘）、慢记忆 keep-until 建议）
-> 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）· [REQUIREMENTS.md](./REQUIREMENTS.md)（需求，§3.8/FR-3.7）· [DESIGN.md](./DESIGN.md)（设计）
+> 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）· [REQUIREMENTS.md](../REQUIREMENTS.md)（需求，§3.8/FR-3.7）· [DESIGN.md](../DESIGN.md)（设计）
 
 ---
 
