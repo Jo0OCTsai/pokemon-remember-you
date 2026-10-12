@@ -14,7 +14,7 @@
 
 注意：分页用 `--page-token <token>` + `has_more`（page-size 上限 30）；`docs +fetch` **仅支持新版 docx**——旧版 `doccn*` token 报错 3380002（`Unsupported document type 'doc'`），BITABLE / SHEET / SLIDES 不可 fetch（多维表格读取需 base 域 scope，未授权）；缺 scope 时错误里 `hint` 给出补授权命令（`lark-cli auth login --scope … --no-wait --json` → 用户扫码 → `--device-code` 续接）。
 
-**本账号数据分布（侦察事实，2026-09-30）**：云文档有数据（「会议」46 条命中）；**妙记（minutes）与日历会议（calendar events）全空**（2025–2026 全年 0 条）——会议纪要实际以**云文档形态**存在（纪要文档 + 「会议纪要 AI 拆解」BITABLE 汇总表）。妙记/日历链路命令留档备查，当前无数据可拉：`minutes +search --participant-ids me --start <date>`、`calendar +search-event --start --end` → `calendar +meeting`（拿 note_id）→ `note +transcript`。
+**本账号数据分布（侦察事实，2026-09-30；全量收割复核 2026-10-12）**：云文档「全量」≈473 篇，其中 **~470 篇为飞书官方模板库**（owner=云文档助手/飞书多维表格，2026-01-07 批量同步、标题带「简洁版/飞阅会方式/思维导图」等模板后缀、正文含「本模板适用于/使用方法」说明与 @张小唐 等示例人名——**判别即弃，勿入蒸馏**）；同事个人共享 6 篇（舵机教程 ×5、ZCode 排查 ×1，他人知识不收）；「我」的创建/拥有/近 3 年编辑/评论全部为 0；**妙记（minutes）与日历会议（calendar events）全空**（2025–2026 全年 0 条）。⇒ 该账号当前**无可蒸馏的个人知识**；后续收割先跑「我」口径快筛（`drive +search --mine` / `--created-by-me` / `--edited-since`），非零再深入。妙记/日历链路命令留档备查：`minutes +search --participant-ids me --start <date>`、`calendar +search-event --start --end` → `calendar +meeting`（拿 note_id）→ `note +transcript`。
 
 ## 2. locator 格式
 
