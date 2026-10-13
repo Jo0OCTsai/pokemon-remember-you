@@ -123,7 +123,7 @@ pub fn run(args: &ReviewArgs, ctx: &Ctx) -> Result<i32, DexError> {
     // --group：段级 item 按路径段前缀过滤（全局计数 inbox_pending 不受影响）
     if let Some(g) = args.group.as_deref() {
         let keep = |p: &str| path_matches(p, g);
-        findings.retain(|f| f.path.as_deref().is_some_and(&keep));
+        findings.retain(|f| f.path.as_deref().is_some_and(keep));
         inbox_items.retain(|i| keep(&i.path));
         journal_pages.retain(|p| keep(&p.path));
         candidates.retain(|c| keep(&c.path));

@@ -21,6 +21,10 @@
 
 - [ ] **crates.io 发布未接线**：当前唯一分发渠道 = GitHub Release 二进制（`release.yml`）。crate 元数据已备（license / repository / description 三 crate 齐全），但 `cargo publish` 流程未接——发布到 crates.io 属公开渠道决策，需要时再补（release-plz 或手动 publish，届时 path 依赖版本钉由 `bump_version.py` 维持一致）。
 
+
+## 待处理（连接器扩展——2026-09-30 lark 接入侦察登记）
+- [ ] **lark BITABLE 读取扩展**：飞书多维表格（「会议纪要 AI 拆解」汇总表）读取需 base 域 scope（如 `base:record:read`），当前 6 scope 未覆盖——`docs +fetch` 不支持 BITABLE。首轮收割若发现纪要正文主要沉淀在该表，补授权 + 在 `skills/connectors/lark.md` 数据清单加 base 域命令行。
+
 ## 已完成（2026-09-30 · 工程化基建第二批：发布与持续运营）
 
 > 对标 pokemon-choose-you 补齐缺口。刻意取舍：① 发布流选**手写 tag 触发 workflow**（复用既有 `checksums.sh` 语义与仓内一切手写惯例）而非 cargo-dist / release-plz——后者主要价值在 crates.io 发布 + CHANGELOG 自动化，而本仓 crates.io 未决（见上）且变更日志改由 Release notes 承载；② 不另维护 CHANGELOG.md——`.github/release.yml` 自动分类 notes + squash-only（一 PR 一条目）已覆盖追溯需求；③ 覆盖率阈值 85 = 当前水位 89.05 留 4 点余量，与 choose-you 同值。
