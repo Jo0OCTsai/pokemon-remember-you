@@ -111,7 +111,6 @@ pub fn builtin_human_pub() -> ClientConf {
 pub struct HarvestSource {
     /// page | script | external（FR-12.6）
     pub source_type: String,
-    pub first_batch: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -246,7 +245,6 @@ struct RawHarvestBudget {
 struct RawHarvestSource {
     #[serde(rename = "type")]
     source_type: Option<String>,
-    first_batch: Option<usize>,
 }
 
 #[derive(Deserialize, Default)]
@@ -527,13 +525,9 @@ fn build_config(
                         "[harvest.sources.{id}].type 非法：{source_type:?}（page|script|external）"
                     )));
                 }
-                harvest.sources.insert(
-                    id.clone(),
-                    HarvestSource {
-                        source_type,
-                        first_batch: s.first_batch.unwrap_or(30),
-                    },
-                );
+                harvest
+                    .sources
+                    .insert(id.clone(), HarvestSource { source_type });
             }
         }
     }

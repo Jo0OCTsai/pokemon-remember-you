@@ -78,7 +78,7 @@ pub fn run(args: &JournalArgs, ctx: &Ctx) -> Result<i32, DexError> {
     let page_path = ctx.root.join(&page_rel);
     let page = std::fs::read_to_string(&page_path).unwrap_or_default();
     let today_count = count_today_entries(&page, &args.source);
-    let limits = ctx.limits(None);
+    let limits = ctx.limits(false);
     if let Err(e) = check_journal(&args.source, &text, &limits, today_count) {
         if e.is_denial() {
             ctx.audit(&args.source, e.code());

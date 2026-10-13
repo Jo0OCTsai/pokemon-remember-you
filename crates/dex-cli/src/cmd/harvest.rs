@@ -6,13 +6,13 @@
 //! - 输出该源连接器页要点（`skills/connectors/<source>.md`——内嵌或仓库工作副本任一可得）
 //!   与 `[harvest].budget` 三维预算（拉取次数/token/时长——技能侧自限，命令只承载配置，FR-12.3）
 //! - staging 管理：`inbox/staging/<source>/`（收割会话先写暂存；本命令列出/转正）
-//! - 转正：staging 候选按 confidence 降序取前 N（N = --limit 或 `[harvest.sources].first_batch`
-//!   缺省 30，上限 30——bootstrap 首批，FR-4.3）→ **全量走守卫 0–8**（bootstrap 限流放宽）
-//!   → 移入 inbox 顶层（标准命名式）→ git commit `harvest: stage <source> ×<n>`
+//! - 转正：staging 候选按 confidence 降序**全量**走守卫 0–8（bootstrap 模式不限量——
+//!   跳过限流，FR-4.3 冷启动例外）→ 移入 inbox 顶层（标准命名式）→
+//!   git commit `harvest: stage <source> ×<n>`；`--limit N` 仅供自愿分批（取前 N）
 //! - `--dry-run`：仅列出将转正的候选，不落盘
-//! - 退出码 0 / 2 参数错（未注册源、坏候选文件）/ 5 超出首批上限 / 9 密钥
+//! - 退出码 0 / 2 参数错（未注册源）/ 5 全部候选被拒时透传首错（超限等）/ 9 密钥
 //!
-//! **D 组任务**：实现 run + 集成测试（首批 30 截断、staging 豁免 lint 联动、dry-run）。
+//! **D 组任务**：实现 run + 集成测试（不限量转正与 --limit 自愿分批、staging 豁免 lint 联动、dry-run）。
 
 use crate::cmd::propose::{auto_commit, submit_proposal, SubmitOutcome};
 use crate::cmd::skills::EMBEDDED_SKILLS;
@@ -32,7 +32,7 @@ pub struct HarvestArgs {
     /// 连接器 source id（须 ∈ [harvest.sources]）
     #[arg(long)]
     pub from: String,
-    /// bootstrap 首批上限（封顶 30）
+    /// 仅转正 confidence 降序前 N 条（自愿分批；缺省全量——冷启动不限量）
     #[arg(long)]
     pub limit: Option<usize>,
     /// 仅列出将转正的候选
@@ -87,14 +87,14 @@ fn promoted_failed(file: &str, error: &DexError) -> Value {
 
 pub fn run(args: &HarvestArgs, ctx: &Ctx) -> Result<i32, DexError> {
     // --from 须已注册（FR-12.5）
-    let Some(source_conf) = ctx.config.harvest.sources.get(&args.from) else {
+    if !ctx.config.harvest.sources.contains_key(&args.from) {
         return Err(DexError::BadArgs {
             message: format!(
                 "--from {:?} 未注册于 [harvest.sources]（收割源接入五步清单第 4 步，§5.7）",
                 args.from
             ),
         });
-    };
+    }
     let connector = connector_payload(&args.from);
     let budget = json!({
         "pulls": ctx.config.harvest.budget_pulls,
@@ -122,10 +122,12 @@ pub fn run(args: &HarvestArgs, ctx: &Ctx) -> Result<i32, DexError> {
             Err(_) => invalid += 1,
         }
     }
-    // confidence 降序取前 N（N = --limit 或 first_batch，封顶 30——bootstrap 首批，FR-4.3）
+    // confidence 降序排列；--limit N = 自愿分批取前 N（缺省全量——冷启动不限量，FR-4.3）
     candidates.sort_by_key(|c| std::cmp::Reverse(c.meta.confidence));
-    let n = args.limit.unwrap_or(source_conf.first_batch).min(30);
-    let selected: Vec<Candidate> = candidates.into_iter().take(n).collect();
+    let selected: Vec<Candidate> = match args.limit {
+        Some(n) => candidates.into_iter().take(n).collect(),
+        None => candidates,
+    };
 
     // --dry-run：仅列出将转正候选，不落盘不提交
     if args.dry_run {

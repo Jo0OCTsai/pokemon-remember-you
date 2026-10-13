@@ -14,7 +14,7 @@ description: "个人记忆中枢（dex）零手写冷启动：5 问画像优先�
 1. 定位 Hub 仓库（默认 `~/dex`，环境变量 `DEX_ROOT` / 配置可覆盖）。八大目录骨架（person/domains/apps/projects/journal/inbox/archive/index）缺失时提示补建：v1 起 `dex init` 一键完成；v0 手动 `mkdir` + `git init` 等价合法。
 2. 探测 dex CLI：`command -v dex`。
    - **有** → 落盘一律经 `dex propose`（v1 起统一路径）。
-   - **无** → 回退直写 `inbox/bootstrap/`（v0 技能直写窗口，既定例外；无命令守卫时密钥扫描、条数与大小限制由本技能自查替代执行）。
+   - **无** → 回退直写 `inbox/bootstrap/`（v0 技能直写窗口，既定例外；无命令守卫时密钥扫描与大小限制由本技能自查替代执行）。
 3. 外部数据源（IM、云文档、笔记等）先查 `skills/connectors/<source>.md` 连接器页；没有连接器页的源，按 `skills/connectors/README.md` 五步清单先接入，或本次跳过并汇报。
 
 ## 1. 5 问画像（资产收集整合优先，面试只兜底）
@@ -99,7 +99,7 @@ dex propose --source <S> --kind <fact|preference|pattern> --confidence <N> --evi
 - 文件头放轻 frontmatter（source / kind / confidence / evidence 作为该文件缺省）；文件内一条一个要点，逐条目带条目级 src 注释（§5），与文件缺省不同的 kind/confidence/evidence 在该条目 src 注释中写明。
 - v0 无命令守卫，落盘前自查：疑似凭证/密钥模式一律不落盘；正文 ≤4000 字符。
 
-数量纪律（FR-4.3）：**首批 ≤30 条，按 confidence 降序排列送审**；超出部分本轮不落盘，保留在收割清单待首批人审后下一批再送（v1 起可留 `inbox/staging/<source>/` 收割暂存区分批转正）。
+数量纪律（FR-4.3）：**冷启动不限量**，按 confidence 降序排列送审；分批是自愿选项而非硬闸（v1 起收割会话先落 `inbox/staging/<source>/` 收割暂存区，`dex harvest` 缺省全量转正、`--limit N` 自愿分批）。
 
 ## 8. 冷启动完成线与收尾汇报
 
@@ -114,7 +114,7 @@ dex propose --source <S> --kind <fact|preference|pattern> --confidence <N> --evi
 1. 预算消耗：拉取次数 / token / 时长 vs 上限，是否触发停机；
 2. 四象限覆盖矩阵：每来源 × 决策/人物/偏好/模式，缺失象限点名；
 3. 首批清单：confidence 降序，逐条附 src 溯源与 evidence；
-4. 超出部分：候选数与去向（收割清单 / 暂存区）；
+4. 暂存与分批：staging 候选数与转正去向（全量 / `--limit` 自愿分批）；
 5. 建议归位：person/ 与 projects/ 路由建议（供周回顾参考，落位由人裁决）。
 
 最后提醒训练家：首轮回顾逐条对照来源裁决（编辑 / 确认 / 否决）后 `git mv` 归位——只有裁决，没有从零手写；想直接补写随时可编辑（手写是最高主权）。

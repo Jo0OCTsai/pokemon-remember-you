@@ -8,7 +8,7 @@
 //!  4 confidence ∈ [0,100]（缺省 50）                      → E_BAD_ARGS · 2
 //!  5 正文 ≤ 4000（Unicode）                               → E_TOO_LARGE · 5
 //!  6 限流：count(inbox 今日该 source) < proposals_per_day  → E_RATE_LIMIT · 5
-//!        bootstrap 模式：限流上限放宽为 first_batch（缺省 30，FR-4.3）
+//!        bootstrap 模式（harvest 转正）：不限量，跳过本步（FR-4.3 冷启动例外）
 //!  7 幂等：SHA-256(source+kind+content) 对未裁决提案命中   → 返回既有文件（幂等成功；
 //!        confidence/evidence 差异不破坏幂等）
 //!  8 密钥守卫：gitleaks 类正则命中 ⇒ 默认拒绝（E_SECRET · 9；advisory 仅警告放行）
@@ -34,8 +34,8 @@ pub struct GuardLimits {
     pub journal_per_day: usize,
     /// 密钥守卫 advisory 模式（默认 false = 命中即拒，FR-4.6）
     pub secret_advisory: bool,
-    /// bootstrap 模式限流上限（FR-4.3 首批 ≤30；None = 非 bootstrap）
-    pub bootstrap_first_batch: Option<usize>,
+    /// bootstrap 模式（harvest 转正）：不限量，跳过限流（FR-4.3 冷启动例外）
+    pub bootstrap: bool,
 }
 
 impl Default for GuardLimits {
@@ -44,7 +44,7 @@ impl Default for GuardLimits {
             proposals_per_day: 20,
             journal_per_day: 60,
             secret_advisory: false,
-            bootstrap_first_batch: None,
+            bootstrap: false,
         }
     }
 }
@@ -93,7 +93,7 @@ pub struct GuardOutcome {
 
 /// 提案守卫（§5.5 步骤 1–8 + shortid；步骤 0 由 guard_runtime 先行完成）。
 /// 校验序即错误优先级：1 source → 2 evidence → 3 kind → 4 confidence → 5 正文 →
-/// 6 限流（bootstrap_first_batch 放宽上限）→ 7 幂等（命中即成功返回，跳过步骤 8）→
+/// 6 限流（bootstrap 模式跳过）→ 7 幂等（命中即成功返回，跳过步骤 8） →
 /// 8 密钥（advisory 放行）→ pick_shortid → filename。
 pub fn check_proposal(
     input: &ProposalInput,
@@ -140,15 +140,15 @@ pub fn check_proposal(
             actual: content_len,
         });
     }
-    // 6 限流：今日已落盘 ≥ 上限 → 拒（bootstrap 模式上限放宽为 first_batch）
-    let limit = limits
-        .bootstrap_first_batch
-        .unwrap_or(limits.proposals_per_day);
-    if inbox.count_today(&input.source, date)? >= limit {
-        return Err(DexError::RateLimit {
-            source: input.source.clone(),
-            limit,
-        });
+    // 6 限流：今日已落盘 ≥ 上限 → 拒（bootstrap 模式不限量，跳过本步——FR-4.3 冷启动例外）
+    if !limits.bootstrap {
+        let limit = limits.proposals_per_day;
+        if inbox.count_today(&input.source, date)? >= limit {
+            return Err(DexError::RateLimit {
+                source: input.source.clone(),
+                limit,
+            });
+        }
     }
     // 7 幂等：比对域 = source+kind+content（confidence/evidence 不入域）；命中即成功返回（跳过步骤 8）
     let hash = proposal::proposal_hash(&input.source, &input.kind, &input.content);
@@ -503,22 +503,16 @@ mod tests {
             }
         );
         assert_err(&err, "E_RATE_LIMIT", 5);
-        // bootstrap 放宽 30：29 过 / 30 拒
+        // bootstrap 模式不限量：计数远超日限仍通过（FR-4.3 冷启动例外）
         let boot = GuardLimits {
-            bootstrap_first_batch: Some(30),
+            bootstrap: true,
             ..GuardLimits::default()
         };
-        let inbox29 = MockInbox {
-            count: 29,
+        let inbox_many = MockInbox {
+            count: 1000,
             ..empty_inbox()
         };
-        assert!(check_proposal(&ok_input(), &boot, &inbox29, "2026-09-25").is_ok());
-        let inbox30 = MockInbox {
-            count: 30,
-            ..empty_inbox()
-        };
-        let err = check_proposal(&ok_input(), &boot, &inbox30, "2026-09-25").unwrap_err();
-        assert_err(&err, "E_RATE_LIMIT", 5);
+        assert!(check_proposal(&ok_input(), &boot, &inbox_many, "2026-09-25").is_ok());
     }
 
     // ---------- check_proposal：幂等（步骤 7） ----------
