@@ -58,13 +58,13 @@ impl Ctx {
         }
     }
 
-    /// 守卫限流参数（含 secret advisory 配置；bootstrap 模式限流放宽）
-    pub fn limits(&self, bootstrap_first_batch: Option<usize>) -> GuardLimits {
+    /// 守卫限流参数（含 secret advisory 配置；bootstrap 模式跳过限流）
+    pub fn limits(&self, bootstrap: bool) -> GuardLimits {
         GuardLimits {
             proposals_per_day: self.client.conf.proposals_per_day,
             journal_per_day: self.client.conf.journal_per_day,
             secret_advisory: self.config.secret_advisory,
-            bootstrap_first_batch,
+            bootstrap,
         }
     }
 

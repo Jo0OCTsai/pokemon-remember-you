@@ -48,7 +48,6 @@ budget = { pulls = 50, tokens = 500000, minutes = 60 }
 
 [harvest.sources."im-x"]
 type = "page"
-first_batch = 30
 
 [aliases."foo"]                        # 项目别名 → git remote 仓库名（FR-3.6）
 remote = "pokemon-foo"

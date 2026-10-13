@@ -127,6 +127,30 @@ fn harvest_promotes_top_confidence_with_limit() {
     assert_eq!(last_commit_subject(&env.root), "harvest: stage im-x ×2");
 }
 
+/// 冷启动不限量（FR-4.3）：staging 候选数超旧首批 30 上限、也超客户端日限 20，
+/// 无 --limit 时仍全量转正
+#[test]
+fn harvest_promotes_all_without_cap() {
+    let env = Env::new();
+    env.standard_config();
+    for i in 0..35 {
+        stage_candidate(&env, &format!("c{i:02}"), 50 + i, &format!("候选{i}的正文"));
+    }
+
+    let out = harvest(&env, &["--from", "im-x", "--json"]).unwrap();
+    let v = parse_json(&out.stdout);
+    assert_eq!(v["ok"], true, "冷启动不限量：{v}");
+    let promoted = v["data"]["promoted"].as_array().unwrap();
+    assert_eq!(promoted.len(), 35, "35 条全量转正（不受 30 上限约束）");
+    assert_eq!(
+        inbox_imx_today(&env).len(),
+        35,
+        "inbox 顶层 35 条（不受 20/日限流约束）"
+    );
+    assert_eq!(v["data"]["remaining"], 0);
+    assert_eq!(last_commit_subject(&env.root), "harvest: stage im-x ×35");
+}
+
 #[test]
 fn harvest_dry_run_lists_without_side_effects() {
     let env = Env::new();

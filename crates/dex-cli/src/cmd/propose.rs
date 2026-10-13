@@ -54,9 +54,8 @@ pub(crate) struct SubmitOutcome {
 /// 共享提交助手（§7.3 全流程）：source 绑定（步骤 0）→ check_proposal（1–8）→
 /// 落盘 inbox → 自动提交（harvest 场景除外——由调用方批量提交 `harvest: stage`，§2.3）。
 ///
-/// 冻结签名：`submit_proposal(ctx, input, date)`；bootstrap 限流放宽经 `ctx.command`
-/// 判定（仅 harvest 命令进入 bootstrap 模式，上限 = 该 source 注册的 first_batch 封顶 30，
-/// FR-4.3 首批 ≤30 硬闸；`--limit` 只截断候选数、不放大上限）。
+/// 冻结签名：`submit_proposal(ctx, input, date)`；bootstrap 模式经 `ctx.command`
+/// 判定（仅 harvest 命令进入，不限量——跳过限流，FR-4.3 冷启动例外）。
 pub(crate) fn submit_proposal(
     ctx: &Ctx,
     input: &ProposalInput,
@@ -67,16 +66,8 @@ pub(crate) fn submit_proposal(
         ctx.audit(&input.source, e.code());
         return Err(e);
     }
-    // 限流参数：harvest 转正走 bootstrap 放宽（first_batch 封顶 30），其余按客户端日限
-    let bootstrap_first_batch = (ctx.command == "harvest").then(|| {
-        ctx.config
-            .harvest
-            .sources
-            .get(&input.source)
-            .map(|s| s.first_batch.min(30))
-            .unwrap_or(30)
-    });
-    let limits = ctx.limits(bootstrap_first_batch);
+    // 限流参数：harvest 转正走 bootstrap 模式（不限量，FR-4.3），其余按客户端日限
+    let limits = ctx.limits(ctx.command == "harvest");
 
     // 步骤 1–8（core 纯函数）；协议面拒绝写 audit（FR-10.6）
     let outcome = match check_proposal(input, &limits, &Inbox::new(&ctx.root), date) {

@@ -2,7 +2,7 @@
 
 > 项目：pokemon-remember-you（就记得是你）
 > 上游文档：[PERSONAL_MEMORY_HUB_PROPOSAL.md](./proposals/PERSONAL_MEMORY_HUB_PROPOSAL.md)（方案提案）· [REQUIREMENTS.md](./REQUIREMENTS.md)（需求文档）
-> 文档版本：v1.17 · 2026-09-25 · 状态：待评审（v1.17：repo 侧知识库维护技能同步（需求 v1.17：FR-11.2 四技能）——§9 仓库布局 skills 行补 `repo-knowledge`；§8.1 `dex skills` 受管面改五项（四技能 + connectors，枚举见实现常量）；§5.6 mermaid render 头部「技能指针一行」口径不变（render 产物指针行补 repo-knowledge，金样本同步，FR-11.5）；v1.16：外源知识索引同步（需求 v1.16：FR-8.5–8.8/US-15）——§2.5 补 `[index.sources]` 示例与键表三行、§4 新增 §4.3 外源索引（schema 增量/逐源同步/查询与授权边界）、§5.3 补外源命中混入与输出行格式、§8.1 search 补 `--no-external` 与外源行、§8.4 补 W_SOURCE_UNREACHABLE、§10 补外源索引行（SECURITY T17、安全 v1.2）、§11 gantt 补 v2d、§12 补外源用例行、§13 补「只索引不收编」取舍；隔离 sdd-reviewer 评审清偿——§4.3 唯一键改复合 `(source_id, path)`、注销源 prune、freshness 摊销至 reindex、降级外源缺席口径、symlink 不跟随、§2.5 键表与深合并枚举补 `[index.sources]`、§5.6/FR-6.11 lint 增补、§8.1 read 补 `repo:` 口径；SECURITY 补 T18（安全 v1.2 同步））；v1.15：Claude Code AGENTS.md 统一——§6.2 注记去除回退/shim 口径（三工具统一根位），全文档移除旧入口文件名引用；v1.14：实施前评审修订——§5.6 白名单补 `.dex/` 与 inbox 递归口径、§5.1 person 恒在改白名单条件式＋显式检索放行、§5.3 CLI/MCP 缺省检索集同口径、§5.4/§5.2-c 单遍 git log 口径与复活重置、§5.2 补④终局稳定序与 omitted 口径、§2.2 src 两级作用域与示例、§2.3 evidence 双件套适用范围、§2.5 配置键表＋键级深合并＋凭据文件格式＋journal 限流/时长/busy_timeout/别名键、§6.2 render 路径基准/手改检测/技能指针行、§6.1 凭证注入措辞、§7.3 守卫步骤 0/8 补全、§8.1 journal 退出码 5/--limit 上限/--force/TTY 免凭证、§8.2 person 条件式与缺省交集、§8.3/§8.4 lint 信封特例、§9 git 子进程注记与守卫端口、§10 T1–T16、§11 gantt 补 v1 条目、§12 容量口径含 freshness；v1.13：安全补强同步——§10 新增凭证生命周期/授权配置完整性/渲染层净化/供应链四行并收敛审计行、§8.4 补 W_CREDS_PERMS/W_CONFIG_CHANGED、§12 安全用例扩充；威胁登记与「明确不防」清单单源于 [SECURITY.md](./SECURITY.md)（需求 v1.13 同步：FR-6.16/10.5/10.6/10.7/11.7）；此前 v1.12：安装路径工具化同步（对应需求 FR-6.9/FR-11.6 修订）——§8.1 `dex init` 行澄清含 `git init` 与首次提交、新增 `dex skills` 行、管理命令权限分档补 skills，§7.1 主流程 init/skills 分支，§8.3 退出码 10 口径泛化；此前 v1.11：debt 清偿——P5 注入/检索语义修正（§1.1/§1.2）、两层 config（§2.5）、提交信息模板与幂等 hash 域（§2.3）、Superseded 状态（§3.3）、entries 代理键（§4.1）、延迟重建与并发写锁（§4.2）、截断语义与字典序注（§5.2）、keep-until 两级作用域（§5.4）、evidence 上限与并发 propose（§5.5）、lint 白名单/staging 豁免/superseded 悬空（§5.6）、staging 迁 inbox/staging（§5.7）、import 声明承载（§6.2/§13）、七段段序（§6.3）、CLI 面 --skills/--group/dex index/--json 拼写（§8.1）、scope fail-closed 整单拒绝（§8.2/§10）、退出码 7 收窄（§8.3）、新增 §8.4 JSON 信封与 E_*/W_* 枚举；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§2.5 示例与 FR-6.4 分流口径同步，其余备查 TOOL_COMPATIBILITY.md §2.2）；更早 v1.9：W3 收口；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层、v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
+> 文档版本：v1.18 · 2026-10-13 · 状态：待评审（v1.18：冷启动数量限制移除（需求 v1.19：FR-4.3/FR-12.3）——bootstrap 转正（harvest）不限量：§5.5 步骤 6 限流豁免、`--limit` 降级为自愿分批、`[harvest.sources].first_batch` 键移除（§2.5 示例与键表同步）、§8.1 harvest 签名与退出码、§5.7 五步清单第 4 步、§12 集成测试清单与三道缰绳表同步；v1.17：repo 侧知识库维护技能同步（需求 v1.17：FR-11.2 四技能）——§9 仓库布局 skills 行补 `repo-knowledge`；§8.1 `dex skills` 受管面改五项（四技能 + connectors，枚举见实现常量）；§5.6 mermaid render 头部「技能指针一行」口径不变（render 产物指针行补 repo-knowledge，金样本同步，FR-11.5）；v1.16：外源知识索引同步（需求 v1.16：FR-8.5–8.8/US-15）——§2.5 补 `[index.sources]` 示例与键表三行、§4 新增 §4.3 外源索引（schema 增量/逐源同步/查询与授权边界）、§5.3 补外源命中混入与输出行格式、§8.1 search 补 `--no-external` 与外源行、§8.4 补 W_SOURCE_UNREACHABLE、§10 补外源索引行（SECURITY T17、安全 v1.2）、§11 gantt 补 v2d、§12 补外源用例行、§13 补「只索引不收编」取舍；隔离 sdd-reviewer 评审清偿——§4.3 唯一键改复合 `(source_id, path)`、注销源 prune、freshness 摊销至 reindex、降级外源缺席口径、symlink 不跟随、§2.5 键表与深合并枚举补 `[index.sources]`、§5.6/FR-6.11 lint 增补、§8.1 read 补 `repo:` 口径；SECURITY 补 T18（安全 v1.2 同步））；v1.15：Claude Code AGENTS.md 统一——§6.2 注记去除回退/shim 口径（三工具统一根位），全文档移除旧入口文件名引用；v1.14：实施前评审修订——§5.6 白名单补 `.dex/` 与 inbox 递归口径、§5.1 person 恒在改白名单条件式＋显式检索放行、§5.3 CLI/MCP 缺省检索集同口径、§5.4/§5.2-c 单遍 git log 口径与复活重置、§5.2 补④终局稳定序与 omitted 口径、§2.2 src 两级作用域与示例、§2.3 evidence 双件套适用范围、§2.5 配置键表＋键级深合并＋凭据文件格式＋journal 限流/时长/busy_timeout/别名键、§6.2 render 路径基准/手改检测/技能指针行、§6.1 凭证注入措辞、§7.3 守卫步骤 0/8 补全、§8.1 journal 退出码 5/--limit 上限/--force/TTY 免凭证、§8.2 person 条件式与缺省交集、§8.3/§8.4 lint 信封特例、§9 git 子进程注记与守卫端口、§10 T1–T16、§11 gantt 补 v1 条目、§12 容量口径含 freshness；v1.13：安全补强同步——§10 新增凭证生命周期/授权配置完整性/渲染层净化/供应链四行并收敛审计行、§8.4 补 W_CREDS_PERMS/W_CONFIG_CHANGED、§12 安全用例扩充；威胁登记与「明确不防」清单单源于 [SECURITY.md](./SECURITY.md)（需求 v1.13 同步：FR-6.16/10.5/10.6/10.7/11.7）；此前 v1.12：安装路径工具化同步（对应需求 FR-6.9/FR-11.6 修订）——§8.1 `dex init` 行澄清含 `git init` 与首次提交、新增 `dex skills` 行、管理命令权限分档补 skills，§7.1 主流程 init/skills 分支，§8.3 退出码 10 口径泛化；此前 v1.11：debt 清偿——P5 注入/检索语义修正（§1.1/§1.2）、两层 config（§2.5）、提交信息模板与幂等 hash 域（§2.3）、Superseded 状态（§3.3）、entries 代理键（§4.1）、延迟重建与并发写锁（§4.2）、截断语义与字典序注（§5.2）、keep-until 两级作用域（§5.4）、evidence 上限与并发 propose（§5.5）、lint 白名单/staging 豁免/superseded 悬空（§5.6）、staging 迁 inbox/staging（§5.7）、import 声明承载（§6.2/§13）、七段段序（§6.3）、CLI 面 --skills/--group/dex index/--json 拼写（§8.1）、scope fail-closed 整单拒绝（§8.2/§10）、退出码 7 收窄（§8.3）、新增 §8.4 JSON 信封与 E_*/W_* 枚举；此前 v1.10：支持范围收窄——AI coding 工具限定 Claude Code / pi / ZCode（§2.5 示例与 FR-6.4 分流口径同步，其余备查 TOOL_COMPATIBILITY.md §2.2）；更早 v1.9：W3 收口；v1.8：场景推演修订；v1.7：实施前评审修订；v1.6 连接器层、v1.5 场景语义回调、v1.3 结构治理、v1.2 冷启动与技能、v1.1 AGENTS.md 与安全）
 
 ---
 
@@ -289,13 +289,12 @@ auto_commit = true                   # 提案/供稿落盘即自动提交（FR-4
 [harvest]                            # 收割会话（FR-12，§5.7）
 budget = { pulls = 50, tokens = 500000, minutes = 60 }   # 三道缰绳之一：会话预算硬上限——拉取次数/token/时长三维（FR-12.3）；
                                            # 由收割技能（dex-bootstrap）
-                                           # 在 agent 会话内执行自限并汇报；dex 只承载配置并在落盘侧
-                                           # 硬闸（首批 ≤30、日限流），不内嵌蒸馏模型（FR-6.14）
+                                           # 在 agent 会话内执行自限与汇报；dex 只承载配置并在落盘侧
+                                           # 硬闸（日限流；bootstrap 转正不限量），不内嵌蒸馏模型（FR-6.14）
 
 [harvest.sources."im-x"]             # 收割源注册（FR-12.5）：生产者非读者，不授任何 scope
 type = "page"                        # 连接层三形态（FR-12.6）：page 连接器页 / script 收割脚本 / external 外部 Spoke
-first_batch = 30                     # bootstrap 首批上限（FR-4.3）；限流单源于 [clients].rate_limit
-                                     # （收割客户端条目，§2.5 键表）——此处不设第二限流键
+                                     # 限流单源于 [clients].rate_limit（收割客户端条目，§2.5 键表）——此处不设第二限流键
 
 [index]
 fts = true                           # v2
@@ -334,7 +333,6 @@ remote = "pokemon-foo"
 | `[git].auto_commit` | bool | true | 两层 | 写入即提交开关（FR-4.5） |
 | `[harvest].budget.pulls` / `.tokens` / `.minutes` | int | 50 / 500000 / 60 | 两层 | 收割会话预算三维上限（FR-12.3） |
 | `[harvest.sources.<id>].type` | `page` \| `script` \| `external` | — | 两层 | 连接层形态（FR-12.6） |
-| `[harvest.sources.<id>].first_batch` | int | 30 | 两层 | bootstrap 首批上限（FR-4.3；**限流单源于 `[clients].rate_limit`**，此处不设） |
 | `[aliases."<别名>"].remote` | string | — | 两层 | 项目别名 → remote 仓库名（FR-3.6） |
 | `[index].fts` / `.vectors` / `.busy_timeout_ms` | bool / bool / int | true / false / 5000 | 两层 | 索引后端与并发写等待（FR-8.2，§4.2） |
 | `[index.sources.<id>].path` | string | — | **仅本机层** | 外源本地路径（FR-8.6；出现在仓库层 ⇒ warning 并忽略，同 `[auth]` 口径；仓库层注册而本机未配 ⇒ 未启用） |
@@ -675,7 +673,7 @@ keep-until 已过期的条目 → 重新列入（强制复审）
 （journal 供稿走同一守卫的子集：步骤 0/1/5/6/8 + 小节级追加——限流用 `journal_per_day` 配额（缺省 60），FR-5.4/§2.5）
 ```
 
-- bootstrap 模式（FR-4.3）：`dex harvest` / bootstrap 技能与普通提案走同一校验（含密钥守卫），仅第 6 步限流放宽——首批入 inbox ≤30 条（confidence 降序），超出留收割暂存区 `inbox/staging/<source>/`（git 跟踪、随仓库多机同步——待审候选是数据不是缓存，删 `.cache/` 不受影响，FR-8.4；staging 豁免 inbox 滞留 lint（§5.6），转正时全量走守卫 0–8），分批转 inbox 顶层送审。
+- bootstrap 模式（FR-4.3）：`dex harvest` / bootstrap 技能与普通提案走同一校验（含密钥守卫），仅第 6 步限流豁免——冷启动不限量（confidence 降序送审）；收割暂存区 `inbox/staging/<source>/`（git 跟踪、随仓库多机同步——待审候选是数据不是缓存，删 `.cache/` 不受影响，FR-8.4；staging 豁免 inbox 滞留 lint（§5.6），转正时全量走守卫 0–8），`--limit N` 供自愿分批转 inbox 顶层送审。
 - **并发 propose / journal（v2）**：git 自动提交遇 `index.lock` 占用（同机多 dex 进程，如两个 MCP 会话）⇒ 固定退避重试（50ms × ≤10 次）；超限报 E_REPO_STATE · 8——调用方重试安全：内容 hash 幂等（校验序 7）保证重放不产生重复提案。
 
 ### 5.6 结构不变量（dex lint 检查集）
@@ -719,7 +717,7 @@ scope 改名协议：git mv + 同步 config/render/MCP 白名单/@import 引用�
 
 | 缰绳 | 失控模式 | 机制 |
 |---|---|---|
-| 预算硬上限 | 拉取螺旋（成本失控） | 每会话拉取次数 / token / 时长上限，超限即停并汇报——由收割技能（dex-bootstrap）在 agent 会话内执行自限（config `[harvest].budget` 承载）；dex 落盘侧另有首批 ≤30 与日限流硬闸（§5.5，FR-12.3） |
+| 预算硬上限 | 拉取螺旋（成本失控） | 每会话拉取次数 / token / 时长上限，超限即停并汇报——由收割技能（dex-bootstrap）在 agent 会话内执行自限（config `[harvest].budget` 承载）；dex 落盘侧另有日限流硬闸（bootstrap 转正不限量，§5.5，FR-12.3） |
 | 完成判据清单化 | 过早收工（覆盖不全） | 每来源须覆盖「决策 / 人物 / 偏好 / 模式」四象限才算完成 |
 | 数据不可信纪律 | 拉取内容携带注入指令 | 一切拉取内容当数据不当指令（与「数据非指令」同教义）；技能属可信通道（用户安装、git 版本化） |
 
@@ -750,7 +748,7 @@ scope 改名协议：git mv + 同步 config/render/MCP 白名单/@import 引用�
 1. **CLI 就绪**：安装登录（认证由 CLI 自管）→ 烟测 → 确认 JSON 输出与分页方式；
 2. **数据侦察**：枚举可拉类型 → 试拉记录命令/输出/量级 → **确认 locator 可定位性**（无稳定 ID 用「对话名＋时间戳」替代并写明）→ 圈定冷启动范围（不拉全量）；
 3. **写连接器页**（六要素模板；个人化信息收割时现场发现、不预写）；
-4. **注册 source**：config `[harvest.sources.<id>]` 标识 + 限流（bootstrap 首批 30 / 常规 20/日）；
+4. **注册 source**：config `[harvest.sources.<id>]` 标识（限流单源于收割客户端 `[clients].rate_limit`，常规 20/日；bootstrap 转正不限量）；
 5. **首轮收割 + 人审反向验证**：review 的 evidence 回放是否点得开、locator 是否指对位置（最常暴露 locator 设计缺陷，改连接器页即闭环）；收尾在 WORK_LIFE_SCENARIOS 来源地图加一行。
 
 无 CLI 的源退化路径：第 1–2 步换成「手动导出文件 + 连接器页描述文件格式与存放路径」，其余不变——获取动作从「agent 跑命令」变为「人定期导出」。
@@ -1010,7 +1008,7 @@ flowchart TD
 | `dex review` | `dex review [--week N] [--group <一级域前缀>] [--format text\|json]` | 七段回顾清单（权威段序 FR-6.6，含 lint 结果）按一级域分组（FR-9.5；`--group` 仅单组）+ 建议命令 + inbox 清空警告 | 0 |
 | `dex lint` | `dex lint [--scope …] [--format text\|json]` | 结构体检问题清单（frontmatter 残留/inbox 命名与字段/archive 镜像路径/注释格式/可疑密钥） | 0 无问题/1 发现问题/2 参数错 |
 | `dex reindex` | `dex reindex [--force]` | 重建统计 | 0/7 缓存写失败 |
-| `dex harvest` | `dex harvest --from <connector> [--limit 30] [--dry-run]` | 收割会话便利封装（**不蒸馏**，FR-6.14）：加载 `skills/connectors/<source>` 连接器页与 `[harvest].budget` 配置、管理 `inbox/staging/` 暂存区、把收割技能（dex-bootstrap 会话）产出的候选批量走 bootstrap 模式提案——获取与蒸馏均在 agent 侧技能完成，命令只提供载荷与门禁（FR-12/US-13） | 0/2 参数错/5 超出首批上限/9 密钥命中 |
+| `dex harvest` | `dex harvest --from <connector> [--limit N] [--dry-run]` | 收割会话便利封装（**不蒸馏**，FR-6.14）：加载 `skills/connectors/<source>` 连接器页与 `[harvest].budget` 配置、管理 `inbox/staging/` 暂存区、把收割技能（dex-bootstrap 会话）产出的候选批量走 bootstrap 模式提案——获取与蒸馏均在 agent 侧技能完成，命令只提供载荷与门禁（FR-12/US-13）；`--limit` 仅供自愿分批（缺省全量） | 0/2 参数错/5 全部候选被拒（超限等）/9 密钥命中 |
 | `dex interview` | `dex interview [--round core\|follow-up]` | 渐进式面试 → person/ 草稿提案（首轮 5 核心问） | 0 |
 | `dex init` | `dex init [--path ~/dex]` | 八大目录骨架 + .gitignore；非 git 目录时 `git init` + 首次提交；幂等补齐缺失骨架；git 缺失降级 warning（FR-6.9/FR-4.5） | 0/8 已完整初始化 |
 | `dex skills` | `dex skills install [--tool <id>…] [--from PATH]`；`dex skills uninstall [--tool <id>…]` | 内嵌技能物化到 dex 管理目录 → symlink 各工具技能目录（幂等 / 死链重建 / 版本漂移重物化，`--from` 走本仓工作副本；FR-11.6） | 0/2 未知工具/10 拒绝覆盖（目标非本仓产物） |
@@ -1223,7 +1221,7 @@ gantt
 | 层 | 内容 |
 |---|---|
 | 单元（dex-core） | scope 解析边界（未知/穿越/递归）；合并比较器全序性质与字典序（FR-3.2）；预算截断含 omitted 计数、字数口径（Unicode 字符、含语法不含注释）与整条丢弃/首条越界语义（§5.2-4）；提案校验 0–8 每条失败路径（含 source 绑定）；keep-until 到期/未到期/两级作用域判定；journal 小节定位与追加；frontmatter 生成/剥离往返 |
-| 集成（临时 git 仓库 fixture） | propose→review→git mv 归位全链路；stale 对「纯 rename/注释类提交不计实质变更」的判定与 keep-until 过期重现；render 产物金样本（快照测试）；harvest 首批 30 截断与暂存区分批；interview/harvest 草稿逐条带 src 溯源；lint 结构不变量（顶层白名单、目录软预算、inbox 滞留 >7 天、悬空 scope 引用）；journal 供稿（并发追加不覆盖、密钥命中拒绝）；连接器页烟测命令抽检与预算超限即停 |
+| 集成（临时 git 仓库 fixture） | propose→review→git mv 归位全链路；stale 对「纯 rename/注释类提交不计实质变更」的判定与 keep-until 过期重现；render 产物金样本（快照测试）；harvest 不限量转正与 `--limit` 自愿分批；interview/harvest 草稿逐条带 src 溯源；lint 结构不变量（顶层白名单、目录软预算、inbox 滞留 >7 天、悬空 scope 引用）；journal 供稿（并发追加不覆盖、密钥命中拒绝）；连接器页烟测命令抽检与预算超限即停 |
 | 通道一致性 | 同一操作经 CLI 与 MCP 断言等价输出（换通道不换语义）；同一客户端经两通道的 scope 过滤与限流一致 |
 | 安全用例 | 越权 scope、`..` 路径、symlink 逃逸、无证据提案、限流触发、幂等重放、密钥守卫命中拒绝与 advisory 模式、未注册/无凭证客户端全拒、source 与客户端不匹配（E_SOURCE_MISMATCH）、superseded-by 条目不注入、render 产物含「数据非指令」声明；净化与可见性（FR-6.16/10.5/10.6/10.7）：render 注入含 HTML 标签条目 ⇒ 产物已转义且注释不透传、凭据文件权限 0644 ⇒ W_CREDS_PERMS、token 长度 <32 字符 ⇒ 该客户端全拒、吊销（删除/注释 [clients] 条目）后旧 token 全拒（FR-10.3 兜底）、仓库层 config 变更 ⇒ W_CONFIG_CHANGED、audit.log 含拒绝事件字段且不含内容/token（恒定时间比较与 token 熵由代码审查保证、不入黑盒用例；checksums 属发布物流、入 release 检查单 FR-11.7） |
 | 混沌 | 删除/截断 `.cache/index.sqlite3` → search 降级成功（0 + W_INDEX_DEGRADED）且下次命令完成进程内重建；两进程并发 reindex → busy_timeout 串行化或超时降级（§4.2）；git shallow 环境走全量索引路径；脏工作区（编辑未 commit）下 search/render 命中新内容（FR-8.3 调和路径）；render 目标已存在非 dex 产物 → 拒绝覆盖（退出码 10）；git 不可用时 propose 落盘成功 + W_GIT_UNAVAILABLE |
@@ -1243,7 +1241,7 @@ gantt
 | FTS 默认 unicode61 分词 | 中文按字索引，短语查询可命中但召回一般 | v2 后期可换 jieba 类 tokenizer 或启用向量后端 |
 | 单人单仓库 | 不支持家庭/团队共享 | 明确非目标（需求 §1.3）；如未来需要，scope 模型可扩展 `domains/shared-x`，不动核心 |
 | 编码 agent 自带记忆（Claude Code auto memory 等）视为 Spoke 过程数据 | 不自动入 Hub，需人工收割（US-12） | 消费方接入文档写明「禁用或并存」二选一；收割走 propose 标准协议，证据指针即其 memory 文件 |
-| 冷启动零手写（agent 起草、人裁决） | 草稿有幻觉风险，人审成本前移 | 逐条标源纪律（FR-2.7）+ 首批 ≤30 分批（FR-4.3）；手写路径保留为可选最高主权 |
+| 冷启动零手写（agent 起草、人裁决） | 草稿有幻觉风险，人审成本前移 | 逐条标源纪律（FR-2.7）+ confidence 降序批量送审（FR-4.3 不限量）；手写路径保留为可选最高主权 |
 | 数据获取走连接器页 + agent 工具（CLI-first），不内建 fetcher | 质量与成本控制依赖技能纪律而非代码；CLI 缺失源退化为手动导出 | 三道缰绳兜底（§5.7）；连接器页是 markdown，维护成本一行级；认证由 CLI 自管，dex 零 token 托管 |
 | 连接层三形态（page/script/external），不引入 in-process 插件机制 | 无进程内插件的性能与深度集成；无插件市场类分发 | `dex propose`/MCP 即插件接口（协议即扩展点，进程边界即插件边界）；一切写入收敛单一门禁；受控 wasm 留待 v3 后出现明确需求再评估 |
 | 衰减「保留」用 keep-until 到期注释持久化（FR-2.10） | 无机制时保留裁决不留痕，僵尸候选每周重现（SRE 告警疲劳模式）；豁免须有到期日防永久沉默 | 模式来源：GTD tickler file、运维告警 snooze-with-expiry、SRE「告警必须可操作」；系本项目组合设计而非记忆社区既有实践，出处已标注 |

@@ -117,7 +117,6 @@ allowed_sources = ["work-agent"]
 
 [harvest.sources."im-x"]
 type = "page"
-first_batch = 30
 
 [clients."harvest-im-x"]
 scopes = []

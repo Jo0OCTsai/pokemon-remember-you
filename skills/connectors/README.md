@@ -21,7 +21,7 @@
 
 ## 收割源是生产者非读者（FR-12.5）
 
-注册 `[harvest.sources.<id>]` 只登记 source 标识与限流参数（type / first_batch），**不授任何 scope 白名单**。配套注册收割客户端实现 source 绑定闭环：
+注册 `[harvest.sources.<id>]` 只登记 source 标识（type），**不授任何 scope 白名单**。配套注册收割客户端实现 source 绑定闭环：
 
 ```toml
 [clients."harvest-<source>"]   # 收割客户端映射：scopes = []、propose = true、
@@ -35,11 +35,11 @@ allowed_sources = ["<source>"]
 1. **CLI 就绪**：安装并登录来源 CLI（认证由 CLI 自管）→ 用连接器页第 6 要素烟测命令验证活着 → 确认 JSON 输出与分页方式。
 2. **数据侦察**：枚举可拉资源类型 → 试拉并记录命令 / 输出 / 量级 → **确认 locator 可定位性**（无稳定 ID 时用「对话名＋时间戳」替代并在连接器页写明）→ 圈定冷启动范围（不拉全量）。
 3. **写连接器页**：复制 `_TEMPLATE.md`，按六要素填写（个人化信息收割时现场发现、不预写）。
-4. **注册 source**：config `[harvest.sources.<id>]` 登记 type 与 first_batch；限流单源于收割客户端 `[clients].rate_limit`，此处不设第二限流键。
+4. **注册 source**：config `[harvest.sources.<id>]` 登记 type；限流单源于收割客户端 `[clients].rate_limit`，此处不设第二限流键（bootstrap 转正不限量）。
 5. **首轮收割＋人审反向验证**：跑一轮收割 → 周回顾时逐条验证 evidence 回放是否点得开、locator 是否指对位置（此步最常暴露 locator 设计缺陷，改连接器页即闭环）→ 收尾在 WORK_LIFE_SCENARIOS 来源地图加一行。
 
 **无 CLI 的源退化路径**（FR-12.1）：第 1–2 步换成「手动导出文件 + 连接器页描述文件格式与存放路径」，其余不变——获取动作从「agent 跑命令」变为「人定期导出」。
 
 ## 相关技能
 
-收割会话的执行纪律（三道缰绳、蒸馏分流判据、evidence 双件套、首批 ≤30）见 `skills/dex-bootstrap/SKILL.md`。
+收割会话的执行纪律（三道缰绳、蒸馏分流判据、evidence 双件套、不限量送审）见 `skills/dex-bootstrap/SKILL.md`。
